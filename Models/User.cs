@@ -37,7 +37,10 @@ namespace HRMS.Models
         [ForeignKey("Department")]
         public int? department_id { get; set; }
         public Department Department { get; set; }
-        public string job_title { get; set; }
+
+        [ForeignKey("Job")]
+        public int? job_id { get; set; }
+        public Job Job { get; set; }
         public int? gender { get; set; }
         public DateTime? hiring_date { get; set; }
         public int? vacations_balance { get; set; }

@@ -160,13 +160,19 @@
     <Compile Include="Migrations\202201221641350_updateProjectType.Designer.cs">
       <DependentUpon>202201221641350_updateProjectType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201240200135_updateJob.cs" />
+    <Compile Include="Migrations\202201240200135_updateJob.Designer.cs">
+      <DependentUpon>202201240200135_updateJob.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Branch.cs" />
     <Compile Include="Models\BranchProject.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\IDType.cs" />
+    <Compile Include="Models\Job.cs" />
     <Compile Include="ViewModels\BranchProjectViewModel.cs" />
     <Compile Include="ViewModels\IDTypeViewModel.cs" />
+    <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\NationalityViewModel.cs" />
     <Compile Include="Models\UserProject.cs" />
     <Compile Include="Models\HRMSDBContext.cs" />
@@ -2657,6 +2663,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201221641350_updateProjectType.resx">
       <DependentUpon>202201221641350_updateProjectType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201240200135_updateJob.resx">
+      <DependentUpon>202201240200135_updateJob.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

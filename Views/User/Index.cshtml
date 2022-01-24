@@ -75,10 +75,6 @@
                                     @Html.DropDownList("branch_id", new SelectList(ViewBag.Branches, "id", "name"), "Select Branch", new { @class = "form-control", @name = "branch_id", @style = "width:100%", @id = "branch_id" })
                                 </div>
                             }
-                            else
-                            {
-                                <input type="hidden" name="id" id="id" value="0" />
-                            }
                             <div class="form-group col-md-4">
                                 <label>Department</label>
                                 @Html.DropDownList("department_id", new SelectList(ViewBag.Departments, "id", "name"), "Select Department", new { @class = "form-control", @name = "department_id", @style = "width:100%", @id = "department_id" })

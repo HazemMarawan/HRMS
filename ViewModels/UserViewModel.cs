@@ -27,7 +27,8 @@ namespace HRMS.ViewModels
         public string branch_name { get; set; }
         public int? department_id { get; set; }
         public string department_name { get; set; }
-        public string job_title { get; set; }
+        public int? job_id { get; set; }
+        public string job_name { get; set; }
         public int? gender { get; set; }
         public DateTime? hiring_date { get; set; }
         public int? vacations_balance { get; set; }

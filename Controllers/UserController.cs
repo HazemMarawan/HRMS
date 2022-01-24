@@ -40,6 +40,7 @@ namespace HRMS.Controllers
                                 join nationality in db.Nationalities on user.nationality_id equals nationality.id
                                 join branch in db.Branches on user.branch_id equals branch.id
                                 join department in db.Departments on user.department_id equals department.id
+                                join job in db.Jobs on user.job_id equals job.id
                                 select new UserViewModel
                                 {
                                     id = user.id,   
@@ -62,7 +63,7 @@ namespace HRMS.Controllers
                                     branch_name = branch.name,
                                     department_id = user.department_id,
                                     department_name = department.name,
-                                    job_title = user.job_title,
+                                    job_name = job.name,
                                     gender = user.gender,
                                     hiring_date = user.hiring_date,
                                     vacations_balance = user.vacations_balance,
@@ -176,7 +177,7 @@ namespace HRMS.Controllers
                     oldUser.branch_id = userVM.branch_id;
 
                 oldUser.department_id = userVM.department_id;
-                oldUser.job_title = userVM.job_title;
+                oldUser.job_id = userVM.job_id;
                 oldUser.gender = userVM.gender;
                 oldUser.hiring_date = userVM.hiring_date;
                 oldUser.notes = userVM.notes;
@@ -223,17 +224,17 @@ namespace HRMS.Controllers
             {
                 var oldUsername = db.Users.Find(id).user_name;
                 if (oldUsername == user_name)
-                    return Json(new { message = "valid username", is_valid = true }, JsonRequestBehavior.AllowGet);
+                    return Json(new { message = "Valid Username", is_valid = true }, JsonRequestBehavior.AllowGet);
 
             }
             var checkAvailabilty = db.Users.Any(s => s.user_name == user_name);
             if (checkAvailabilty)
             {
-                return Json(new { message = "username already taken", is_valid = false }, JsonRequestBehavior.AllowGet);
+                return Json(new { message = "Username Already Taken", is_valid = false }, JsonRequestBehavior.AllowGet);
 
             }
 
-            return Json(new { message = "valid username", is_valid = true }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = "Valid Username", is_valid = true }, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -2,5 +2,388 @@
 @{
     ViewBag.Title = "Index";
 }
+@if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader())
+{
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Productivity By Date</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    <div id="productivityByDate"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Productivity By Project</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    <div id="productivityByProject"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (HRMS.Auth.isA.BranchAdmin())
+{
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Branch Productivity By Date</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    <div id="branchProductivityByDate"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Branch Productivity By Project</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    <div id="branchProductivityProject"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (HRMS.Auth.isA.SuperAdmin())
+{
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Productivity By Date</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    <div id="systemProductivityByDate"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Productivity By Project</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    <div id="systemProductivityProject"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script>
+            $.ajax({
+            type: "GET",
+            url: '@Url.Action("productivityByDate", "Dashboard")',
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+                success: function (data) {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+
+                        },
+                        theme: {
+                            monochrome: {
+                                enabled: true,
+                                color: '#255aee',
+                                shadeTo: 'light',
+                                shadeIntensity: 0.65
+                            }
+                        },
+                        fill: {
+                            colors: ['#0000FF', '#0000F1', '#0000F2']
+                        },
+                        series: [{
+                            name: 'Hours',
+                            data: data.no_of_hours
+                        }],
+                        xaxis: {
+                            categories: data.xAxis,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '40%'
+                            }
+                        }
+                    }
 
 
+                    var productivityByDate = new ApexCharts(
+                        document.querySelector("#productivityByDate"),
+                    options
+                );
+                    productivityByDate.render();
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+            });
+
+         $.ajax({
+            type: "GET",
+            url: '@Url.Action("productivityByProject", "Dashboard")',
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+                success: function (data) {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+
+                        },
+                        theme: {
+                            monochrome: {
+                                enabled: true,
+                                color: '#255aee',
+                                shadeTo: 'light',
+                                shadeIntensity: 0.65
+                            }
+                        },
+                        fill: {
+                            colors: ['#0000FF', '#0000F1', '#0000F2']
+                        },
+                        series: [{
+                            name: 'Hours',
+                            data: data.no_of_hours
+                        }],
+                        xaxis: {
+                            categories: data.xAxis,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '40%'
+                            }
+                        }
+                    }
+
+
+                    var productivityByProject = new ApexCharts(
+                        document.querySelector("#productivityByProject"),
+                    options
+                );
+                    productivityByProject.render();
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+         });
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("branchProductivityByDate", "Dashboard")',
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+                success: function (data) {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+
+                        },
+                        theme: {
+                            monochrome: {
+                                enabled: true,
+                                color: '#255aee',
+                                shadeTo: 'light',
+                                shadeIntensity: 0.65
+                            }
+                        },
+                        fill: {
+                            colors: ['#0000FF', '#0000F1', '#0000F2']
+                        },
+                        series: [{
+                            name: 'Hours',
+                            data: data.no_of_hours
+                        }],
+                        xaxis: {
+                            categories: data.xAxis,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '40%'
+                            }
+                        }
+                    }
+
+
+                    var branchProductivityByDate = new ApexCharts(
+                        document.querySelector("#branchProductivityByDate"),
+                    options
+                );
+                    branchProductivityByDate.render();
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+            });
+
+         $.ajax({
+            type: "GET",
+            url: '@Url.Action("branchProductivityProject", "Dashboard")',
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+                success: function (data) {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+
+                        },
+                        theme: {
+                            monochrome: {
+                                enabled: true,
+                                color: '#255aee',
+                                shadeTo: 'light',
+                                shadeIntensity: 0.65
+                            }
+                        },
+                        fill: {
+                            colors: ['#0000FF', '#0000F1', '#0000F2']
+                        },
+                        series: [{
+                            name: 'Hours',
+                            data: data.no_of_hours
+                        }],
+                        xaxis: {
+                            categories: data.xAxis,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '40%'
+                            }
+                        }
+                    }
+
+
+                    var branchProductivityProject = new ApexCharts(
+                        document.querySelector("#branchProductivityProject"),
+                    options
+                );
+                    branchProductivityProject.render();
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+         });
+         $.ajax({
+            type: "GET",
+            url: '@Url.Action("systemProductivityByDate", "Dashboard")',
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+                success: function (data) {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+
+                        },
+                        theme: {
+                            monochrome: {
+                                enabled: true,
+                                color: '#255aee',
+                                shadeTo: 'light',
+                                shadeIntensity: 0.65
+                            }
+                        },
+                        fill: {
+                            colors: ['#0000FF', '#0000F1', '#0000F2']
+                        },
+                        series: [{
+                            name: 'Hours',
+                            data: data.no_of_hours
+                        }],
+                        xaxis: {
+                            categories: data.xAxis,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '40%'
+                            }
+                        }
+                    }
+
+
+                    var systemProductivityByDate = new ApexCharts(
+                        document.querySelector("#systemProductivityByDate"),
+                    options
+                );
+                    systemProductivityByDate.render();
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+            });
+
+         $.ajax({
+            type: "GET",
+            url: '@Url.Action("systemProductivityProject", "Dashboard")',
+            contentType: "application/json; charset=utf-8",
+            datatype: "json",
+                success: function (data) {
+                    var options = {
+                        chart: {
+                            type: 'bar',
+
+                        },
+                        theme: {
+                            monochrome: {
+                                enabled: true,
+                                color: '#255aee',
+                                shadeTo: 'light',
+                                shadeIntensity: 0.65
+                            }
+                        },
+                        fill: {
+                            colors: ['#0000FF', '#0000F1', '#0000F2']
+                        },
+                        series: [{
+                            name: 'Hours',
+                            data: data.no_of_hours
+                        }],
+                        xaxis: {
+                            categories: data.xAxis,
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '40%'
+                            }
+                        }
+                    }
+
+
+                    var systemProductivityProject = new ApexCharts(
+                        document.querySelector("#systemProductivityProject"),
+                    options
+                );
+                    systemProductivityProject.render();
+            },
+            error: function () {
+                alert("Dynamic content load failed.");
+            }
+            });
+    </script>
+
+}  

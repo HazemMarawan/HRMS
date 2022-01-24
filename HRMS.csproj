@@ -190,6 +190,7 @@
     <Compile Include="ViewModels\UserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AJC_Logo.ico" />
     <Content Include="Content\AdminPanelAssets\assets\css\apps\contacts.css" />
     <Content Include="Content\AdminPanelAssets\assets\css\apps\invoice-add.css" />
     <Content Include="Content\AdminPanelAssets\assets\css\apps\invoice-edit.css" />

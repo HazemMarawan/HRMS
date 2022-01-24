@@ -105,7 +105,15 @@
                 <div class="profile-info">
                     <figure class="user-cover-image"></figure>
                     <div class="user-info">
-                        <img src="~/Images/userProfile.jpeg" alt="avatar">
+                        @if (Session["image"] != null)
+                        {
+                            <img src="@Session["image"].ToString()" alt="avatar">
+
+                        }
+                        else
+                        {
+                            <img src="~/Images/userProfile.jpeg" alt="avatar">
+                        }
                         <h6 class="">@Session["user_name"].ToString()</h6>
                         <p>@Session["job_title"].ToString()</p>
                     </div>

@@ -190,8 +190,8 @@ namespace HRMS.Controllers
 
                 if (userVM.image != null)
                 {
-                    if (oldUser.image != null)
-                        System.IO.File.Delete(oldUser.image);
+                    //if (oldUser.image != null)
+                    //    System.IO.File.Delete(oldUser.image);
 
                     Guid guid = Guid.NewGuid();
                     var InputFileName = Path.GetFileName(userVM.image.FileName);

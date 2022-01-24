@@ -1,0 +1,550 @@
+﻿@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="manage_user_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-12">
+                                <center><img src="~/images/userProfile.jpeg" width="150" height="150" id="imageProfile" class="rounded-circle shadow" alt="" /></center>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Code <small id="code_error" style="display:none;" class="badge badge-danger"> <i class="lni lni-close"></i> code already taken</small><small id="code_valid" class="badge badge-success" style="display:none;"><i class="lni lni-checkmark"></i> valid code</small></label>
+                                <input name="code" id="code" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Username <small id="user_name_error" style="display:none;" class="badge badge-danger"> <i class="lni lni-close"></i> username already taken</small><small id="user_name_valid" class="badge badge-success" style="display:none;"><i class="lni lni-checkmark"></i> valid username</small></label>
+                                <input required name="user_name" id="user_name" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Password</label>
+                                <input required name="password" id="password" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>First Name</label>
+                                <input required name="first_name" id="first_name" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Middle Name</label>
+                                <input required name="middle_name" id="middle_name" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Last Name</label>
+                                <input required name="last_name" id="last_name" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>ID Type</label>
+                                @Html.DropDownList("id_type", new SelectList(ViewBag.IDTypes, "id", "name"), "Select ID Type", new { @class = "form-control", @name = "id_type", @style = "width:100%", @id = "id_type" })
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>ID Number</label>
+                                <input name="id_number" id="id_number" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Birthdate</label>
+                                <input name="birth_date" id="birth_date" type="date" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Phone</label>
+                                <input type="number" name="phone" id="phone" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Address</label>
+                                <input type="text" name="address" id="address" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Nationality</label>
+                                @Html.DropDownList("nationality_id", new SelectList(ViewBag.Nationalities, "id", "name"), "Select Nationality", new { @class = "form-control", @name = "nationality_id", @style = "width:100%", @id = "nationality_id" })
+                            </div>
+                            @if (HRMS.Auth.isA.SuperAdmin())
+                            {
+                                <div class="form-group col-md-4">
+                                    <label>Branch</label>
+                                    @Html.DropDownList("branch_id", new SelectList(ViewBag.Branches, "id", "name"), "Select Branch", new { @class = "form-control", @name = "branch_id", @style = "width:100%", @id = "branch_id" })
+                                </div>
+                            }
+                            else
+                            {
+                                <input type="hidden" name="id" id="id" value="0" />
+                            }
+                            <div class="form-group col-md-4">
+                                <label>Department</label>
+                                @Html.DropDownList("department_id", new SelectList(ViewBag.Departments, "id", "name"), "Select Department", new { @class = "form-control", @name = "department_id", @style = "width:100%", @id = "department_id" })
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Job Title</label>
+                                <input required name="job_title" id="job_title" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Gender</label>
+                                <select name="gender" id="gender" class="form-control radius-30" required>
+                                    <option value="1">Male</option>
+                                    <option value="2">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Hiring Date</label>
+                                <input name="hiring_date" id="hiring_date" type="date" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Role</label>
+                                <select name="type" id="type" class="form-control radius-30" required>
+                                    @if (HRMS.Auth.isA.SuperAdmin())
+                                    {
+                                        <option value="1">SuperAdmin</option>
+                                        <option value="2">Branch Admin</option>
+                                    }
+                                    <option value="3">Employee</option>
+                                    <option value="4">Team Leader</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-8">
+                                <label>Notes</label>
+                                <input name="notes" id="notes" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" onchange="loadFile(event)" class="custom-file-input" id="image" name="image" aria-describedby="inputGroupFileAddon01">
+                                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Status</label>
+                                <select class="form-control" name="active" id="active">
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="row">
+    <div class="form-group col-4">
+        <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
+    </div>
+    <div class="form-group col-2">
+        <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
+    </div>
+    <div class="form-group col-2">
+        <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
+    </div>
+
+</div>
+
+<div class="card">
+    <div class="card-header">
+        @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+        {
+            <a href="javascript:void(0)" id="add_user"><i class="fa fa-plus"></i> Add User</a>
+        }
+        else
+        {
+            @ViewBag.branchName <span>Employees</span>
+        }
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="userTable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Contact</th>
+                        <th>Gender</th>
+                        <th>Role</th>
+                        <th>Active</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+       $(document).ready(function () {
+
+           var datatable = $('#userTable')
+               .DataTable({/* we added this from the other system to have same search and same pagination*/
+                   "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                       "<'table-responsive  'tr>" +
+                       "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                   "buttons": {
+                       buttons: [
+                           { extend: 'copy', className: 'btn btn-sm' },
+                           { extend: 'csv', className: 'btn btn-sm' },
+                           { extend: 'excel', className: 'btn btn-sm' },
+                           { extend: 'print', className: 'btn btn-sm' }
+                       ]
+                   },
+                   "oLanguage": {
+                       "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
+                       "sInfo": "Showing page _PAGE_ of _PAGES_",
+                       "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                       "sSearchPlaceholder": "Search...",
+                       "sLengthMenu": "Results :  _MENU_",
+                   },
+                    "processing": true,
+                    "serverSide": true,
+                    "scrollX": true,
+                    "stateSave": false,
+                    "lengthChange": false,
+                    "dom": 'Bfrtip',
+
+                    "buttons": ['copy', 'excel', 'pdf', 'print'],
+                    "pageLength":10,
+                    "rowId": 'id',
+                    "ajax": {
+                        "url": "@Url.Action("Index", "User")?branch_id=@ViewBag.branchId",
+                        "type": "POST",
+                        "datatype": "json",
+                        "dataSrc": "data"
+                    },
+                    "columns": [
+                        {
+                            "data": "id",
+                            "searchable": true
+                        },
+                        {
+                            "data": "full_name", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "<span>" + oData.full_name + "</span>";
+
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "code",
+                            "searchable": true
+                        },
+                        {
+                            "data": "phone", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "<span> ";
+                                if (oData.phone) {
+                                    html += "<b>Phone: </b>" + oData.phone;
+                                }
+                                else
+                                    html += "No Phone";
+                                html += "</span><br>";
+
+                                html += "<span>";
+                                if (oData.address) {
+                                    html += "<b>Address: </b>" + oData.address;
+                                }
+                                else
+                                    html += "No Addresses";
+                                html += "</span><br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+
+                        {
+                            "data": "gender", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "<span> ";
+                                if (oData.gender) {
+                                    if (oData.gender == 1)
+                                        html += "Male";
+                                    else if (oData.gender == 2)
+                                        html += "Female";
+                                }
+                                else
+                                    html += "No Gender Selected";
+                                html += "</span>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "type", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.type == 1)
+                                    html += "Super Admin";
+                                else if (oData.type == 2)
+                                    html += "Branch Admin";
+                                else
+                                    html += "Employee";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "active", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.active == 1)
+                                    html += "<span class='badge badge-primary'>Yes</span>";
+                                else
+                                    html += "<span class='badge badge-danger'>No</span>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                var isSuperAdmin = '@HRMS.Auth.isA.SuperAdmin()';
+                                var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
+                                if (isSuperAdmin == "True" || isBranchAdmin =="True") {
+                                    html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                }
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                    ]
+                 });
+
+            $('#search').on('click', function () {
+                datatable.search($("#text_search").val());
+                datatable.draw();
+            });
+
+            $('#text_search').on('keyup', function (e) {
+                if (e.keyCode == 13)
+                    $('#search_button').trigger('click');
+            });
+
+            $('#reset').on('click', function () {
+                $("#text_search").val("");
+
+                $('#search').trigger('click');
+
+            });
+
+
+           $("#add_user").click(function () {
+               var modal = $('#manage_user_modal').clone();
+                var action = '@Url.Action("saveUser", "User")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Add User');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+                        $(document).on('change', '#image', function (event) {
+
+                            var reader = new FileReader();
+                            reader.onload = function () {
+                                dialog.find('#imageProfile').attr('src', reader.result);
+                            };
+                            reader.readAsDataURL(event.target.files[0]);
+
+                        });
+                        $(document).on('keyup', '#user_name', function () {
+                            var user_name = dialog.find('#user_name').val().length != 0 ? dialog.find('#user_name').val() : null;
+                            if (user_name != null) {
+                                $.ajax({
+                                    type: "GET",
+                                    url: '@Url.Action("checkUsernameAvailability", "User")',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: {
+                                        "user_name": user_name
+                                    },
+                                    datatype: "json",
+                                    success: function (json) {
+                                        console.log(json.message);
+                                        if (json.is_valid == false) {
+
+                                            dialog.find('#user_name_error').show();
+                                            dialog.find('#user_name_valid').hide();
+                                            dialog.find('#save').prop('disabled', true);
+
+                                        }
+                                        else {
+                                            dialog.find('#user_name_error').hide();
+                                            dialog.find('#user_name_valid').show();
+                                            dialog.find('#save').prop('disabled', false);
+                                        }
+
+
+                                    },
+                                    error: function () {
+                                        //alert("Dynamic content load failed.");
+                                    }
+                                });
+                            } else {
+                                dialog.find('#user_name_error').show();
+                                dialog.find('#user_name_valid').hide();
+                                dialog.find('#save').prop('disabled', true);
+
+                            }
+
+                        });
+
+                        dialog.find('#role_ids').selectize({
+                            plugins: ['remove_button'],
+                        });
+                });
+            });
+
+            $(document).on("click", ".edit", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                console.log(data);
+                var modal = $('#manage_user_modal').clone();
+                var action = '@Url.Action("saveUser", "User")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Edit User');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+
+
+                        dialog.find('#id').val(data.id);
+                        dialog.find('#code').val(data.code);
+                        dialog.find('#user_name').val(data.user_name);
+                        dialog.find('#password').val(data.password);
+                        dialog.find('#first_name').val(data.first_name);
+                        dialog.find('#middle_name').val(data.middle_name);
+                        dialog.find('#last_name').val(data.last_name);
+                        dialog.find('#id_type option[value=' + data.id_type + ']').attr('selected', 'selected');
+                        dialog.find('#id_number').val(data.id_number);
+                        if (data.birth_date != null) {
+                            dialog.find('#birth_date').val(fixDate(data.birth_date));
+                        }
+                        dialog.find('#phone').val(data.phone);
+                        dialog.find('#address').val(data.address);
+                        if (data.image) {
+                            dialog.find('#imageProfile').attr('src', data.imagePath);
+                            dialog.find('#image').val(data.image);
+                        }
+                            
+                        dialog.find('#nationality_id option[value=' + data.nationality_id + ']').attr('selected', 'selected');
+                        dialog.find('#branch_id option[value=' + data.branch_id + ']').attr('selected', 'selected');
+                        dialog.find('#department_id option[value=' + data.department_id + ']').attr('selected', 'selected');
+                        dialog.find('#job_title').val(data.job_title);
+                        dialog.find('#gender option[value=' + data.gender + ']').attr('selected', 'selected');
+                        if (data.hiring_date != null) {
+                            dialog.find('#hiring_date').val(fixDate(data.hiring_date));
+                        }
+                        dialog.find('#type option[value=' + data.type + ']').attr('selected', 'selected');
+                        dialog.find('#notes').val(data.notes);
+                        
+                        dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
+
+
+                        $(document).on('change', '#image', function (event) {
+
+                            var reader = new FileReader();
+                            reader.onload = function () {
+                                dialog.find('#imageProfile').attr('src', reader.result);
+                            };
+                            reader.readAsDataURL(event.target.files[0]);
+
+                        });
+
+
+                         $(document).on('keyup', '#user_name', function () {
+                            var user_name = dialog.find('#user_name').val().length != 0 ? dialog.find('#user_name').val() : null;
+                            if (user_name != null) {
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: '@Url.Action("checkUsernameAvailability", "User")',
+                                    contentType: "application/json; charset=utf-8",
+                                    data: {
+                                        "id": data.id,"user_name": user_name
+                                    },
+                                    datatype: "json",
+                                    success: function (json) {
+                                        console.log(json.message);
+                                        if (json.is_valid == false) {
+
+                                            dialog.find('#user_name_error').show();
+                                            dialog.find('#user_name_valid').hide();
+                                            dialog.find('#save').prop('disabled', true);
+
+                                        }
+                                        else {
+                                            dialog.find('#user_name_error').hide();
+                                            dialog.find('#user_name_valid').show();
+                                            dialog.find('#save').prop('disabled', false);
+                                        }
+
+
+                                    },
+                                    error: function () {
+                                        //alert("Dynamic content load failed.");
+                                    }
+                                });
+
+                            } else {
+                                dialog.find('#user_name_error').show();
+                                dialog.find('#user_name_valid').hide();
+                                dialog.find('#save').prop('disabled', true);
+
+                            }
+                        });
+
+                });
+
+            });
+
+            $(document).on("click", ".delete", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                warningBox("Are you sure you want to delete this user (<b>" + data.user_name +"</b>) ?", function () {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("deleteUser", "User")',
+                        contentType: "application/json; charset=utf-8",
+                        data: { "id": data.id },
+                        datatype: "json",
+                        success: function (data) {
+                            datatable.draw();
+                        },
+                        error: function () {
+                            alert("Dynamic content load failed.");
+                        }
+                    });
+                });
+            });
+
+        });
+
+    </script>
+}
+

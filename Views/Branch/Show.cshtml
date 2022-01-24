@@ -1,0 +1,24 @@
+﻿@model IEnumerable<HRMS.ViewModels.BranchViewModel>
+@{
+    ViewBag.Title = "Branches";
+}
+@section css{
+    <link href="~/Content/AdminPanelAssets/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
+}
+<div class="row">
+    @foreach (var branch in Model)
+    {
+        
+    <div class="card component-card_1">
+        <a href="@Url.Action("Details","Branch",new { id = branch.id})">
+            <div class="card-body">
+                <div class="icon-svg">
+                    <svg>...</svg>
+                </div>
+                <h5 class="card-title">@branch.name</h5>
+            </div>
+        </a>
+    </div>
+       
+    }
+</div>

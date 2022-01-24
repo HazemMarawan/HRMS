@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "Details";
+}
+@section css{
+    <link href="~/Content/AdminPanelAssets/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
+}
+<div class="row">
+    <div class="card component-card_1">
+        <a href="@Url.Action("Index","User",new { branch_id = ViewBag.branch_id})">
+            <div class="card-body">
+                <div class="icon-svg">
+                    <svg>...</svg>
+                </div>
+                <h5 class="card-title">Employees</h5>
+            </div>
+        </a>
+    </div>
+    <div class="card component-card_1">
+        <a href="@Url.Action("Index","Project",new { branch_id = ViewBag.branch_id})">
+            <div class="card-body">
+                <div class="icon-svg">
+                    <svg>...</svg>
+                </div>
+                <h5 class="card-title">Projects</h5>
+            </div>
+        </a>
+    </div>
+    <div class="card component-card_1">
+        <a href="@Url.Action("Index","Productivity",new { branch_id = ViewBag.branch_id})">
+            <div class="card-body">
+                <div class="icon-svg">
+                    <svg>...</svg>
+                </div>
+                <h5 class="card-title">Productivity</h5>
+            </div>
+        </a>
+    </div>
+</div>

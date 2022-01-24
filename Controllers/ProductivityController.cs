@@ -28,11 +28,13 @@ namespace HRMS.Controllers
                 var start = Request.Form.GetValues("start").FirstOrDefault();
                 var length = Request.Form.GetValues("length").FirstOrDefault();
                 var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                var from_date = Request.Form.GetValues("columns[0][search][value]")[0];
+                var to_date = Request.Form.GetValues("columns[1][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
                 // Getting all data    
-                var nationalityData = (from user in db.Users
+                var productivityData = (from user in db.Users
                                        join userProject in db.UserProjects on user.id equals userProject.user_id
                                        join project in db.Projects on userProject.project_id equals project.id
                                        join branchProject in db.BranchProjects on project.id equals branchProject.project_id
@@ -49,16 +51,36 @@ namespace HRMS.Controllers
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    nationalityData = nationalityData.Where(m => m.project_name.ToLower().Contains(searchValue.ToLower())
+                    productivityData = productivityData.Where(
+                       m => m.project_name.ToLower().Contains(searchValue.ToLower())
                     || m.id.ToString().ToLower().Contains(searchValue.ToLower())
                     || m.user_name.ToString().ToLower().Contains(searchValue.ToLower())
                     );
                 }
 
+
+                if (!string.IsNullOrEmpty(from_date))
+                {
+                    if (Convert.ToDateTime(from_date) != DateTime.MinValue)
+                    {
+                        DateTime from = Convert.ToDateTime(from_date);
+                        productivityData = productivityData.Where(s => s.working_date >= from);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(to_date))
+                {
+                    if (Convert.ToDateTime(to_date) != DateTime.MinValue)
+                    {
+                        DateTime to = Convert.ToDateTime(to_date);
+                        productivityData = productivityData.Where(s => s.working_date <= to);
+                    }
+                }
+
                 //total number of rows count     
-                var displayResult = nationalityData.OrderByDescending(u => u.id).Skip(skip)
+                var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
                      .Take(pageSize).ToList();
-                var totalRecords = nationalityData.Count();
+                var totalRecords = productivityData.Count();
 
                 return Json(new
                 {
@@ -87,11 +109,13 @@ namespace HRMS.Controllers
                 var start = Request.Form.GetValues("start").FirstOrDefault();
                 var length = Request.Form.GetValues("length").FirstOrDefault();
                 var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                var from_date = Request.Form.GetValues("columns[0][search][value]")[0];
+                var to_date = Request.Form.GetValues("columns[1][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
                 // Getting all data    
-                var nationalityData = (
+                var productivityData = (
                                        from userProject in db.UserProjects
                                        join project in db.Projects on userProject.project_id equals project.id
                                        select new UserProjectViewModel
@@ -107,16 +131,34 @@ namespace HRMS.Controllers
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    nationalityData = nationalityData.Where(m => m.project_name.ToLower().Contains(searchValue.ToLower())
+                    productivityData = productivityData.Where(m => m.project_name.ToLower().Contains(searchValue.ToLower())
                     || m.id.ToString().ToLower().Contains(searchValue.ToLower())
                     || m.user_name.ToString().ToLower().Contains(searchValue.ToLower())
                     );
                 }
 
+                if (!string.IsNullOrEmpty(from_date))
+                {
+                    if (Convert.ToDateTime(from_date) != DateTime.MinValue)
+                    {
+                        DateTime from = Convert.ToDateTime(from_date);
+                        productivityData = productivityData.Where(s => s.working_date >= from);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(to_date))
+                {
+                    if (Convert.ToDateTime(to_date) != DateTime.MinValue)
+                    {
+                        DateTime to = Convert.ToDateTime(to_date);
+                        productivityData = productivityData.Where(s => s.working_date <= to);
+                    }
+                }
+
                 //total number of rows count     
-                var displayResult = nationalityData.OrderByDescending(u => u.id).Skip(skip)
+                var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
                      .Take(pageSize).ToList();
-                var totalRecords = nationalityData.Count();
+                var totalRecords = productivityData.Count();
 
                 return Json(new
                 {

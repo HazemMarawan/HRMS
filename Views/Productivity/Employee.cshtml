@@ -43,6 +43,12 @@
 
 <div class="row">
     <div class="form-group col-4">
+        <input class="form-control" type="date" id="from_date" name="from_date">
+    </div>
+    <div class="form-group col-4">
+        <input class="form-control" type="date" id="to_date" name="to_date">
+    </div>
+    <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
     </div>
     <div class="form-group col-2">
@@ -150,22 +156,25 @@
                     ]
                  });
 
-            $('#search').on('click', function () {
-                datatable.search($("#text_search").val());
-                datatable.draw();
-            });
+           $('#search').on('click', function () {
+               datatable.search($("#text_search").val());
+               datatable.columns(0).search($("#from_date").val());
+               datatable.columns(1).search($("#to_date").val());
+               datatable.draw();
+           });
 
-            $('#text_search').on('keyup', function (e) {
-                if (e.keyCode == 13)
-                    $('#search_button').trigger('click');
-            });
+           $('#text_search').on('keyup', function (e) {
+               if (e.keyCode == 13)
+                   $('#search_button').trigger('click');
+           });
 
-            $('#reset').on('click', function () {
-                $("#text_search").val("");
+           $('#reset').on('click', function () {
+               $("#text_search").val("");
+               $("#from_date").val("");
+               $("#to_date").val("");
+               $('#search').trigger('click');
 
-                $('#search').trigger('click');
-
-            });
+           });
 
            $("#add_productivity").click(function () {
                var modal = $('#manage_productivity_modal').clone();

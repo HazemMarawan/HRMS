@@ -31,6 +31,7 @@ namespace HRMS.Controllers
                     Session["image"] = user.image;
                     Session["type"] = user.type;
                     Session["user"] = user;
+                    Session["job_title"] = db.Jobs.Find(user.job_id).name ;
 
                     return RedirectToAction("Index", "Dashboard");
                 }

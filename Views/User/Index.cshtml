@@ -80,8 +80,8 @@
                                 @Html.DropDownList("department_id", new SelectList(ViewBag.Departments, "id", "name"), "Select Department", new { @class = "form-control", @name = "department_id", @style = "width:100%", @id = "department_id" })
                             </div>
                             <div class="form-group col-md-4">
-                                <label>Job Title</label>
-                                <input required name="job_title" id="job_title" type="text" class="form-control radius-30" />
+                                <label>Job</label>
+                                @Html.DropDownList("job_id", new SelectList(ViewBag.Jobs, "id", "name"), "Select Job", new { @class = "form-control", @name = "job_id", @style = "width:100%", @id = "job_id" })
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Gender</label>
@@ -452,7 +452,7 @@
                         dialog.find('#nationality_id option[value=' + data.nationality_id + ']').attr('selected', 'selected');
                         dialog.find('#branch_id option[value=' + data.branch_id + ']').attr('selected', 'selected');
                         dialog.find('#department_id option[value=' + data.department_id + ']').attr('selected', 'selected');
-                        dialog.find('#job_title').val(data.job_title);
+                        dialog.find('#job_id option[value=' + data.job_id + ']').attr('selected', 'selected');
                         dialog.find('#gender option[value=' + data.gender + ']').attr('selected', 'selected');
                         if (data.hiring_date != null) {
                             dialog.find('#hiring_date').val(fixDate(data.hiring_date));

@@ -63,6 +63,7 @@ namespace HRMS.Controllers
                                     branch_name = branch.name,
                                     department_id = user.department_id,
                                     department_name = department.name,
+                                    job_id = user.job_id,
                                     job_name = job.name,
                                     gender = user.gender,
                                     hiring_date = user.hiring_date,
@@ -123,6 +124,7 @@ namespace HRMS.Controllers
             ViewBag.Nationalities = db.Nationalities.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             ViewBag.Branches = db.Branches.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             ViewBag.Departments = db.Departments.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
+            ViewBag.Jobs = db.Jobs.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
 
             ViewBag.branchId = branch_id;
             if (branch_id != null)

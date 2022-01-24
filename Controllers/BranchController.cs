@@ -154,7 +154,7 @@ namespace HRMS.Controllers
         [HttpGet]
         public ActionResult Show()
         {
-            if (!(isA.BranchAdmin() || isA.BranchAdmin()))
+            if (!(isA.SuperAdmin() || isA.BranchAdmin()))
                 return RedirectToAction("Index", "Dashboard");
 
             var branchData = (from branch in db.Branches

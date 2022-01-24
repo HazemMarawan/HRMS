@@ -29,8 +29,11 @@ namespace HRMS.Controllers
                 var start = Request.Form.GetValues("start").FirstOrDefault();
                 var length = Request.Form.GetValues("length").FirstOrDefault();
                 var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
-                var from_date = Request.Form.GetValues("columns[0][search][value]")[0];
-                var to_date = Request.Form.GetValues("columns[1][search][value]")[0];
+                var search_id_type = Request.Form.GetValues("columns[0][search][value]")[0];
+                var search_nationality_id = Request.Form.GetValues("columns[1][search][value]")[0];
+                var search_job_id = Request.Form.GetValues("columns[2][search][value]")[0];
+                var search_gender = Request.Form.GetValues("columns[3][search][value]")[0];
+                var search_type = Request.Form.GetValues("columns[4][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
@@ -43,10 +46,10 @@ namespace HRMS.Controllers
                                 join job in db.Jobs on user.job_id equals job.id
                                 select new UserViewModel
                                 {
-                                    id = user.id,   
+                                    id = user.id,
                                     code = user.code,
                                     user_name = user.user_name,
-                                    full_name = user.first_name+ " " + user.middle_name+" "+user.last_name,
+                                    full_name = user.first_name + " " + user.middle_name + " " + user.last_name,
                                     first_name = user.first_name,
                                     middle_name = user.middle_name,
                                     last_name = user.last_name,
@@ -79,8 +82,11 @@ namespace HRMS.Controllers
                 {
                     userData = userData.Where(
                         m => m.full_name.ToLower().Contains(searchValue.ToLower()) ||
+                        m.code.ToLower().Contains(searchValue.ToLower()) ||
+                        m.phone.ToLower().Contains(searchValue.ToLower()) ||
+                        m.address.ToLower().Contains(searchValue.ToLower()) ||
                         m.id.ToString().ToLower().Contains(searchValue.ToLower()) ||
-                        m.nationality_name.ToLower().Contains(searchValue.ToLower()) || 
+                        m.nationality_name.ToLower().Contains(searchValue.ToLower()) ||
                         m.branch_name.ToLower().Contains(searchValue.ToLower()) ||
                         m.notes.ToLower().Contains(searchValue.ToLower())
                      );
@@ -95,7 +101,7 @@ namespace HRMS.Controllers
                 }
                 else
                 {
-                    if (isA.BranchAdmin() && (branch_id == currentUser.branch_id|| branch_id == null))
+                    if (isA.BranchAdmin() && (branch_id == currentUser.branch_id || branch_id == null))
                     {
                         userData = userData.Where(u => u.branch_id == currentUser.branch_id);
                     }
@@ -103,6 +109,36 @@ namespace HRMS.Controllers
                     {
                         userData = userData.Where(u => u.branch_id == -1);
                     }
+                }
+
+                if (!string.IsNullOrEmpty(search_id_type))
+                {
+                    int search_id_type_int = int.Parse(search_id_type);
+                    userData = userData.Where(s => s.id_type == search_id_type_int);
+                }
+
+                if (!string.IsNullOrEmpty(search_nationality_id))
+                {
+                    int search_nationality_id_int = int.Parse(search_nationality_id);
+                    userData = userData.Where(s => s.nationality_id == search_nationality_id_int);
+                }
+
+                if (!string.IsNullOrEmpty(search_job_id))
+                {
+                    int search_job_id_int = int.Parse(search_job_id);
+                    userData = userData.Where(s => s.job_id == search_job_id_int);
+
+                }
+                if (!string.IsNullOrEmpty(search_gender))
+                {
+                    int search_gender_int = int.Parse(search_gender);
+                    userData = userData.Where(s => s.gender == search_gender_int);
+                }
+
+                if (!string.IsNullOrEmpty(search_type))
+                {
+                    int search_type_int = int.Parse(search_type);
+                    userData = userData.Where(s => s.type == search_type_int);
                 }
 
                 //total number of rows count     
@@ -131,6 +167,7 @@ namespace HRMS.Controllers
                 ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
             return View();
         }
+
         [HttpPost]
         public JsonResult saveUser(UserViewModel userVM)
         {
@@ -138,7 +175,7 @@ namespace HRMS.Controllers
             {
 
                 User user = AutoMapper.Mapper.Map<UserViewModel, User>(userVM);
-                if(HRMS.Auth.isA.BranchAdmin())
+                if (HRMS.Auth.isA.BranchAdmin())
                 {
                     User currentUser = Session["user"] as User;
                     user.branch_id = currentUser.branch_id;
@@ -147,7 +184,7 @@ namespace HRMS.Controllers
                 user.created_by = Session["id"].ToString().ToInt();
 
                 if (userVM.image != null)
-                { 
+                {
                     Guid guid = Guid.NewGuid();
                     var InputFileName = Path.GetFileName(userVM.image.FileName);
                     var ServerSavePath = Path.Combine(Server.MapPath("~/Uploads/Profile/") + guid.ToString() + "_Profile" + Path.GetExtension(userVM.image.FileName));
@@ -175,7 +212,7 @@ namespace HRMS.Controllers
                 oldUser.address = userVM.address;
                 oldUser.nationality_id = userVM.nationality_id;
 
-                if(HRMS.Auth.isA.SuperAdmin())
+                if (HRMS.Auth.isA.SuperAdmin())
                     oldUser.branch_id = userVM.branch_id;
 
                 oldUser.department_id = userVM.department_id;
@@ -186,7 +223,7 @@ namespace HRMS.Controllers
                 oldUser.type = userVM.type;
                 oldUser.active = userVM.active;
 
-                
+
 
                 if (userVM.image != null)
                 {

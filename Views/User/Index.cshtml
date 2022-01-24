@@ -143,6 +143,34 @@
 
 <div class="row">
     <div class="form-group col-4">
+        @Html.DropDownList("search_id_type", new SelectList(ViewBag.IDTypes, "id", "name"), "Select ID Type", new { @class = "form-control", @name = "search_id_type", @style = "width:100%", @id = "search_id_type" })
+    </div>
+    <div class="form-group col-4">
+        @Html.DropDownList("search_nationality_id", new SelectList(ViewBag.Nationalities, "id", "name"), "Select Nationality", new { @class = "form-control", @name = "search_nationality_id", @style = "width:100%", @id = "search_nationality_id" })
+    </div>
+    <div class="form-group col-4">
+        @Html.DropDownList("search_job_id", new SelectList(ViewBag.Jobs, "id", "name"), "Select Job", new { @class = "form-control", @name = "search_job_id", @style = "width:100%", @id = "search_job_id" })
+    </div>
+    <div class="form-group col-4">
+        <select name="search_gender" id="search_gender" class="form-control radius-30">
+            <option value="">Select Gender</option>
+            <option value="1">Male</option>
+            <option value="2">Female</option>
+        </select>    
+    </div>
+    <div class="form-group col-4">
+        <select name="search_type" id="search_type" class="form-control radius-30">
+            <option value="">Select Role</option>
+            @if (HRMS.Auth.isA.SuperAdmin())
+            {
+                <option value="1">SuperAdmin</option>
+                <option value="2">Branch Admin</option>
+            }
+            <option value="3">Employee</option>
+            <option value="4">Team Leader</option>
+        </select>   
+    </div>
+    <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
     </div>
     <div class="form-group col-2">
@@ -325,6 +353,12 @@
 
             $('#search').on('click', function () {
                 datatable.search($("#text_search").val());
+                datatable.columns(0).search($("#search_id_type").val());
+                datatable.columns(1).search($("#search_nationality_id").val());
+                datatable.columns(2).search($("#search_job_id").val());
+                datatable.columns(3).search($("#search_gender").val());
+                datatable.columns(4).search($("#search_type").val());
+
                 datatable.draw();
             });
 
@@ -335,6 +369,11 @@
 
             $('#reset').on('click', function () {
                 $("#text_search").val("");
+                $("#search_id_type").val("");
+                $("#search_nationality_id").val("");
+                $("#search_job_id").val("");
+                $("#search_gender").val("");
+                $("#search_type").val("");
 
                 $('#search').trigger('click');
 

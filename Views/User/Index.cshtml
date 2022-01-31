@@ -25,6 +25,10 @@
                                 <input name="code" id="code" type="text" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-4">
+                                <label>Attendance Code</label>
+                                <input name="attendance_code" id="attendance_code" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>Username <small id="user_name_error" style="display:none;" class="badge badge-danger"> <i class="lni lni-close"></i> username already taken</small><small id="user_name_valid" class="badge badge-success" style="display:none;"><i class="lni lni-checkmark"></i> valid username</small></label>
                                 <input required name="user_name" id="user_name" type="text" class="form-control radius-30" />
                             </div>
@@ -44,11 +48,19 @@
                                 <label>Last Name</label>
                                 <input required name="last_name" id="last_name" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
+                                <label>Last Salary</label>
+                                <input name="last_salary" id="last_salary" type="number" step=".1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Last Over Time Price</label>
+                                <input name="last_over_time_price" id="last_over_time_price" type="number" step=".1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>ID Type</label>
                                 @Html.DropDownList("id_type", new SelectList(ViewBag.IDTypes, "id", "name"), "Select ID Type", new { @class = "form-control", @name = "id_type", @style = "width:100%", @id = "id_type" })
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label>ID Number</label>
                                 <input name="id_number" id="id_number" type="text" class="form-control radius-30" />
                             </div>
@@ -68,12 +80,16 @@
                                 <label>Nationality</label>
                                 @Html.DropDownList("nationality_id", new SelectList(ViewBag.Nationalities, "id", "name"), "Select Nationality", new { @class = "form-control", @name = "nationality_id", @style = "width:100%", @id = "nationality_id" })
                             </div>
-                            @if (HRMS.Auth.isA.SuperAdmin())
+                            @if (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId == null)
                             {
-                                <div class="form-group col-md-4">
+                                <div class="form-group col-md-4" id="branch_div">
                                     <label>Branch</label>
                                     @Html.DropDownList("branch_id", new SelectList(ViewBag.Branches, "id", "name"), "Select Branch", new { @class = "form-control", @name = "branch_id", @style = "width:100%", @id = "branch_id" })
                                 </div>
+                            }
+                            else
+                            {
+                                <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
                             }
                             <div class="form-group col-md-4">
                                 <label>Department</label>
@@ -97,15 +113,26 @@
                             <div class="form-group col-md-4">
                                 <label>Role</label>
                                 <select name="type" id="type" class="form-control radius-30" required>
-                                    @if (HRMS.Auth.isA.SuperAdmin())
+                                    <option>Select Role</option>
+                                    @if (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId == null)
                                     {
                                         <option value="1">SuperAdmin</option>
                                         <option value="2">Branch Admin</option>
                                     }
-                                    <option value="3">Employee</option>
-                                    <option value="4">Team Leader</option>
+                                    @if (HRMS.Auth.isA.BranchAdmin() || (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId != null))
+                                    {
+                                        <option value="3">Employee</option>
+                                        <option value="4">Team Leader</option>
+                                    }
                                 </select>
                             </div>
+                            @if (HRMS.Auth.isA.BranchAdmin() || (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId != null))
+                            {
+                                <div class="form-group col-md-4" style="display:none;" id="team_leader_div">
+                                    <label>Team Leader</label>
+                                    @Html.DropDownList("team_leader_id", new SelectList(ViewBag.TeamLeaders, "id", "full_name"), "Select Team Leader", new { @class = "form-control", @name = "team_leader_id", @style = "width:100%", @id = "team_leader_id" })
+                                </div>
+                            }
                             <div class="form-group col-md-8">
                                 <label>Notes</label>
                                 <input name="notes" id="notes" type="text" class="form-control radius-30" />
@@ -448,6 +475,29 @@
                         dialog.find('#role_ids').selectize({
                             plugins: ['remove_button'],
                         });
+
+                        dialog.find("#type").change(function () {
+                            var currentRole = $(this).val();
+                            if (currentRole == 1) {
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").hide();
+                            }
+                            else {
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").show();
+
+                                if (currentRole == 3) {
+                                    dialog.find("#team_leader_id").val("");
+                                    dialog.find("#team_leader_div").show();
+                                }
+                                else {
+                                    dialog.find("#team_leader_id").val("");
+                                    dialog.find("#team_leader_div").hide();
+                                }
+
+                                    
+                            }
+                        });
                 });
             });
 
@@ -501,6 +551,9 @@
                         
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
 
+                        dialog.find('#attendance_code').val(data.attendance_code);
+                        dialog.find('#last_salary').val(data.last_salary);
+                        dialog.find('#last_over_time_price').val(data.last_over_time_price);
 
                         $(document).on('change', '#image', function (event) {
 

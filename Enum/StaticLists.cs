@@ -18,4 +18,23 @@ namespace HRMS.Enum
         Employee = 3,
         TeamLeader = 4,
     }
+
+    public enum ProductivityType
+    {
+        Normal = 1,
+        OverTime = 2,
+    }
+
+    public enum ProductivityWorkPlace
+    {
+        FromHome = 1,
+        Office = 2,
+    }
+
+    public enum ProductivityStatus
+    {
+        PendingApprove = 1,
+        Approved = 2,
+        Rejected = 3,
+    }
 }

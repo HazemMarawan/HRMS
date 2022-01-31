@@ -4,7 +4,7 @@
 }
 <div class="modal fade" id="manage_productivity_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal_title"></h5>
@@ -16,17 +16,61 @@
                     <div class="form-body">
                         <div class="form-row">
                             <input type="hidden" name="id" id="id" value="0" />
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label>Project</label>
-                                @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "project_id", @style = "width:100%", @id = "project_id",@required= "@required" })
+                                @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "project_id", @style = "width:100%", @id = "project_id", @required = "@required" })
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label>Working Date</label>
                                 <input required name="working_date" id="working_date" type="date" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label>Number Of Hours</label>
                                 <input required name="no_of_numbers" id="no_of_numbers" type="number" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Type</label>
+                                <select class="form-control" name="productivity_type">
+                                    <option value="">Select Type</option>
+                                    <option value="1">Normal</option>
+                                    <option value="2">OverTime</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Work Place</label>
+                                <select class="form-control" name="productivity_type">
+                                    <option value="">Select Work Place</option>
+                                    <option value="1">From Home</option>
+                                    <option value="2">Office</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Part ID</label>
+                                <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Equipment Quantity</label>
+                                <input name="equipment_quantity" id="equipment_quantity" step=".1" type="number" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>MVOH</label>
+                                <input name="mvoh" id="mvoh" type="number" step=".1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>LVOH</label>
+                                <input name="lvoh" id="lvoh" type="number" step=".1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>MVUG</label>
+                                <input name="mvug" id="mvug" type="number" step=".1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>LVUG</label>
+                                <input name="lvug" id="lvug" type="number" step=".1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Note</label>
+                                <input name="note" id="note" type="text" class="form-control radius-30" />
                             </div>
                         </div>
                     </div>
@@ -74,6 +118,8 @@
                         <th>Working Date</th>
                         <th>Project</th>
                         <th>Hours</th>
+                        <th>Info</th>
+                        <th>Status</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -147,10 +193,68 @@
                             "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
+                                if(oData.productivity_type)
+                                {
+                                    html += "<b>Productivity Type: </b>";
+                                    if (oData.productivity_type == 1)
+                                        html += "Normal";
+                                    else
+                                        html += "Over Time";
+                                    html += "<br>";
+                                }
 
-                                html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
-                                html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                if (oData.productivity_work_place) {
+                                    html += "<b>Work Place: </b>";
+                                    if (oData.productivity_work_place == 1)
+                                        html += "From Home";
+                                    else
+                                        html += "Office";
+                                    html += "<br>";
+                                }
+
+                                if (oData.part_id) 
+                                    html += "<b>Part ID: </b>" + oData.part_id+"<br>";
+
+                                if (oData.equipment_quantity)
+                                    html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
+                                if (oData.mvoh)
+                                    html += "<b>MVOH: </b>" + oData.mvoh + "<br>";
+                                if (oData.lvoh)
+                                    html += "<b>LVOH: </b>" + oData.lvoh + "<br>";
+                                if (oData.mvug)
+                                    html += "<b>MVUG: </b>" + oData.mvug + "<br>";
+                                if (oData.lvug)
+                                    html += "<b>LVUG: </b>" + oData.lvug + "<br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "status", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.status == 1) {
+                                    html = `<span class="badge badge-primary">Pending Approve</span>`;
+                                }
+                                else if (oData.status == 2) {
+                                    html = `<span class="badge badge-success">Approved</span>`;
+                                }
+                                else {
+                                    html = `<span class="badge badge-danger">Rejected</span>`;
+                                }
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.status == 1) {
+                                    html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                }
+                                else
+                                    html = "-";
+                                    $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
                     ]
@@ -217,7 +321,15 @@
                         dialog.find('#no_of_numbers').val(data.no_of_numbers);
                         dialog.find('#working_date').val(fixDate(data.working_date));
                         dialog.find('#project_id option[value=' + data.project_id + ']').attr('selected', 'selected');
-
+                        dialog.find('#productivity_type option[value=' + data.productivity_type + ']').attr('selected', 'selected');
+                        dialog.find('#productivity_work_place option[value=' + data.productivity_work_place + ']').attr('selected', 'selected');
+                        dialog.find('#part_id').val(data.part_id);
+                        dialog.find('#equipment_quantity').val(data.equipment_quantity);
+                        dialog.find('#mvoh').val(data.mvoh);
+                        dialog.find('#lvoh').val(data.lvoh);
+                        dialog.find('#mvug').val(data.mvug);
+                        dialog.find('#lvug').val(data.lvug);
+                        dialog.find('#note').val(data.note);
                 });
 
             });

@@ -9,6 +9,7 @@ namespace HRMS.ViewModels
     {
         public int id { get; set; }
         public string code { get; set; }
+        public string attendance_code { get; set; }
         public string user_name { get; set; }
         public string password { get; set; }
         public string first_name { get; set; }
@@ -36,6 +37,11 @@ namespace HRMS.ViewModels
         public HttpPostedFileBase image { get; set; }
         public string notes { get; set; }
         public int? type { get; set; }
+        public int? team_leader_id { get; set; }
+        public string team_leader_name { get; set; }
+        public double? last_salary { get; set; }
+        public double? last_hour_price { get; set; }
+        public double? last_over_time_price { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

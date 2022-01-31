@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && branch_id == currentUser.branch_id) || (isA.BranchAdmin() && branch_id == null)))
+            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && branch_id == currentUser.branch_id)))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -48,8 +48,9 @@ namespace HRMS.Controllers
                                 {
                                     id = user.id,
                                     code = user.code,
+                                    attendance_code = user.attendance_code,
                                     user_name = user.user_name,
-                                    full_name = user.first_name + " " + user.middle_name + " " + user.last_name,
+                                    full_name = user.full_name,
                                     first_name = user.first_name,
                                     middle_name = user.middle_name,
                                     last_name = user.last_name,
@@ -58,6 +59,9 @@ namespace HRMS.Controllers
                                     id_type_name = idtype.name,
                                     id_number = user.id_number,
                                     birth_date = user.birth_date,
+                                    last_salary = user.last_salary,
+                                    last_hour_price = user.last_hour_price,
+                                    last_over_time_price = user.last_over_time_price,
                                     phone = user.phone,
                                     address = user.address,
                                     nationality_id = user.nationality_id,
@@ -164,7 +168,10 @@ namespace HRMS.Controllers
 
             ViewBag.branchId = branch_id;
             if (branch_id != null)
+            {
                 ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
+                ViewBag.TeamLeaders = db.Users.Where(b => b.branch_id == branch_id && b.type == (int)UserRole.TeamLeader).Select(s=>new UserViewModel { id = s.id, full_name =s.full_name}).ToList();
+            }
             return View();
         }
 
@@ -175,11 +182,11 @@ namespace HRMS.Controllers
             {
 
                 User user = AutoMapper.Mapper.Map<UserViewModel, User>(userVM);
-                if (HRMS.Auth.isA.BranchAdmin())
+                if (userVM.last_salary != null)
                 {
-                    User currentUser = Session["user"] as User;
-                    user.branch_id = currentUser.branch_id;
+                    user.last_hour_price = userVM.last_salary / 30 / 8;
                 }
+                user.full_name = user.first_name + " " + user.middle_name + " " + user.last_name;
                 user.created_at = DateTime.Now;
                 user.created_by = Session["id"].ToString().ToInt();
 
@@ -205,37 +212,40 @@ namespace HRMS.Controllers
                 oldUser.first_name = userVM.first_name;
                 oldUser.middle_name = userVM.middle_name;
                 oldUser.last_name = userVM.last_name;
+                oldUser.full_name = userVM.first_name + " " + userVM.middle_name + " " + userVM.last_name;
                 oldUser.id_type = userVM.id_type;
                 oldUser.id_number = userVM.id_number;
                 oldUser.birth_date = userVM.birth_date;
                 oldUser.phone = userVM.phone;
                 oldUser.address = userVM.address;
                 oldUser.nationality_id = userVM.nationality_id;
-
-                if (HRMS.Auth.isA.SuperAdmin())
-                    oldUser.branch_id = userVM.branch_id;
-
                 oldUser.department_id = userVM.department_id;
                 oldUser.job_id = userVM.job_id;
                 oldUser.gender = userVM.gender;
                 oldUser.hiring_date = userVM.hiring_date;
                 oldUser.notes = userVM.notes;
                 oldUser.type = userVM.type;
+                oldUser.last_over_time_price = userVM.last_over_time_price;
+                oldUser.last_salary = userVM.last_salary;
+                oldUser.attendance_code = userVM.attendance_code;
+                if(userVM.last_salary != null)
+                {
+                    oldUser.last_hour_price = userVM.last_salary / 30 / 8;
+                }
+
                 oldUser.active = userVM.active;
 
 
 
                 if (userVM.image != null)
                 {
-                    //if (oldUser.image != null)
-                    //    System.IO.File.Delete(oldUser.image);
-
                     Guid guid = Guid.NewGuid();
                     var InputFileName = Path.GetFileName(userVM.image.FileName);
                     var ServerSavePath = Path.Combine(Server.MapPath("~/Uploads/Profile/") + guid.ToString() + "_Profile" + Path.GetExtension(userVM.image.FileName));
                     userVM.image.SaveAs(ServerSavePath);
                     oldUser.image = "/Uploads/Profile/" + guid.ToString() + "_Profile" + Path.GetExtension(userVM.image.FileName);
                 }
+
                 oldUser.updated_at = DateTime.Now;
                 oldUser.updated_by = Session["id"].ToString().ToInt();
                 db.SaveChanges();

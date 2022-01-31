@@ -5,6 +5,23 @@
 
 
 <div class="row">
+    <div class="form-group col-md-4">
+        @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
+    </div>
+    <div class="form-group col-md-4">
+        <select class="form-control" name="search_productivity_type" id="search_productivity_type">
+            <option value="">Select Type</option>
+            <option value="1">Normal</option>
+            <option value="2">OverTime</option>
+        </select>
+    </div>
+    <div class="form-group col-md-4">
+        <select class="form-control" name="search_work_place" id="search_work_place">
+            <option value="">Select Work Place</option>
+            <option value="1">From Home</option>
+            <option value="2">Office</option>
+        </select>
+    </div>
     <div class="form-group col-4">
         <input class="form-control" type="date" id="from_date" name="from_date">
     </div>
@@ -22,7 +39,64 @@
     </div>
 
 </div>
+@section css{
+    <style>
+        .counter {
+            background-color: #FFFFFF;
+            padding: 20px 0;
+            border-radius: 5px;
+        }
 
+        .count-title {
+            font-size: 40px;
+            font-weight: normal;
+            margin-top: 10px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .count-text {
+            font-size: 13px;
+            font-weight: normal;
+            margin-top: 10px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .fa-2x {
+            margin: 0 auto;
+            float: none;
+            display: table;
+            color: #4ad1e5;
+        }
+    </style>
+}
+<div class="row text-center mb-2">
+    <div class="col-3" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="hours_counter">0</h3>
+            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Hours</p>
+        </div>
+    </div>
+    <div class="col-3" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="projects_counter">0</h3>
+            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Projects</p>
+        </div>
+    </div>
+    <div class="col-3" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="employees_counter">0</h3>
+            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Employees</p>
+        </div>
+    </div>
+    <div class="col-3" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="cost_counter">0</h3>
+            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Cost</p>
+        </div>
+    </div>
+</div>
 <div class="card">
     <div class="card-header">
         @ViewBag.branchName <span>Productivity</span>
@@ -38,7 +112,9 @@
                         <th>Working Date</th>
                         <th>Project</th>
                         <th>Hours</th>
-                        @*<th></th>*@
+                        <th>Info</th>
+                        <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -111,23 +187,85 @@
                             "data": "no_of_numbers",
                             "searchable": true
                         },
-                        //{
-                        //    "data": "id", "searchable": true,
-                        //    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                        //        var html = "";
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.productivity_type) {
+                                    html += "<b>Productivity Type: </b>";
+                                    if (oData.productivity_type == 1)
+                                        html += "Normal";
+                                    else
+                                        html += "Over Time";
+                                    html += "<br>";
+                                }
 
-                        //        html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
-                        //        html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
-                        //        $(nTd).html("<span class='action-column'>" + html + "</span>");
-                        //    }
-                        //},
+                                if (oData.productivity_work_place) {
+                                    html += "<b>Work Place: </b>";
+                                    if (oData.productivity_work_place == 1)
+                                        html += "From Home";
+                                    else
+                                        html += "Office";
+                                    html += "<br>";
+                                }
+
+                                if (oData.part_id)
+                                    html += "<b>Part ID: </b>" + oData.part_id + "<br>";
+
+                                if (oData.equipment_quantity)
+                                    html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
+                                if (oData.mvoh)
+                                    html += "<b>MVOH: </b>" + oData.mvoh + "<br>";
+                                if (oData.lvoh)
+                                    html += "<b>LVOH: </b>" + oData.lvoh + "<br>";
+                                if (oData.mvug)
+                                    html += "<b>MVUG: </b>" + oData.mvug + "<br>";
+                                if (oData.lvug)
+                                    html += "<b>LVUG: </b>" + oData.lvug + "<br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "status", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.status == 1) {
+                                    html = `<span class="badge badge-primary">Pending Approve</span>`;
+                                }
+                                else if (oData.status == 2) {
+                                    html = `<span class="badge badge-success">Approved</span>`;
+                                }
+                                else {
+                                    html = `<span class="badge badge-danger">Rejected</span>`;
+                                }
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.status == 1) {
+                                    html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
+                                    html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>";
+                                }
+                                    $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
                     ]
                  });
 
+
+           datatable.on('xhr.dt', function (e, settings, json, xhr) {
+               console.log(json);                              $("#hours_counter").text(json.Hours);               $("#projects_counter").text(json.Projects);               $("#employees_counter").text(json.Employees);               $("#cost_counter").text((addCommas(json.Cost.toFixed(2))));                         });
+
             $('#search').on('click', function () {
                 datatable.search($("#text_search").val());
-                datatable.columns(0).search($("#from_date").val());
-                datatable.columns(1).search($("#to_date").val());
+                datatable.columns(0).search($("#search_project_id").val());
+                datatable.columns(1).search($("#search_productivity_type").val());
+                datatable.columns(2).search($("#search_work_place").val());
+                datatable.columns(3).search($("#from_date").val());
+                datatable.columns(4).search($("#to_date").val());
                 datatable.draw();
             });
 
@@ -138,18 +276,23 @@
 
             $('#reset').on('click', function () {
                 $("#text_search").val("");
+                $("#search_project_id").val("");
+                $("#search_productivity_type").val("");
+                $("#search_work_place").val("");
                 $("#from_date").val("");
                 $("#to_date").val("");
                 $('#search').trigger('click');
 
             });
 
-            @*$(document).on("click", ".delete", function () {
+           
+
+           $(document).on("click", ".approve", function () {
                 var data = datatable.row($(this).closest('tr')).data();
-                warningBox("Are you sure you want to delete this Project (<b>" + data.name +"</b>) ?", function () {
+                warningBox("Are you sure you want to Approve this task?", function () {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("deleteProject", "Project")',
+                        url: '@Url.Action("approveTask", "Productivity")',
                         contentType: "application/json; charset=utf-8",
                         data: { "id": data.id },
                         datatype: "json",
@@ -161,7 +304,28 @@
                         }
                     });
                 });
-            });*@
+            });
+
+           $(document).on("click", ".reject", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                warningBox("Are you sure you want to Reject this task?", function () {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("rejectTask", "Productivity")',
+                        contentType: "application/json; charset=utf-8",
+                        data: { "id": data.id },
+                        datatype: "json",
+                        success: function (data) {
+                            datatable.draw();
+                        },
+                        error: function () {
+                            alert("Dynamic content load failed.");
+                        }
+                    });
+                });
+            });
+
+           
 
         });
 

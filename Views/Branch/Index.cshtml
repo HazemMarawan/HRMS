@@ -168,7 +168,7 @@
                                 if (oData.active == 1)
                                     html += "<span class='badge badge-primary'>Active</span>";
                                 else
-                                    html += "<span class='badge badge-danger'>Active</span>";
+                                    html += "<span class='badge badge-danger'>Not Active</span>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -192,7 +192,7 @@
                         {
                             "data": "created_at", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + fixDate(oData.created_at) + "</span>");
+                                $(nTd).html("<span class='action-column'>" + fixDate(oData.created_at) + "</span>"); 
                             }
                         },
                         {

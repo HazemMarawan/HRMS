@@ -50,7 +50,8 @@ namespace HRMS.Controllers
                                             user_name = user.full_name,
                                             working_date = userProject.working_date,
                                             no_of_numbers = userProject.no_of_numbers,
-                                            branch_id = branchProject.branch_id,
+                                            branch_id = user.branch_id,
+                                            branch_id_branch_project = branchProject.branch_id,
                                             productivity_type = userProject.productivity_type,
                                             productivity_work_place = userProject.productivity_work_place,
                                             part_id = userProject.part_id,
@@ -69,7 +70,7 @@ namespace HRMS.Controllers
 
                 if(HRMS.Auth.isA.TeamLeader())
                 {
-                    productivityData = productivityData.Where(p => p.team_leader_id == currentUser.id && p.branch_id == currentUser.branch_id);
+                    productivityData = productivityData.Where(p => p.team_leader_id == currentUser.id && p.branch_id == currentUser.branch_id && p.branch_id == p.branch_id_branch_project);
                 }
 
                 if (HRMS.Auth.isA.SuperAdmin())
@@ -82,7 +83,7 @@ namespace HRMS.Controllers
 
                 if (HRMS.Auth.isA.BranchAdmin())
                 {
-                    productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id);
+                    productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.branch_id == p.branch_id_branch_project);
                 }
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))

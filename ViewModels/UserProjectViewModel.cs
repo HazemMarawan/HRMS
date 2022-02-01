@@ -14,6 +14,7 @@ namespace HRMS.ViewModels
         public int? project_id { get; set; }
         public string project_name { get; set; }
         public int? branch_id { get; set; }
+        public int? branch_id_branch_project { get; set; }
         public string branch_name { get; set; }
         public DateTime? working_date { get; set; }
         public int? no_of_numbers { get; set; }

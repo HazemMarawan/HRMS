@@ -65,6 +65,7 @@ namespace HRMS.Controllers
                                     phone = user.phone,
                                     address = user.address,
                                     nationality_id = user.nationality_id,
+                                    team_leader_id = user.team_leader_id,
                                     nationality_name = nationality.name,
                                     branch_id = user.branch_id,
                                     branch_name = branch.name,
@@ -101,6 +102,11 @@ namespace HRMS.Controllers
                     if (branch_id != null)
                     {
                         userData = userData.Where(u => u.branch_id == branch_id);
+                    }
+                    else
+                    {
+                        userData = userData.Where(u => u.type == (int)UserRole.SuperAdmin || u.type == (int)UserRole.BranchAdmin);
+
                     }
                 }
                 else
@@ -178,6 +184,8 @@ namespace HRMS.Controllers
         [HttpPost]
         public JsonResult saveUser(UserViewModel userVM)
         {
+            User currentUser = Session["user"] as User;
+
             if (userVM.id == 0)
             {
 
@@ -185,6 +193,10 @@ namespace HRMS.Controllers
                 if (userVM.last_salary != null)
                 {
                     user.last_hour_price = userVM.last_salary / 30 / 8;
+                }
+                if(userVM.branch_id == null)
+                {
+                    user.branch_id = currentUser.branch_id;
                 }
                 user.full_name = user.first_name + " " + user.middle_name + " " + user.last_name;
                 user.created_at = DateTime.Now;

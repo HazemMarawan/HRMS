@@ -90,12 +90,16 @@
             <p style="font-weight:bold;"><i class="fa fa-plus"></i> Employees</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
-        <div class="counter">
-            <h3 id="cost_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Cost</p>
+    @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+    {
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="cost_counter">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Cost</p>
+            </div>
         </div>
-    </div>
+    }
+
 </div>
 <div class="card">
     <div class="card-header">

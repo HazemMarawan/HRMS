@@ -346,6 +346,8 @@
                                     html += "Super Admin";
                                 else if (oData.type == 2)
                                     html += "Branch Admin";
+                                else if (oData.type == 4)
+                                    html += "Team Leader";
                                 else
                                     html += "Employee";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
@@ -554,6 +556,20 @@
                         dialog.find('#attendance_code').val(data.attendance_code);
                         dialog.find('#last_salary').val(data.last_salary);
                         dialog.find('#last_over_time_price').val(data.last_over_time_price);
+
+                        if (data.type == 3) {
+                            dialog.find('#team_leader_div').show();
+                            if (data.team_leader_id)
+                                dialog.find('#team_leader_id option[value=' + data.team_leader_id + ']').attr('selected', 'selected');
+
+                        }
+
+                        $(document).on('change', '#type', function (event) {
+                            if ($(this).val() == 3)
+                                dialog.find('#team_leader_div').show();
+                            else
+                                dialog.find('#team_leader_div').hide();
+                        });
 
                         $(document).on('change', '#image', function (event) {
 

@@ -77,7 +77,7 @@ namespace HRMS.Controllers
                 {
                     if (branch_id != null)
                     {
-                        productivityData = productivityData.Where(p => p.branch_id == branch_id);
+                        productivityData = productivityData.Where(p => p.branch_id == branch_id && p.branch_id == p.branch_id_branch_project);
                     }
                 }
 

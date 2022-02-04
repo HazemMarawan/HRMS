@@ -51,7 +51,43 @@
         </div>
     </form>
 </div>
-
+<div class="modal fade" id="manage_area_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <input type="hidden" name="project_id" id="project_id" value="0" />
+                            <div class="form-group col-md-12">
+                                <label>Name</label>
+                                <input required name="name" id="name" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Status</label>
+                                <select class="form-control" name="active" id="active">
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <div class="row">
     <div class="form-group col-4">
@@ -86,6 +122,7 @@
                         <th>#</th>
                         <th>Name</th>
                         <th>Type</th>
+                        <th>Areas</th>
                         <th>Active</th>
                         <th>Date</th>
                         <th></th>
@@ -152,6 +189,23 @@
                             "searchable": true
                         },
                         {
+                            "data": "areas", "seisAarchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.areas.length != 0) {
+                                    html += "<ul>";
+                                    oData.areas.forEach(function (value) {
+                                        html += `<li>${value.name}</li>`;
+                                    });
+                                    html += "</ul>";
+                                }
+                                else {
+                                    html += "-";
+                                }
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
                             "data": "active", "seisAarchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
@@ -175,7 +229,8 @@
                                 var isSuperAdmin = '@HRMS.Auth.isA.SuperAdmin()';
                                 if (isSuperAdmin == "True") {
                                     html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
-                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;|&nbsp;";
+                                    html += "<a class='add_area' href='javascript:void(0)' title='Add Area'><i class='fa fa-plus'></i></a>";
                                 }
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
@@ -264,6 +319,27 @@
                             alert("Dynamic content load failed.");
                         }
                     });
+                });
+            });
+
+               $(document).on("click", ".add_area", function () {
+               var data = datatable.row($(this).closest('tr')).data();
+               var modal = $('#manage_area_modal').clone();
+                var action = '@Url.Action("saveArea", "Project")';
+                modal.find('form').attr('action', action);
+               modal.find('#modal_title').text('Add Area');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+                        dialog.find("#project_id").val(data.id);
+
                 });
             });
 

@@ -26,6 +26,7 @@ namespace HRMS.Models
         public DateTime? deleted_at { get; set; }
         public virtual ICollection<BranchProject> BranchProjects { get; set; }
         public virtual ICollection<UserProject> UserProjects { get; set; }
+        public virtual ICollection<Area> Areas { get; set; }
 
 
     }

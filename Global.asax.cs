@@ -29,6 +29,7 @@ namespace HRMS
             Mapper.CreateMap<BranchProjectViewModel, BranchProject>();
             Mapper.CreateMap<UserProjectViewModel, UserProject>();
             Mapper.CreateMap<JobViewModel, Job>();
+            Mapper.CreateMap<AreaViewModel, Area>();
 
 
         }

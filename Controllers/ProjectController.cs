@@ -43,7 +43,12 @@ namespace HRMS.Controllers
                                            start_date = project.start_date,
                                            end_date = project.end_date,
                                            created_at = project.created_at,
-                                           active = project.active
+                                           active = project.active,
+                                           areas = db.Areas.Where(a=>a.project_id == project.id && a.active == (int)RowStatus.ACTIVE).Select(a=>new AreaViewModel
+                                           {
+                                               id = a.id,
+                                               name = a.name
+                                           }).ToList()
                                        }).Where(n => n.active == (int)RowStatus.ACTIVE);
 
                 //Search    
@@ -139,6 +144,19 @@ namespace HRMS.Controllers
 
             db.SaveChanges();
 
+            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult saveArea(AreaViewModel areaViewModel)
+        {
+            Area area = AutoMapper.Mapper.Map<AreaViewModel, Area>(areaViewModel);
+
+            area.created_at = DateTime.Now;
+            area.created_by = Session["id"].ToString().ToInt();
+
+            db.Areas.Add(area);
+            db.SaveChanges();
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
     }

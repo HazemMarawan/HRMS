@@ -30,6 +30,7 @@ namespace HRMS.Models
          public virtual DbSet<User> Users { get; set; }
          public virtual DbSet<IDType> IDTypes { get; set; }
          public virtual DbSet<Job> Jobs { get; set; }
+         public virtual DbSet<Area> Areas { get; set; }
     }
 
     //public class MyEntity

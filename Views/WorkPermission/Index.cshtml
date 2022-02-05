@@ -23,7 +23,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Duration</label>
-                                <select  required name="minute" id="minute" type="datetime" class="form-control radius-30">
+                                <select required name="minute" id="minute" type="datetime" class="form-control radius-30">
                                     <option value="15">15 Minute</option>
                                     <option value="30">30 Minute</option>
                                     <option value="60">1 Hour</option>
@@ -33,7 +33,7 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Reason</label>
-                                <textarea required name="date" id="date" type="datetime" class="form-control radius-30"> </textarea>
+                                <textarea required name="reason" id="reason" class="form-control radius-30"> </textarea>
                             </div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
 
 <div class="card">
     <div class="card-header">
-        <a href="javascript:void(0)" id="add_WorkPermission"><i class="fa fa-plus"></i> Add Banch</a>
+        <a href="javascript:void(0)" id="add_WorkPermission"><i class="fa fa-plus"></i> Request Permission</a>
     </div>
     <div class="card-body">
 
@@ -130,9 +130,9 @@
                             "searchable": true
                         },
                         {
-                            "data": "day", "searchable": true,
+                            "data": "date", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + fixDate(oData.day) + "</span>");
+                                $(nTd).html("<span class='action-column'>" + fixDate(oData.date) + "</span>");
                             }
                         },
                         {
@@ -156,10 +156,13 @@
                             "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-
-                                html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
-                                html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;|&nbsp;";
-                                html += "<a class='add_project' href='javascript:void(0)' title='Add Project'><i class='fa fa-plus'></i></a>";
+                                //pending
+                                if (oData.status == 1)
+                                    html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                //approved by super admin or rejected
+                                if (oData.status != 4 || oData.status != 5)
+                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                //html += "<a class='add_project' href='javascript:void(0)' title='Add Project'><i class='fa fa-plus'></i></a>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -187,7 +190,7 @@
                var modal = $('#manage_WorkPermission_modal').clone();
                 var action = '@Url.Action("saveWorkPermission", "WorkPermission")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add WorkPermission');
+               modal.find('#modal_title').text('Request Permission');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -209,7 +212,7 @@
                 var modal = $('#manage_WorkPermission_modal').clone();
                 var action = '@Url.Action("saveWorkPermission", "WorkPermission")';
                 modal.find('form').attr('action', action);
-                modal.find('#modal_title').text('Edit WorkPermission');
+                modal.find('#modal_title').text('Edit Requested Permission');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -221,8 +224,9 @@
                 }, function (dialog) {
 
                         dialog.find('#id').val(data.id);
-                        dialog.find('#name').val(data.name);
-                        dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
+                        dialog.find('#reason').val(data.reason);
+                        dialog.find('#date').val(fixDate(data.date));
+                        dialog.find('#minute option[value=' + data.minute + ']').attr('selected', 'selected');
 
                 });
 
@@ -252,10 +256,7 @@
                             data: { "id": data.id },
                             datatype: "json",
                             success: function (data) {
-                                data.projects.forEach(function (value) {
-                                    html += `<option value='${value.id}'>${value.name}</option>`;
-                                });
-                                dialog.find("#project_id").append(html);
+                                datatable.draw();
                             },
                             error: function () {
                                 alert("Dynamic content load failed.");

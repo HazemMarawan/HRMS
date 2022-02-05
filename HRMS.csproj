@@ -208,6 +208,10 @@
     <Compile Include="Migrations\202202050246592_updateUserProject.Designer.cs">
       <DependentUpon>202202050246592_updateUserProject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202051655112_updateTables6.cs" />
+    <Compile Include="Migrations\202202051655112_updateTables6.Designer.cs">
+      <DependentUpon>202202051655112_updateTables6.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Branch.cs" />
@@ -215,6 +219,9 @@
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\IDType.cs" />
     <Compile Include="Models\Job.cs" />
+    <Compile Include="Models\VacationRequest.cs" />
+    <Compile Include="Models\VacationType.cs" />
+    <Compile Include="Models\VacationYear.cs" />
     <Compile Include="ViewModels\AreaViewModel.cs" />
     <Compile Include="ViewModels\BranchProjectViewModel.cs" />
     <Compile Include="ViewModels\IDTypeViewModel.cs" />
@@ -2739,6 +2746,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202050246592_updateUserProject.resx">
       <DependentUpon>202202050246592_updateUserProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202051655112_updateTables6.resx">
+      <DependentUpon>202202051655112_updateTables6.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

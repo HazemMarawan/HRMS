@@ -227,11 +227,14 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 var isSuperAdmin = '@HRMS.Auth.isA.SuperAdmin()';
+                                var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
                                 if (isSuperAdmin == "True") {
                                     html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
                                     html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;|&nbsp;";
-                                    html += "<a class='add_area' href='javascript:void(0)' title='Add Area'><i class='fa fa-plus'></i></a>";
                                 }
+                                if (isBranchAdmin == "True") 
+                                    html += "<a class='add_area' href='javascript:void(0)' title='Add Area'><i class='fa fa-plus'></i></a>";
+                               
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

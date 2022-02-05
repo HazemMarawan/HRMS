@@ -218,6 +218,7 @@
     <Compile Include="Migrations\202202051740005_add_permission.cs" />
     <Compile Include="Migrations\202202051740005_add_permission.Designer.cs">
       <DependentUpon>202202051740005_add_permission.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\202202051701064_updateTables7.cs" />
     <Compile Include="Migrations\202202051701064_updateTables7.Designer.cs">
       <DependentUpon>202202051701064_updateTables7.cs</DependentUpon>
@@ -2776,6 +2777,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202051740005_add_permission.resx">
       <DependentUpon>202202051740005_add_permission.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202051701064_updateTables7.resx">
       <DependentUpon>202202051701064_updateTables7.cs</DependentUpon>
     </EmbeddedResource>

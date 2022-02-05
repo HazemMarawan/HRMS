@@ -578,6 +578,11 @@
                                 dialog.find('#team_leader_div').show();
                             else
                                 dialog.find('#team_leader_div').hide();
+
+                            if ($(this).val() != 1)
+                                dialog.find('#team_leader_div').show();
+                            else
+                                dialog.find('#team_leader_div').hide();
                         });
 
                         $(document).on('change', '#image', function (event) {

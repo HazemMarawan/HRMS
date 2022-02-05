@@ -247,7 +247,6 @@
     <Compile Include="Migrations\202202051939104_update_vacation_request.Designer.cs">
       <DependentUpon>202202051939104_update_vacation_request.cs</DependentUpon>
     </Compile>
-
     <Compile Include="Migrations\202202051950432_update_day.cs" />
     <Compile Include="Migrations\202202051950432_update_day.Designer.cs">
       <DependentUpon>202202051950432_update_day.cs</DependentUpon>
@@ -255,11 +254,14 @@
     <Compile Include="Migrations\202202051958197_add_reason.cs" />
     <Compile Include="Migrations\202202051958197_add_reason.Designer.cs">
       <DependentUpon>202202051958197_add_reason.cs</DependentUpon>
-</Compile>
+    </Compile>
     <Compile Include="Migrations\202202052013221_updates3.cs" />
     <Compile Include="Migrations\202202052013221_updates3.Designer.cs">
       <DependentUpon>202202052013221_updates3.cs</DependentUpon>
-
+    </Compile>
+    <Compile Include="Migrations\202202052024133_updates4.cs" />
+    <Compile Include="Migrations\202202052024133_updates4.Designer.cs">
+      <DependentUpon>202202052024133_updates4.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
@@ -2839,9 +2841,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202051958197_add_reason.resx">
       <DependentUpon>202202051958197_add_reason.cs</DependentUpon>
-	  </EmbeddedResource>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202052013221_updates3.resx">
       <DependentUpon>202202052013221_updates3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202052024133_updates4.resx">
+      <DependentUpon>202202052024133_updates4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

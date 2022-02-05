@@ -33,6 +33,8 @@ namespace HRMS
             Mapper.CreateMap<VacationTypeViewModel, VacationType>();
             Mapper.CreateMap<VacationRequestViewModel, VacationRequest>();
             Mapper.CreateMap<VacationYearViewModel, VacationYear>();
+            Mapper.CreateMap<WorkPermissionRequestViewModel, WorkPermissionRequest>();
+            Mapper.CreateMap<WorkPermissionMonthYearViewModel, WorkPermissionMonthYear>();
 
 
         }

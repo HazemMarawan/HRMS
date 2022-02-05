@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace HRMS.ViewModel
+namespace HRMS.ViewModels
 {
     public class WorkPermissionRequestViewModel
     {
@@ -13,7 +13,7 @@ namespace HRMS.ViewModel
         public int? year { get; set; }
         public int? month { get; set; }
         public int? user_id { get; set; }
-        public DateTime? day { get; set; }
+        public DateTime? date { get; set; }
         public int? minutes { get; set; }
         public int? status { get; set; }
         public int? approved_by_super_admin { get; set; }

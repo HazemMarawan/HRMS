@@ -8,7 +8,6 @@ using HRMS.ViewModels;
 using HRMS.Auth;
 using HRMS.Enum;
 using HRMS.Helpers;
-using HRMS.ViewModel;
 
 namespace HRMS.Controllers
 {
@@ -42,11 +41,16 @@ namespace HRMS.Controllers
                                           user_id = perReq.user_id,
                                           month = perReq.month,
                                           year = perReq.year,
-                                          day = perReq.day,
+                                          date = perReq.date,
                                           minutes = perReq.minutes,
                                           active = perReq.active,
                                           status = perReq.status,
-                                          
+                                          approved_by_super_admin = perReq.approved_by_super_admin,
+                                          approved_by_super_admin_at = perReq.approved_by_super_admin_at,
+                                          approved_by_branch_admin = perReq.approved_by_branch_admin,
+                                          approved_by_branch_admin_at = perReq.approved_by_branch_admin_at,
+                                          approved_by_team_leader = perReq.approved_by_team_leader,
+                                          approved_by_team_leader_at = perReq.approved_by_team_leader_at,
                                           created_at = perReq.created_at,
                                           full_name = user.full_name,
                                           permission_count = db.WorkPermissionMonthYears.Where(wo => wo.year == perReq.year && wo.month == perReq.month).Select(s => s.permission_count).FirstOrDefault()
@@ -76,6 +80,61 @@ namespace HRMS.Controllers
             }
 
             return View();
+        }
+        [HttpPost]
+        public JsonResult saveWorkPermission(WorkPermissionRequestViewModel workPermissionRequestViewModel)
+        {
+            User currentUser = Session["user"] as User;
+
+            if (workPermissionRequestViewModel.id == 0)
+            {
+                WorkPermissionRequest WorkPermissionRequest = AutoMapper.Mapper.Map<WorkPermissionRequestViewModel, WorkPermissionRequest>(workPermissionRequestViewModel);
+
+                WorkPermissionRequest.user_id = currentUser.id;
+                WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
+                WorkPermissionRequest.date = workPermissionRequestViewModel.date;
+                WorkPermissionRequest.year = ((DateTime)(workPermissionRequestViewModel.date)).Year;
+                WorkPermissionRequest.month = ((DateTime)(workPermissionRequestViewModel.date)).Month;
+                WorkPermissionRequest.active = workPermissionRequestViewModel.active;
+                WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
+                WorkPermissionRequest.created_at = DateTime.Now;
+                WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
+
+                db.WorkPermissionRequests.Add(WorkPermissionRequest);
+                db.SaveChanges();
+            }
+            else
+            {
+
+                WorkPermissionRequest WorkPermissionRequest = db.WorkPermissionRequests.Find(workPermissionRequestViewModel.id);
+
+                WorkPermissionRequest.user_id = currentUser.id;
+                WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
+                WorkPermissionRequest.date = workPermissionRequestViewModel.date;
+                WorkPermissionRequest.year = ((DateTime)(workPermissionRequestViewModel.date)).Year;
+                WorkPermissionRequest.month = ((DateTime)(workPermissionRequestViewModel.date)).Month;
+                WorkPermissionRequest.active = workPermissionRequestViewModel.active;
+                WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
+                WorkPermissionRequest.updated_at = DateTime.Now;
+
+                db.SaveChanges();
+            }
+
+            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpGet]
+        public JsonResult deleteWorkPermission(int id)
+        {
+            WorkPermissionRequest deleteWorkPermissionRequest = db.WorkPermissionRequests.Find(id);
+            deleteWorkPermissionRequest.active = (int)RowStatus.INACTIVE;
+            deleteWorkPermissionRequest.deleted_at = DateTime.Now;
+            deleteWorkPermissionRequest.deleted_by = Session["id"].ToString().ToInt();
+
+            db.SaveChanges();
+
+            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

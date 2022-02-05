@@ -38,7 +38,7 @@ namespace HRMS.Enum
         Rejected = 3,
     }
 
-    public enum VacationStatus
+    public enum ApprovementStatus
     {
         PendingApprove = 1,
         ApprovedByTeamLeader = 2,

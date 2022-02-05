@@ -133,6 +133,12 @@
                                     @Html.DropDownList("team_leader_id", new SelectList(ViewBag.TeamLeaders, "id", "full_name"), "Select Team Leader", new { @class = "form-control", @name = "team_leader_id", @style = "width:100%", @id = "team_leader_id" })
                                 </div>
                             }
+                           
+                            <div class="form-group col-md-8" style="display:none;" id="vacations_balance_div">
+                                <label>Vacation Balance</label>
+                                <input name="vacations_balance" id="vacations_balance" type="text" class="form-control radius-30" />
+                            </div>
+                           
                             <div class="form-group col-md-8">
                                 <label>Notes</label>
                                 <input name="notes" id="notes" type="text" class="form-control radius-30" />
@@ -551,6 +557,7 @@
                             dialog.find('#hiring_date').val(fixDate(data.hiring_date));
                         }
                         dialog.find('#type option[value=' + data.type + ']').attr('selected', 'selected');
+                        dialog.find('#vacations_balance').val(data.vacations_balance);
                         dialog.find('#notes').val(data.notes);
                         
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');

@@ -179,20 +179,24 @@
                                 }
 
                                 if (oData.need_approve == 1) {
-                                    html += "<b>Need Approve: </b>";
-                                    if (oData.need_approve == 1)
-                                        html += " Yes";
-                                    else
-                                        html += " No";
-
+                                    html += "<b>Need Approve: </b>Yes";
                                     html += "<br>";
                                 }
-                                console.log(oData.closed_at);
+                               
                                 if (oData.closed_at_specific_time == 1) {
-                                    html += "<b>Closed at: </b>"; +oData.closed_at;
-                                    
+                                    html += "<b>Closed at: </b>"+oData.closed_at.Hours + ":" + oData.closed_at.Minutes;
                                     html += "<br>";
                                 }
+
+                                if (oData.max_days) {
+                                    html += "<b>Max Days: </b>" + oData.max_days;
+                                    html += "<br>";
+                                }
+                                
+                                if (oData.include_official_vacation == 1) {
+                                    html += "<b>Include Official Vacation: </b>Yes";
+                                }
+                                html += "<br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

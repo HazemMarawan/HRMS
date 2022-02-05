@@ -33,6 +33,7 @@ namespace HRMS.Models
          public virtual DbSet<Area> Areas { get; set; }
          public virtual DbSet<VacationType> VacationTypes { get; set; }
          public virtual DbSet<VacationRequest> VacationRequests { get; set; }
+         public virtual DbSet<VacationYear> VacationYears { get; set; }
          public virtual DbSet<WorkPermissionRequest> WorkPermissionRequests { get; set; }
          public virtual DbSet<WorkPermissionMonthYear> WorkPermissionMonthYears { get; set; }
     }

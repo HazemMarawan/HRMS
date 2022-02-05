@@ -688,10 +688,10 @@ namespace HRMS.Controllers
             ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Missing Productivity Report");
 
             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
-            Sheet.Cells["A1:H1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:H1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:H1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:G1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "ID";
             Sheet.Cells["B1"].Value = "Name";

@@ -6,6 +6,7 @@
 <form action="@Url.Action("GenerateMissingProductivityReport","Productivity")" method="post" id="GenerateMissingProductivityReportForm">
 
     <div class="row">
+        <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
         <div class="form-group col-4">
             <input class="form-control" type="date" id="search_date" name="from_date">
         </div>
@@ -21,7 +22,7 @@
     <div class="card">
         <div class="card-header">
             Missing Productivity
-            <span style="float:right;"><a href="javascript:void(0);" id="generate_missing_productivity_report"><i class="far fa-file-excel"></i> Generate Report</a></span>
+            <span style="float:right;font-weight:bold;text-decoration:underline;"><a href="javascript:void(0);" id="generate_missing_productivity_report"><i class="far fa-file-excel"></i> Generate Report</a></span>
         </div>
         <div class="card-body">
 

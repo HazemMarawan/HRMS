@@ -3,42 +3,44 @@
     ViewBag.Title = "Productivity";
 }
 
+<form action="@Url.Action("GenerateProductivityReport","Productivity")" method="post" id="GenerateProductivityReportForm">
+    <div class="row">
+        <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
+        <div class="form-group col-md-4">
+            @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
+        </div>
+        <div class="form-group col-md-4">
+            <select class="form-control" name="productivity_type" id="search_productivity_type">
+                <option value="">Select Type</option>
+                <option value="1">Normal</option>
+                <option value="2">OverTime</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            <select class="form-control" name="work_place" id="search_work_place">
+                <option value="">Select Work Place</option>
+                <option value="1">From Home</option>
+                <option value="2">Office</option>
+            </select>
+        </div>
+        <div class="form-group col-4">
+            <input class="form-control" type="date" id="from_date" name="from_date">
+        </div>
+        <div class="form-group col-4">
+            <input class="form-control" type="date" id="to_date" name="to_date">
+        </div>
+        <div class="form-group col-4">
+            <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
+        </div>
+        <div class="form-group col-2">
+            <button id="search" type="button" class="btn btn-primary px-3 radius-30">Search</button>
+        </div>
+        <div class="form-group col-2">
+            <button id="reset" type="button" class="btn btn-danger px-3 radius-30">Reset</button>
+        </div>
 
-<div class="row">
-    <div class="form-group col-md-4">
-        @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
     </div>
-    <div class="form-group col-md-4">
-        <select class="form-control" name="search_productivity_type" id="search_productivity_type">
-            <option value="">Select Type</option>
-            <option value="1">Normal</option>
-            <option value="2">OverTime</option>
-        </select>
-    </div>
-    <div class="form-group col-md-4">
-        <select class="form-control" name="search_work_place" id="search_work_place">
-            <option value="">Select Work Place</option>
-            <option value="1">From Home</option>
-            <option value="2">Office</option>
-        </select>
-    </div>
-    <div class="form-group col-4">
-        <input class="form-control" type="date" id="from_date" name="from_date">
-    </div>
-    <div class="form-group col-4">
-        <input class="form-control" type="date" id="to_date" name="to_date">
-    </div>
-    <div class="form-group col-4">
-        <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
-    </div>
-    <div class="form-group col-2">
-        <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
-    </div>
-    <div class="form-group col-2">
-        <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
-    </div>
-
-</div>
+</form>
 @section css{
     <style>
         .counter {
@@ -104,6 +106,7 @@
 <div class="card">
     <div class="card-header">
         @ViewBag.branchName <span>Productivity</span>
+        <span style="float:right;"><a href="javascript:void(0);" id="generate_productivity_report"><i class="far fa-file-excel"></i> Generate Report</a></span>
     </div>
     <div class="card-body">
 
@@ -130,37 +133,37 @@
 @section scripts
 {
     <script>
-       $(document).ready(function () {
+        $(document).ready(function () {
 
-           var datatable = $('#productivityTable')
-               .DataTable({/* we added this from the other system to have same search and same pagination*/
-                   "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-                       "<'table-responsive  'tr>" +
-                       "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-                   "buttons": {
-                       buttons: [
-                           { extend: 'copy', className: 'btn btn-sm' },
-                           { extend: 'csv', className: 'btn btn-sm' },
-                           { extend: 'excel', className: 'btn btn-sm' },
-                           { extend: 'print', className: 'btn btn-sm' }
-                       ]
-                   },
-                   "oLanguage": {
-                       "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
-                       "sInfo": "Showing page _PAGE_ of _PAGES_",
-                       "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                       "sSearchPlaceholder": "Search...",
-                       "sLengthMenu": "Results :  _MENU_",
-                   },
+            var datatable = $('#productivityTable')
+                .DataTable({/* we added this from the other system to have same search and same pagination*/
+                    "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                        "<'table-responsive  'tr>" +
+                        "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                    "buttons": {
+                        buttons: [
+                            { extend: 'copy', className: 'btn btn-sm' },
+                            { extend: 'csv', className: 'btn btn-sm' },
+                            { extend: 'excel', className: 'btn btn-sm' },
+                            { extend: 'print', className: 'btn btn-sm' }
+                        ]
+                    },
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
                     "processing": true,
                     "serverSide": true,
-                   "scrollX": true,
+                    "scrollX": true,
                     "stateSave": false,
                     "lengthChange": false,
                     "dom": 'Bfrtip',
 
                     "buttons": ['copy', 'excel', 'pdf', 'print'],
-                    "pageLength":10,
+                    "pageLength": 10,
                     "rowId": 'id',
                     "ajax": {
                         "url": "@Url.Action("Index", "Productivity")?branch_id=@ViewBag.branchId",
@@ -253,15 +256,15 @@
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>";
                                 }
-                                    $(nTd).html("<span class='action-column'>" + html + "</span>");
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
                     ]
-                 });
+                });
 
 
-           datatable.on('xhr.dt', function (e, settings, json, xhr) {
-               console.log(json);                              $("#hours_counter").text(json.Hours);               $("#projects_counter").text(json.Projects);               $("#employees_counter").text(json.Employees);               $("#cost_counter").text((addCommas(json.Cost.toFixed(2))));                         });
+            datatable.on('xhr.dt', function (e, settings, json, xhr) {
+                console.log(json);                $("#hours_counter").text(json.Hours);                $("#projects_counter").text(json.Projects);                $("#employees_counter").text(json.Employees);                $("#cost_counter").text((addCommas(json.Cost.toFixed(2))));            });
 
             $('#search').on('click', function () {
                 datatable.search($("#text_search").val());
@@ -289,9 +292,9 @@
 
             });
 
-           
 
-           $(document).on("click", ".approve", function () {
+
+            $(document).on("click", ".approve", function () {
                 var data = datatable.row($(this).closest('tr')).data();
                 warningBox("Are you sure you want to Approve this task?", function () {
                     $.ajax({
@@ -310,7 +313,7 @@
                 });
             });
 
-           $(document).on("click", ".reject", function () {
+            $(document).on("click", ".reject", function () {
                 var data = datatable.row($(this).closest('tr')).data();
                 warningBox("Are you sure you want to Reject this task?", function () {
                     $.ajax({
@@ -329,6 +332,11 @@
                 });
             });
 
+
+            $("#generate_productivity_report").click(function () {
+
+                $("#GenerateProductivityReportForm").submit();
+            });
            
 
         });

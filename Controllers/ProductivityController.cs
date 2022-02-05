@@ -8,6 +8,8 @@ using HRMS.ViewModels;
 using HRMS.Auth;
 using HRMS.Helpers;
 using HRMS.Enum;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace HRMS.Controllers
 {
@@ -474,6 +476,177 @@ namespace HRMS.Controllers
 
             db.SaveChanges();
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public void GenerateProductivityReport(UserProjectViewModel userProjectViewModel)
+        {
+            User currentUser = Session["user"] as User;
+
+
+            ExcelPackage Ep = new ExcelPackage();
+            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Productivity Report");
+
+            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
+            Sheet.Cells["A1:L1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:L1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            Sheet.Cells["A1:L1"].Style.Font.Color.SetColor(text);
+
+            Sheet.Cells["A1"].Value = "Employee Name";
+            Sheet.Cells["B1"].Value = "Working Date";
+            Sheet.Cells["C1"].Value = "Project";
+            Sheet.Cells["D1"].Value = "Hours";
+            Sheet.Cells["E1"].Value = "Productivity Type";
+            Sheet.Cells["F1"].Value = "Part ID";
+            Sheet.Cells["G1"].Value = "Equipment Quantity";
+            Sheet.Cells["H1"].Value = "MVOH";
+            Sheet.Cells["I1"].Value = "LVOH";
+            Sheet.Cells["J1"].Value = "MVUG";
+            Sheet.Cells["K1"].Value = "LVUG";
+            Sheet.Cells["L1"].Value = "Status";
+
+            var productivityData = (from user in db.Users
+                                    join userProject in db.UserProjects on user.id equals userProject.user_id
+                                    join project in db.Projects on userProject.project_id equals project.id
+                                    join branchProject in db.BranchProjects on project.id equals branchProject.project_id
+                                    select new UserProjectViewModel
+                                    {
+                                        id = userProject.id,
+                                        project_id = userProject.project_id,
+                                        user_id = userProject.user_id,
+                                        project_name = project.name,
+                                        user_name = user.full_name,
+                                        working_date = userProject.working_date,
+                                        no_of_numbers = userProject.no_of_numbers,
+                                        branch_id = user.branch_id,
+                                        branch_id_branch_project = branchProject.branch_id,
+                                        productivity_type = userProject.productivity_type,
+                                        productivity_work_place = userProject.productivity_work_place,
+                                        part_id = userProject.part_id,
+                                        equipment_quantity = userProject.equipment_quantity,
+                                        mvoh = userProject.mvoh,
+                                        lvoh = userProject.lvoh,
+                                        mvug = userProject.mvug,
+                                        lvug = userProject.lvug,
+                                        note = userProject.note,
+                                        status = userProject.status,
+                                        cost = userProject.cost,
+                                        team_leader_id = user.team_leader_id
+                                    });
+
+
+
+            if (HRMS.Auth.isA.TeamLeader())
+            {
+                productivityData = productivityData.Where(p => p.team_leader_id == currentUser.id && p.branch_id == currentUser.branch_id && p.branch_id == p.branch_id_branch_project);
+            }
+
+            if (HRMS.Auth.isA.SuperAdmin())
+            {
+                if (userProjectViewModel.branch_id != null)
+                {
+                    productivityData = productivityData.Where(p => p.branch_id == userProjectViewModel.branch_id && p.branch_id == p.branch_id_branch_project);
+                }
+            }
+
+            if (HRMS.Auth.isA.BranchAdmin())
+            {
+                productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.branch_id == p.branch_id_branch_project);
+            }
+            //Search    
+            
+
+            if (userProjectViewModel.project_id != null)
+            {
+                productivityData = productivityData.Where(s => s.project_id == userProjectViewModel.project_id);
+            }
+
+            if (userProjectViewModel.productivity_type != null)
+            {
+                productivityData = productivityData.Where(s => s.productivity_type == userProjectViewModel.productivity_type);
+            }
+
+            if (userProjectViewModel.productivity_work_place != null)
+            {
+                productivityData = productivityData.Where(s => s.productivity_work_place == userProjectViewModel.productivity_work_place);
+            }
+
+            if (userProjectViewModel.from_date != null)
+            {
+                if (Convert.ToDateTime(userProjectViewModel.from_date) != DateTime.MinValue)
+                {
+                    DateTime from = Convert.ToDateTime(userProjectViewModel.from_date);
+                    productivityData = productivityData.Where(s => s.working_date >= from);
+                }
+            }
+
+            if (userProjectViewModel.to_date != null)
+            {
+                if (Convert.ToDateTime(userProjectViewModel.to_date) != DateTime.MinValue)
+                {
+                    DateTime to = Convert.ToDateTime(userProjectViewModel.to_date);
+                    productivityData = productivityData.Where(s => s.working_date <= to);
+                }
+            }
+
+            List<UserProjectViewModel> productivityResult = productivityData.ToList();
+
+            int row = 2;
+            foreach (var item in productivityResult)
+            {
+
+                Sheet.Cells[string.Format("A{0}", row)].Value = item.user_name;
+                Sheet.Cells[string.Format("B{0}", row)].Value = item.working_date.ToString().Split(' ')[0];
+                Sheet.Cells[string.Format("C{0}", row)].Value = item.project_name;
+                Sheet.Cells[string.Format("D{0}", row)].Value = item.no_of_numbers;
+                Sheet.Cells[string.Format("E{0}", row)].Value = item.productivity_type == 1?"Normal": "OverTime";
+                Sheet.Cells[string.Format("F{0}", row)].Value = item.part_id;
+                Sheet.Cells[string.Format("G{0}", row)].Value = item.equipment_quantity;
+                Sheet.Cells[string.Format("H{0}", row)].Value = item.mvoh;
+                Sheet.Cells[string.Format("I{0}", row)].Value = item.lvoh;
+                Sheet.Cells[string.Format("J{0}", row)].Value = item.mvug;
+                Sheet.Cells[string.Format("K{0}", row)].Value = item.lvug;
+                Sheet.Cells[string.Format("L{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
+                
+
+                row++;
+            }
+
+            row++;
+            colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
+            Sheet.Cells[string.Format("A{0},B{1}", row, row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells[string.Format("A{0},B{1}", row, row)].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            Sheet.Cells[string.Format("A{0},B{1}", row, row)].Style.Font.Color.SetColor(text);
+
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Totals";
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Equipment Quantity";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p=>p.equipment_quantity).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "MVOH";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.mvoh).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "LVOH";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.lvoh).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "MVUG";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.mvug).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "LVUG";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.lvug).Sum();
+
+            Sheet.Cells["A:AZ"].AutoFitColumns();
+            Response.Clear();
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment: filename=" + DateTime.Now.ToString() + "Report.xlsx");
+            Response.BinaryWrite(Ep.GetAsByteArray());
+            Response.End();
         }
     }
 }

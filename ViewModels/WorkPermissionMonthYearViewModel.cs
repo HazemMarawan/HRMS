@@ -5,20 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace HRMS.Models
+namespace HRMS.ViewModel
 {
-    public class WorkPermissionRequest
+    public class WorkPermissionMonthYearViewModel
     {
-        [Key]
         public int id { get; set; }
         public int? year { get; set; }
         public int? month { get; set; }
-        [ForeignKey("User")]
         public int? user_id { get; set; }
-        public User User { get; set; }
-        public DateTime? day { get; set; }
-        public int? minutes { get; set; }
-        public int? status { get; set; }
+        public int? permission_count { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

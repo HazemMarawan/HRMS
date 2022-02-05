@@ -1,0 +1,289 @@
+﻿@{
+    ViewBag.Title = "Vacation Types";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="manage_vacation_type_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-12">
+                                <label>Name</label>
+                                <input required name="name" id="name" type="text" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Must Inform Before Duration</label>
+                                <input name="inform_before_duration" id="inform_before_duration" type="checkbox" class="radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Measurement</label>
+                                <select name="inform_before_duration_measurement" id="inform_before_duration_measurement" class="form-control">
+                                    <option value="">Select Measurement</option>
+                                    <option value="1">Days</option>
+                                    <option value="2">Hours</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Duration</label>
+                                <input name="inform_before_duration" id="inform_before_duration" type="number" min="1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Need Approve</label>
+                                <input name="need_approve" id="need_approve" type="checkbox" class="radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Closed At Specific Time</label>
+                                <input name="closed_at_specific_time" id="closed_at_specific_time" type="checkbox" class="radius-30" />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Closed At</label>
+                                <input name="closed_at" id="closed_at" type="time" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Max Days</label>
+                                <input name="max_days" id="max_days" type="number" min="1" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Include Official Vacation</label>
+                                <input name="include_official_vacation" id="include_official_vacation" type="checkbox" class="radius-30" />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Status</label>
+                                <select class="form-control" name="active" id="active">
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="row">
+    <div class="form-group col-4">
+        <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
+    </div>
+    <div class="form-group col-2">
+        <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
+    </div>
+    <div class="form-group col-2">
+        <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
+    </div>
+
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <a href="javascript:void(0)" id="add_vacation_type"><i class="fa fa-plus"></i> Add Vacation Type</a>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="vacationTypeTable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Active</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+       $(document).ready(function () {
+
+           var datatable = $('#vacationTypeTable')
+               .DataTable({/* we added this from the other system to have same search and same pagination*/
+                   "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                       "<'table-responsive  'tr>" +
+                       "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                   "buttons": {
+                       buttons: [
+                           { extend: 'copy', className: 'btn btn-sm' },
+                           { extend: 'csv', className: 'btn btn-sm' },
+                           { extend: 'excel', className: 'btn btn-sm' },
+                           { extend: 'print', className: 'btn btn-sm' }
+                       ]
+                   },
+                   "oLanguage": {
+                       "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
+                       "sInfo": "Showing page _PAGE_ of _PAGES_",
+                       "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                       "sSearchPlaceholder": "Search...",
+                       "sLengthMenu": "Results :  _MENU_",
+                   },
+                    "processing": true,
+                    "serverSide": true,
+                    "scrollX": true,
+                    "stateSave": false,
+                    "lengthChange": false,
+                    "dom": 'Bfrtip',
+
+                    "buttons": ['copy', 'excel', 'pdf', 'print'],
+                    "pageLength":10,
+                    "rowId": 'id',
+                    "ajax": {
+                        "url": "@Url.Action("Index", "VacationType")",
+                        "type": "POST",
+                        "datatype": "json",
+                        "dataSrc": "data"
+                    },
+                    "columns": [
+                        {
+                            "data": "id",
+                            "searchable": true
+                        },
+                        {
+                            "data": "name",
+                            "searchable": true
+                        },
+                        {
+                            "data": "active", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.active == 1)
+                                    html += "<span class='badge badge-primary'>Active</span>";
+                                else
+                                    html += "<span class='badge badge-danger'>Active</span>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "created_at", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='action-column'>" + fixDate(oData.created_at) + "</span>");
+                            }
+                        },
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                    ]
+                 });
+
+            $('#search').on('click', function () {
+                datatable.search($("#text_search").val());
+                datatable.draw();
+            });
+
+            $('#text_search').on('keyup', function (e) {
+                if (e.keyCode == 13)
+                    $('#search_button').trigger('click');
+            });
+
+            $('#reset').on('click', function () {
+                $("#text_search").val("");
+
+                $('#search').trigger('click');
+
+            });
+
+           $("#add_vacation_type").click(function () {
+               var modal = $('#manage_vacation_type_modal').clone();
+                var action = '@Url.Action("saveVacationType", "VacationType")';
+                modal.find('form').attr('action', action);
+               modal.find('#modal_title').text('Add Project Type');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+
+
+                });
+            });
+
+            $(document).on("click", ".edit", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                console.log(data);
+                var modal = $('#manage_vacation_type_modal').clone();
+                var action = '@Url.Action("saveProjectType", "ProjectType")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Edit Project Type');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+
+                        dialog.find('#id').val(data.id);
+                        dialog.find('#name').val(data.name);
+                        dialog.find('#must_inform_before_duration').val(data.must_inform_before_duration);
+                        dialog.find('#inform_before_duration').val(data.inform_before_duration);
+                        dialog.find('#inform_before_duration_measurement').val(data.inform_before_duration_measurement);
+                        dialog.find('#need_approve').val(data.need_approve);
+                        dialog.find('#closed_at_specific_time').val(data.closed_at_specific_time);
+                        dialog.find('#closed_at').val(data.closed_at);
+                        dialog.find('#max_days').val(data.max_days);
+                        dialog.find('#include_official_vacation').val(data.include_official_vacation);
+                        dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
+
+                });
+
+            });
+
+            $(document).on("click", ".delete", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                warningBox("Are you sure you want to delete this Project Type (<b>" + data.name +"</b>) ?", function () {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("deleteProjectType", "ProjectType")',
+                        contentType: "application/json; charset=utf-8",
+                        data: { "id": data.id },
+                        datatype: "json",
+                        success: function (data) {
+                            datatable.draw();
+                        },
+                        error: function () {
+                            alert("Dynamic content load failed.");
+                        }
+                    });
+                });
+            });
+
+        });
+
+    </script>
+}
+

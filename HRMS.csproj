@@ -156,6 +156,8 @@
     <Compile Include="Controllers\ProjectTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WorkPermissionController.cs" />
+    <Compile Include="Controllers\VacationController.cs" />
+    <Compile Include="Controllers\VacationTypeController.cs" />
     <Compile Include="Enum\StaticLists.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -216,6 +218,9 @@
     <Compile Include="Migrations\202202051740005_add_permission.cs" />
     <Compile Include="Migrations\202202051740005_add_permission.Designer.cs">
       <DependentUpon>202202051740005_add_permission.cs</DependentUpon>
+    <Compile Include="Migrations\202202051701064_updateTables7.cs" />
+    <Compile Include="Migrations\202202051701064_updateTables7.Designer.cs">
+      <DependentUpon>202202051701064_updateTables7.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202202051820518_add_day.cs" />
     <Compile Include="Migrations\202202051820518_add_day.Designer.cs">
@@ -253,6 +258,9 @@
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="ViewModels\WorkPermissionMonthYearViewModel.cs" />
     <Compile Include="ViewModels\WorkPermissionRequestViewModel.cs" />
+    <Compile Include="ViewModels\VacationRequestViewModel.cs" />
+    <Compile Include="ViewModels\VacationTypeViewModel.cs" />
+    <Compile Include="ViewModels\VacationYearViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AJC_Logo.ico" />
@@ -2706,6 +2714,8 @@
     <Content Include="Views\Job\Index.cshtml" />
     <Content Include="Views\Productivity\Missing.cshtml" />
     <Content Include="Views\WorkPermission\Index.cshtml" />
+    <Content Include="Views\Vacation\Index.cshtml" />
+    <Content Include="Views\VacationType\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2766,6 +2776,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202051740005_add_permission.resx">
       <DependentUpon>202202051740005_add_permission.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202202051701064_updateTables7.resx">
+      <DependentUpon>202202051701064_updateTables7.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202051820518_add_day.resx">
       <DependentUpon>202202051820518_add_day.cs</DependentUpon>

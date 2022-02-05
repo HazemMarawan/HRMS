@@ -30,6 +30,9 @@ namespace HRMS
             Mapper.CreateMap<UserProjectViewModel, UserProject>();
             Mapper.CreateMap<JobViewModel, Job>();
             Mapper.CreateMap<AreaViewModel, Area>();
+            Mapper.CreateMap<VacationTypeViewModel, VacationType>();
+            Mapper.CreateMap<VacationRequestViewModel, VacationRequest>();
+            Mapper.CreateMap<VacationYearViewModel, VacationYear>();
 
 
         }

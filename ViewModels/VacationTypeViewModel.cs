@@ -7,7 +7,6 @@ namespace HRMS.ViewModels
 {
     public class VacationTypeViewModel
     {
-        [Key]
         public int id { get; set; }
         public string name { get; set; }
         public int? must_inform_before_duration { get; set; }

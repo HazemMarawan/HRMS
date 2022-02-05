@@ -46,6 +46,7 @@ namespace HRMS.Controllers
                                           minutes = perReq.minutes,
                                           active = perReq.active,
                                           status = perReq.status,
+                                          
                                           created_at = perReq.created_at,
                                           full_name = user.full_name,
                                           permission_count = db.WorkPermissionMonthYears.Where(wo => wo.year == perReq.year && wo.month == perReq.month).Select(s => s.permission_count).FirstOrDefault()

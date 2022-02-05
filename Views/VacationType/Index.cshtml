@@ -5,7 +5,7 @@
 
 <div class="modal fade" id="manage_vacation_type_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal_title"></h5>
@@ -21,11 +21,11 @@
                                 <label>Name</label>
                                 <input required name="name" id="name" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-12">
                                 <label>Must Inform Before Duration</label>
-                                <input name="inform_before_duration" id="inform_before_duration" type="checkbox" class="radius-30" />
+                                <input name="must_inform_before_duration" id="must_inform_before_duration" type="checkbox" class="radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6" style="display:none;" id="inform_before_duration_measurement_div">
                                 <label>Measurement</label>
                                 <select name="inform_before_duration_measurement" id="inform_before_duration_measurement" class="form-control">
                                     <option value="">Select Measurement</option>
@@ -33,27 +33,27 @@
                                     <option value="2">Hours</option>
                                 </select>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6" style="display:none;" id="inform_before_duration_div">
                                 <label>Duration</label>
                                 <input name="inform_before_duration" id="inform_before_duration" type="number" min="1" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Need Approve</label>
                                 <input name="need_approve" id="need_approve" type="checkbox" class="radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-12">
                                 <label>Closed At Specific Time</label>
                                 <input name="closed_at_specific_time" id="closed_at_specific_time" type="checkbox" class="radius-30" />
                             </div>
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6" style="display:none;" id="closed_at_div">
                                 <label>Closed At</label>
                                 <input name="closed_at" id="closed_at" type="time" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Max Days</label>
                                 <input name="max_days" id="max_days" type="number" min="1" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-12">
                                 <label>Include Official Vacation</label>
                                 <input name="include_official_vacation" id="include_official_vacation" type="checkbox" class="radius-30" />
                             </div>
@@ -214,7 +214,7 @@
                var modal = $('#manage_vacation_type_modal').clone();
                 var action = '@Url.Action("saveVacationType", "VacationType")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Project Type');
+               modal.find('#modal_title').text('Add Vacation Type');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -226,7 +226,27 @@
 
                 }, function (dialog) {
 
+                        dialog.find("#must_inform_before_duration").click(function(){
+                            if (dialog.find("#must_inform_before_duration").is(":checked")) {
+                                dialog.find("#inform_before_duration_div").show();
+                                dialog.find("#inform_before_duration_measurement_div").show();
+                            }
+                            else {
+                                dialog.find("#inform_before_duration_div").hide();
+                                dialog.find("#inform_before_duration_measurement_div").hide();
+                            }
+                        });
 
+                        dialog.find("#closed_at_specific_time").click(function () {
+                            if (dialog.find("#closed_at_specific_time").is(":checked")) {
+                                dialog.find("#closed_at_div").show();
+                            }
+                            else {
+                                dialog.find("#closed_at_div").hide();
+                            }
+                        });
+                        
+                        closed_at_div
                 });
             });
 

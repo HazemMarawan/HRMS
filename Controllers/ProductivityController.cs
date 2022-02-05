@@ -648,5 +648,134 @@ namespace HRMS.Controllers
             Response.BinaryWrite(Ep.GetAsByteArray());
             Response.End();
         }
+        [HttpPost]
+        public void GenerateMissingProductivityReport(UserProjectViewModel userProjectViewModel)
+        {
+            User currentUser = Session["user"] as User;
+
+
+            ExcelPackage Ep = new ExcelPackage();
+            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Missing Productivity Report");
+
+            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
+            Sheet.Cells["A1:H1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:H1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            Sheet.Cells["A1:H1"].Style.Font.Color.SetColor(text);
+
+            Sheet.Cells["A1"].Value = "ID";
+            Sheet.Cells["B1"].Value = "Name";
+            Sheet.Cells["C1"].Value = "Code";
+            Sheet.Cells["D1"].Value = "Phone";
+            Sheet.Cells["E1"].Value = "Address";
+            Sheet.Cells["F1"].Value = "Gender";
+            Sheet.Cells["G1"].Value = "Role";
+          
+
+            var productivityData = (from user in db.Users
+                                    join idtype in db.IDTypes on user.id_type equals idtype.id
+                                    join nationality in db.Nationalities on user.nationality_id equals nationality.id
+                                    join branch in db.Branches on user.branch_id equals branch.id
+                                    join department in db.Departments on user.department_id equals department.id
+                                    join job in db.Jobs on user.job_id equals job.id
+                                    select new UserViewModel
+                                    {
+                                        id = user.id,
+                                        code = user.code,
+                                        attendance_code = user.attendance_code,
+                                        user_name = user.user_name,
+                                        full_name = user.full_name,
+                                        first_name = user.first_name,
+                                        middle_name = user.middle_name,
+                                        last_name = user.last_name,
+                                        password = user.password,
+                                        id_type = user.id_type,
+                                        id_type_name = idtype.name,
+                                        id_number = user.id_number,
+                                        birth_date = user.birth_date,
+                                        last_salary = user.last_salary,
+                                        last_hour_price = user.last_hour_price,
+                                        last_over_time_price = user.last_over_time_price,
+                                        phone = user.phone,
+                                        address = user.address,
+                                        nationality_id = user.nationality_id,
+                                        team_leader_id = user.team_leader_id,
+                                        nationality_name = nationality.name,
+                                        branch_id = user.branch_id,
+                                        branch_name = branch.name,
+                                        department_id = user.department_id,
+                                        department_name = department.name,
+                                        job_id = user.job_id,
+                                        job_name = job.name,
+                                        gender = user.gender,
+                                        hiring_date = user.hiring_date,
+                                        vacations_balance = user.vacations_balance,
+                                        imagePath = user.image,
+                                        notes = user.notes,
+                                        type = user.type,
+                                        active = user.active,
+                                    }).Where(u => u.active == (int)RowStatus.ACTIVE);
+
+
+            if (userProjectViewModel.from_date != null)
+            {
+                if (Convert.ToDateTime(userProjectViewModel.from_date) != DateTime.MinValue)
+                {
+                    DateTime date = Convert.ToDateTime(userProjectViewModel.from_date);
+                    List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.created_at).Year == date.Year && ((DateTime)us.created_at).Month == date.Month && ((DateTime)us.created_at).Day == date.Day).Select(us => us.user_id).ToList();
+                    productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id));
+                }
+            }
+            else
+            {
+                productivityData = productivityData.Where(s => s.id == -1);
+            }
+
+            if (isA.SuperAdmin())
+            {
+                if (userProjectViewModel.branch_id != null)
+                {
+                    productivityData = productivityData.Where(s => s.branch_id == userProjectViewModel.branch_id);
+                }
+            }
+
+            if (isA.BranchAdmin() || isA.TeamLeader())
+            {
+                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id);
+            }
+
+
+            List<UserViewModel> missingProductivityResult = productivityData.ToList();
+
+            int row = 2;
+            foreach (var item in missingProductivityResult)
+            {
+
+                Sheet.Cells[string.Format("A{0}", row)].Value = item.id;
+                Sheet.Cells[string.Format("B{0}", row)].Value = item.full_name;
+                Sheet.Cells[string.Format("C{0}", row)].Value = item.code;
+                Sheet.Cells[string.Format("D{0}", row)].Value = item.phone;
+                Sheet.Cells[string.Format("E{0}", row)].Value = item.address;
+                Sheet.Cells[string.Format("F{0}", row)].Value = item.gender == 1?"Male":"Female";
+                Sheet.Cells[string.Format("G{0}", row)].Value = item.type == 1? "Super Admin": item.type == 2?"Branch Admin":item.type == 3?"Employee":"Super Admin";
+                row++;
+            }
+
+            row++;
+            //colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
+            //Sheet.Cells[string.Format("A{0},B{1}", row, row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            //Sheet.Cells[string.Format("A{0},B{1}", row, row)].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            //text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            //Sheet.Cells[string.Format("A{0},B{1}", row, row)].Style.Font.Color.SetColor(text);
+
+            //Sheet.Cells[string.Format("A{0}", row)].Value = "Totals";
+           
+            Sheet.Cells["A:AZ"].AutoFitColumns();
+            Response.Clear();
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment: filename=" + DateTime.Now.ToString() + "Report.xlsx");
+            Response.BinaryWrite(Ep.GetAsByteArray());
+            Response.End();
+        }
     }
 }

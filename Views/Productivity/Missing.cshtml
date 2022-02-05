@@ -3,48 +3,50 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<form action="@Url.Action("GenerateMissingProductivityReport","Productivity")" method="post" id="GenerateMissingProductivityReportForm">
 
-<div class="row">
-    <div class="form-group col-4">
-        <input class="form-control" type="date" id="search_date" name="search_date">  
+    <div class="row">
+        <div class="form-group col-4">
+            <input class="form-control" type="date" id="search_date" name="from_date">
+        </div>
+        <div class="form-group col-2">
+            <button id="search" type="button" class="btn btn-primary px-3 radius-30">Search</button>
+        </div>
+        <div class="form-group col-2">
+            <button id="reset" type="button" class="btn btn-danger px-3 radius-30">Reset</button>
+        </div>
+
     </div>
-    <div class="form-group col-2">
-        <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
-    </div>
-    <div class="form-group col-2">
-        <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
-    </div>
+</form>
+    <div class="card">
+        <div class="card-header">
+            Missing Productivity
+            <span style="float:right;"><a href="javascript:void(0);" id="generate_missing_productivity_report"><i class="far fa-file-excel"></i> Generate Report</a></span>
+        </div>
+        <div class="card-body">
 
-</div>
+            <div class="table-responsive">
+                <table id="userTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Contact</th>
+                            <th>Gender</th>
+                            <th>Role</th>
+                            <th>Active</th>
+                        </tr>
+                    </thead>
 
-<div class="card">
-    <div class="card-header">
-        Missing Productivity
-    </div>
-    <div class="card-body">
-
-        <div class="table-responsive">
-            <table id="userTable" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Code</th>
-                        <th>Contact</th>
-                        <th>Gender</th>
-                        <th>Role</th>
-                        <th>Active</th>
-                    </tr>
-                </thead>
-
-            </table>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-@section scripts
+    @section scripts
 {
-    <script>
+        <script>
        $(document).ready(function () {
 
            var datatable = $('#userTable')
@@ -187,8 +189,13 @@
 
             });
 
+           $("#generate_missing_productivity_report").click(function () {
+               $("#GenerateMissingProductivityReportForm").submit();
+
+           });
+
         });
 
-    </script>
-}
+        </script>
+    }
 

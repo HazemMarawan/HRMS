@@ -5,7 +5,7 @@
 
 <div class="modal fade" id="manage_WorkPermission_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal_title"></h5>
@@ -19,11 +19,11 @@
                             <input type="hidden" name="id" id="id" value="0" />
                             <div class="form-group col-md-6">
                                 <label>Date</label>
-                                <input required name="date" id="date" type="datetime" class="form-control radius-30" />
+                                <input required name="date" id="date" type="datetime-local" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Duration</label>
-                                <select required name="minute" id="minute" type="datetime" class="form-control radius-30">
+                                <select required name="minutes" id="minutes" type="datetime-local" class="form-control radius-30">
                                     <option value="15">15 Minute</option>
                                     <option value="30">30 Minute</option>
                                     <option value="60">1 Hour</option>
@@ -136,9 +136,9 @@
                             }
                         },
                         {
-                            "data": "minute", "searchable": true,
+                            "data": "minutes", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + oData.minute + " Minute</span>");
+                                $(nTd).html("<span class='action-column'>" + oData.minutes + " Minute</span>");
                             }
                         },
                         {
@@ -195,7 +195,14 @@
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
                 }, function (response) {
-
+                    if (response.message == 'faild') {
+                        Swal.fire(
+                            'Error!',
+                            'Sorry! Reach Limit Permitted.',
+                            'error'
+                        );
+                        
+                    }else
                         datatable.draw();
 
                 }, function (response) {
@@ -222,11 +229,12 @@
                 }, function (response) {
 
                 }, function (dialog) {
+                    console.log(fixDateTimeLocal(data.date));
 
                         dialog.find('#id').val(data.id);
-                        dialog.find('#reason').val(data.reason);
-                        dialog.find('#date').val(fixDate(data.date));
-                        dialog.find('#minute option[value=' + data.minute + ']').attr('selected', 'selected');
+                        dialog.find('#reason').text(data.reason);
+                        dialog.find('#date').val(fixDateTimeLocal(data.date));
+                        dialog.find('#minutes option[value=' + data.minutes + ']').attr('selected', 'selected');
 
                 });
 
@@ -234,7 +242,6 @@
 
            $(document).on("click", ".add_project", function () {
                     var data = datatable.row($(this).closest('tr')).data();
-                    console.log(data);
                var modal = $('#manage_WorkPermission_project_modal').clone();
                     var action = '@Url.Action("saveWorkPermissionProject", "WorkPermission")';
                     modal.find('form').attr('action', action);

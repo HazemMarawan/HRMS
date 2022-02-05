@@ -78,7 +78,16 @@ namespace HRMS.Controllers
             if (vacationTypeViewModel.id == 0)
             {
                 VacationType vacationType = AutoMapper.Mapper.Map<VacationTypeViewModel, VacationType>(vacationTypeViewModel);
+                if (vacationTypeViewModel.must_inform_before_duration != 1)
+                {
+                    vacationType.inform_before_duration = null;
+                    vacationType.inform_before_duration_measurement = null;
+                }
 
+                if (vacationTypeViewModel.closed_at_specific_time != 1)
+                {
+                    vacationType.closed_at = null;
+                }
 
                 vacationType.created_at = DateTime.Now;
                 vacationType.created_by = Session["id"].ToString().ToInt();
@@ -93,11 +102,27 @@ namespace HRMS.Controllers
 
                 oldVacationType.name = vacationTypeViewModel.name;
                 oldVacationType.must_inform_before_duration = vacationTypeViewModel.must_inform_before_duration;
-                oldVacationType.inform_before_duration = vacationTypeViewModel.inform_before_duration;
-                oldVacationType.inform_before_duration_measurement = vacationTypeViewModel.inform_before_duration_measurement;
+                if (vacationTypeViewModel.must_inform_before_duration != 1)
+                {
+                    oldVacationType.inform_before_duration = null;
+                    oldVacationType.inform_before_duration_measurement = null;
+                }
+                else
+                {
+                    oldVacationType.inform_before_duration = vacationTypeViewModel.inform_before_duration;
+                    oldVacationType.inform_before_duration_measurement = vacationTypeViewModel.inform_before_duration_measurement;
+                }
                 oldVacationType.need_approve = vacationTypeViewModel.need_approve;
                 oldVacationType.closed_at_specific_time = vacationTypeViewModel.closed_at_specific_time;
-                oldVacationType.closed_at = vacationTypeViewModel.closed_at;
+                if (vacationTypeViewModel.closed_at_specific_time != 1)
+                {
+                    oldVacationType.closed_at = null;
+                }
+                else
+                {
+                    oldVacationType.closed_at = vacationTypeViewModel.closed_at;
+                }
+                
                 oldVacationType.max_days = vacationTypeViewModel.max_days;
                 oldVacationType.include_official_vacation = vacationTypeViewModel.include_official_vacation;
                 oldVacationType.active = vacationTypeViewModel.active;

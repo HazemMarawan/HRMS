@@ -1,0 +1,194 @@
+﻿@{
+    ViewBag.Title = "Missing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="row">
+    <div class="form-group col-4">
+        <input class="form-control" type="date" id="search_date" name="search_date">  
+    </div>
+    <div class="form-group col-2">
+        <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
+    </div>
+    <div class="form-group col-2">
+        <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
+    </div>
+
+</div>
+
+<div class="card">
+    <div class="card-header">
+        Missing Productivity
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="userTable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Code</th>
+                        <th>Contact</th>
+                        <th>Gender</th>
+                        <th>Role</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+       $(document).ready(function () {
+
+           var datatable = $('#userTable')
+               .DataTable({/* we added this from the other system to have same search and same pagination*/
+                   "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                       "<'table-responsive  'tr>" +
+                       "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                   "buttons": {
+                       buttons: [
+                           { extend: 'copy', className: 'btn btn-sm' },
+                           { extend: 'csv', className: 'btn btn-sm' },
+                           { extend: 'excel', className: 'btn btn-sm' },
+                           { extend: 'print', className: 'btn btn-sm' }
+                       ]
+                   },
+                   "oLanguage": {
+                       "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
+                       "sInfo": "Showing page _PAGE_ of _PAGES_",
+                       "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                       "sSearchPlaceholder": "Search...",
+                       "sLengthMenu": "Results :  _MENU_",
+                   },
+                    "processing": true,
+                    "serverSide": true,
+                    "scrollX": true,
+                    "stateSave": false,
+                    "lengthChange": false,
+                    "dom": 'Bfrtip',
+
+                    "buttons": ['copy', 'excel', 'pdf', 'print'],
+                    "pageLength":10,
+                    "rowId": 'id',
+                    "ajax": {
+                        "url": "@Url.Action("Missing", "Productivity")?branch_id=@ViewBag.branchId",
+                        "type": "POST",
+                        "datatype": "json",
+                        "dataSrc": "data"
+                    },
+                    "columns": [
+                        {
+                            "data": "id",
+                            "searchable": true
+                        },
+                        {
+                            "data": "full_name", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "<span>" + oData.full_name + "</span>";
+
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "code",
+                            "searchable": true
+                        },
+                        {
+                            "data": "phone", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "<span> ";
+                                if (oData.phone) {
+                                    html += "<b>Phone: </b>" + oData.phone;
+                                }
+                                else
+                                    html += "No Phone";
+                                html += "</span><br>";
+
+                                html += "<span>";
+                                if (oData.address) {
+                                    html += "<b>Address: </b>" + oData.address;
+                                }
+                                else
+                                    html += "No Addresses";
+                                html += "</span><br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+
+                        {
+                            "data": "gender", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "<span> ";
+                                if (oData.gender) {
+                                    if (oData.gender == 1)
+                                        html += "Male";
+                                    else if (oData.gender == 2)
+                                        html += "Female";
+                                }
+                                else
+                                    html += "No Gender Selected";
+                                html += "</span>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "type", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.type == 1)
+                                    html += "Super Admin";
+                                else if (oData.type == 2)
+                                    html += "Branch Admin";
+                                else if (oData.type == 4)
+                                    html += "Team Leader";
+                                else
+                                    html += "Employee";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "active", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.active == 1)
+                                    html += "<span class='badge badge-primary'>Yes</span>";
+                                else
+                                    html += "<span class='badge badge-danger'>No</span>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        }
+                    ]
+                 });
+
+            $('#search').on('click', function () {
+                datatable.search($("#text_search").val());
+                datatable.columns(0).search($("#search_date").val());
+
+                datatable.draw();
+            });
+
+            $('#text_search').on('keyup', function (e) {
+                if (e.keyCode == 13)
+                    $('#search_button').trigger('click');
+            });
+
+            $('#reset').on('click', function () {
+                $("#text_search").val("");
+                $("#search_date").val("");
+
+                $('#search').trigger('click');
+
+            });
+
+        });
+
+    </script>
+}
+

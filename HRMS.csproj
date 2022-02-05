@@ -2669,6 +2669,7 @@
     <Content Include="Views\Productivity\Index.cshtml" />
     <Content Include="Views\Productivity\Employee.cshtml" />
     <Content Include="Views\Job\Index.cshtml" />
+    <Content Include="Views\Productivity\Missing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

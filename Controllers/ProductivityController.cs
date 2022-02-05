@@ -177,6 +177,131 @@ namespace HRMS.Controllers
             }
             return View();
         }
+
+        public ActionResult Missing(int? branch_id)
+        {
+            User currentUser = Session["user"] as User;
+            if (!(isA.SuperAdmin() || isA.TeamLeader() || isA.BranchAdmin()))
+                return RedirectToAction("Index", "Dashboard");
+
+            if (Request.IsAjaxRequest())
+            {
+                var draw = Request.Form.GetValues("draw").FirstOrDefault();
+                var start = Request.Form.GetValues("start").FirstOrDefault();
+                var length = Request.Form.GetValues("length").FirstOrDefault();
+                var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                var search_date = Request.Form.GetValues("columns[0][search][value]")[0];
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                // Getting all data    
+                var productivityData = (from user in db.Users
+                                        join idtype in db.IDTypes on user.id_type equals idtype.id
+                                        join nationality in db.Nationalities on user.nationality_id equals nationality.id
+                                        join branch in db.Branches on user.branch_id equals branch.id
+                                        join department in db.Departments on user.department_id equals department.id
+                                        join job in db.Jobs on user.job_id equals job.id
+                                        select new UserViewModel
+                                        {
+                                            id = user.id,
+                                            code = user.code,
+                                            attendance_code = user.attendance_code,
+                                            user_name = user.user_name,
+                                            full_name = user.full_name,
+                                            first_name = user.first_name,
+                                            middle_name = user.middle_name,
+                                            last_name = user.last_name,
+                                            password = user.password,
+                                            id_type = user.id_type,
+                                            id_type_name = idtype.name,
+                                            id_number = user.id_number,
+                                            birth_date = user.birth_date,
+                                            last_salary = user.last_salary,
+                                            last_hour_price = user.last_hour_price,
+                                            last_over_time_price = user.last_over_time_price,
+                                            phone = user.phone,
+                                            address = user.address,
+                                            nationality_id = user.nationality_id,
+                                            team_leader_id = user.team_leader_id,
+                                            nationality_name = nationality.name,
+                                            branch_id = user.branch_id,
+                                            branch_name = branch.name,
+                                            department_id = user.department_id,
+                                            department_name = department.name,
+                                            job_id = user.job_id,
+                                            job_name = job.name,
+                                            gender = user.gender,
+                                            hiring_date = user.hiring_date,
+                                            vacations_balance = user.vacations_balance,
+                                            imagePath = user.image,
+                                            notes = user.notes,
+                                            type = user.type,
+                                            active = user.active,
+                                        }).Where(u=>u.active == (int)RowStatus.ACTIVE);
+
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    productivityData = productivityData.Where(m=>m.id.ToString().ToLower().Contains(searchValue.ToLower())
+                    || m.user_name.ToString().ToLower().Contains(searchValue.ToLower())
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(search_date))
+                {
+                    if (Convert.ToDateTime(search_date) != DateTime.MinValue)
+                    {
+                        DateTime date = Convert.ToDateTime(search_date);
+                        List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.created_at).Year == date.Year && ((DateTime)us.created_at).Month == date.Month && ((DateTime)us.created_at).Day == date.Day).Select(us => us.user_id).ToList();
+                        productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id));
+                    }
+                }
+                else
+                {
+                    productivityData = productivityData.Where(s => s.id == -1);
+                }
+
+                if(isA.SuperAdmin())
+                {
+                    if (branch_id != null)
+                    {
+                        productivityData = productivityData.Where(s => s.branch_id == branch_id);
+                    }
+                }
+
+                if(isA.BranchAdmin() || isA.TeamLeader())
+                {
+                    productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id);
+                }
+                
+                //total number of rows count     
+                var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
+                     .Take(pageSize).ToList();
+                var totalRecords = productivityData.Count();
+
+                return Json(new
+                {
+                    draw = draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = totalRecords,
+                    data = displayResult
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+
+            ViewBag.branchId = branch_id;
+            if (branch_id != null)
+            {
+                ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
+                List<int?> branchProjects = db.BranchProjects.Where(b => b.branch_id == currentUser.branch_id).Select(b => b.project_id).ToList();
+                ViewBag.Projects = db.Projects.Where(p => branchProjects.Contains(p.id)).Select(p => new { p.id, p.name }).ToList();
+            }
+            else
+            {
+                ViewBag.branchName = "Company";
+                ViewBag.Projects = db.Projects.Select(p => new { p.id, p.name }).ToList();
+            }
+            return View();
+        }
         public ActionResult Employee()
         {
             if (!(isA.Employee() || isA.TeamLeader()))

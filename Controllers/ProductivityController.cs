@@ -31,18 +31,22 @@ namespace HRMS.Controllers
                 var length = Request.Form.GetValues("length").FirstOrDefault();
                 var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
                 var search_project_id = Request.Form.GetValues("columns[0][search][value]")[0];
-                var search_productivity_type = Request.Form.GetValues("columns[1][search][value]")[0];
-                var search_work_place = Request.Form.GetValues("columns[2][search][value]")[0];
-                var from_date = Request.Form.GetValues("columns[3][search][value]")[0];
-                var to_date = Request.Form.GetValues("columns[4][search][value]")[0];
+                var search_area_id = Request.Form.GetValues("columns[1][search][value]")[0];
+                var search_productivity_type = Request.Form.GetValues("columns[2][search][value]")[0];
+                var search_work_place = Request.Form.GetValues("columns[3][search][value]")[0];
+                var from_date = Request.Form.GetValues("columns[4][search][value]")[0];
+                var to_date = Request.Form.GetValues("columns[5][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
                 // Getting all data    
                 var productivityData = (from user in db.Users
                                         join userProject in db.UserProjects on user.id equals userProject.user_id
-                                        join project in db.Projects on userProject.project_id equals project.id
+                                        join pro in db.Projects on userProject.project_id equals pro.id into pr
+                                        from project in pr.DefaultIfEmpty()
                                         join branchProject in db.BranchProjects on project.id equals branchProject.project_id
+                                        join are in db.Areas on userProject.area_id equals are.id into ar
+                                        from area in ar.DefaultIfEmpty()
                                         select new UserProjectViewModel
                                         {
                                             id = userProject.id,
@@ -65,7 +69,9 @@ namespace HRMS.Controllers
                                             note = userProject.note,
                                             status = userProject.status,
                                             cost = userProject.cost,
-                                            team_leader_id = user.team_leader_id
+                                            team_leader_id = user.team_leader_id,
+                                            area_id = userProject.area_id,
+                                            area_name = area.name
                                         });
 
                
@@ -101,6 +107,12 @@ namespace HRMS.Controllers
                 {
                     int search_project_id_int = int.Parse(search_project_id);
                     productivityData = productivityData.Where(s => s.project_id == search_project_id_int);
+                }
+
+                if (!string.IsNullOrEmpty(search_area_id))
+                {
+                    int search_area_id_int = int.Parse(search_area_id);
+                    productivityData = productivityData.Where(s => s.area_id == search_area_id_int);
                 }
 
                 if (!string.IsNullOrEmpty(search_productivity_type))
@@ -324,7 +336,10 @@ namespace HRMS.Controllers
                 // Getting all data    
                 var productivityData = (
                                        from userProject in db.UserProjects
-                                       join project in db.Projects on userProject.project_id equals project.id
+                                       join pro in db.Projects on userProject.project_id equals pro.id into pr
+                                       from project in pr.DefaultIfEmpty()
+                                       join are in db.Areas on userProject.area_id equals are.id into ar
+                                       from area in ar.DefaultIfEmpty()
                                        select new UserProjectViewModel
                                        {
                                            id = userProject.id,
@@ -342,7 +357,9 @@ namespace HRMS.Controllers
                                            mvug = userProject.mvug,
                                            lvug = userProject.lvug,
                                            note = userProject.note,
-                                           status = userProject.status
+                                           status = userProject.status,
+                                           area_id = userProject.area_id,
+                                           area_name = area.name
                                        }).Where(p => p.user_id == currentUser.id) ;
 
                 //Search    
@@ -413,6 +430,7 @@ namespace HRMS.Controllers
                 UserProject oldUserProject = db.UserProjects.Find(userProjectViewModel.id);
 
                 oldUserProject.project_id = userProjectViewModel.project_id;
+                oldUserProject.area_id = userProjectViewModel.area_id;
                 oldUserProject.working_date = userProjectViewModel.working_date;
                 oldUserProject.no_of_numbers = userProjectViewModel.no_of_numbers;
                 oldUserProject.productivity_type = userProjectViewModel.productivity_type;
@@ -487,28 +505,32 @@ namespace HRMS.Controllers
             ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Productivity Report");
 
             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
-            Sheet.Cells["A1:L1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:L1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:M1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:M1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:L1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:M1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "Employee Name";
             Sheet.Cells["B1"].Value = "Working Date";
             Sheet.Cells["C1"].Value = "Project";
-            Sheet.Cells["D1"].Value = "Hours";
-            Sheet.Cells["E1"].Value = "Productivity Type";
-            Sheet.Cells["F1"].Value = "Part ID";
-            Sheet.Cells["G1"].Value = "Equipment Quantity";
-            Sheet.Cells["H1"].Value = "MVOH";
-            Sheet.Cells["I1"].Value = "LVOH";
-            Sheet.Cells["J1"].Value = "MVUG";
-            Sheet.Cells["K1"].Value = "LVUG";
-            Sheet.Cells["L1"].Value = "Status";
+            Sheet.Cells["D1"].Value = "Area";
+            Sheet.Cells["E1"].Value = "Hours";
+            Sheet.Cells["F1"].Value = "Productivity Type";
+            Sheet.Cells["G1"].Value = "Part ID";
+            Sheet.Cells["H1"].Value = "Equipment Quantity";
+            Sheet.Cells["I1"].Value = "MVOH";
+            Sheet.Cells["J1"].Value = "LVOH";
+            Sheet.Cells["K1"].Value = "MVUG";
+            Sheet.Cells["L1"].Value = "LVUG";
+            Sheet.Cells["M1"].Value = "Status";
 
             var productivityData = (from user in db.Users
                                     join userProject in db.UserProjects on user.id equals userProject.user_id
-                                    join project in db.Projects on userProject.project_id equals project.id
+                                    join pro in db.Projects on userProject.project_id equals pro.id into pr
+                                    from project in pr.DefaultIfEmpty()
                                     join branchProject in db.BranchProjects on project.id equals branchProject.project_id
+                                    join are in db.Areas on userProject.area_id equals are.id into ar
+                                    from area in ar.DefaultIfEmpty()
                                     select new UserProjectViewModel
                                     {
                                         id = userProject.id,
@@ -531,7 +553,9 @@ namespace HRMS.Controllers
                                         note = userProject.note,
                                         status = userProject.status,
                                         cost = userProject.cost,
-                                        team_leader_id = user.team_leader_id
+                                        team_leader_id = user.team_leader_id,
+                                        area_id = userProject.area_id,
+                                        area_name = area.name
                                     });
 
 
@@ -559,6 +583,11 @@ namespace HRMS.Controllers
             if (userProjectViewModel.project_id != null)
             {
                 productivityData = productivityData.Where(s => s.project_id == userProjectViewModel.project_id);
+            }
+
+            if (userProjectViewModel.area_id != null)
+            {
+                productivityData = productivityData.Where(s => s.area_id == userProjectViewModel.area_id);
             }
 
             if (userProjectViewModel.productivity_type != null)
@@ -598,15 +627,16 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("A{0}", row)].Value = item.user_name;
                 Sheet.Cells[string.Format("B{0}", row)].Value = item.working_date.ToString().Split(' ')[0];
                 Sheet.Cells[string.Format("C{0}", row)].Value = item.project_name;
-                Sheet.Cells[string.Format("D{0}", row)].Value = item.no_of_numbers;
-                Sheet.Cells[string.Format("E{0}", row)].Value = item.productivity_type == 1?"Normal": "OverTime";
-                Sheet.Cells[string.Format("F{0}", row)].Value = item.part_id;
-                Sheet.Cells[string.Format("G{0}", row)].Value = item.equipment_quantity;
-                Sheet.Cells[string.Format("H{0}", row)].Value = item.mvoh;
-                Sheet.Cells[string.Format("I{0}", row)].Value = item.lvoh;
-                Sheet.Cells[string.Format("J{0}", row)].Value = item.mvug;
-                Sheet.Cells[string.Format("K{0}", row)].Value = item.lvug;
-                Sheet.Cells[string.Format("L{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
+                Sheet.Cells[string.Format("D{0}", row)].Value = item.area_name;
+                Sheet.Cells[string.Format("E{0}", row)].Value = item.no_of_numbers;
+                Sheet.Cells[string.Format("F{0}", row)].Value = item.productivity_type == 1?"Normal": "OverTime";
+                Sheet.Cells[string.Format("G{0}", row)].Value = item.part_id;
+                Sheet.Cells[string.Format("H{0}", row)].Value = item.equipment_quantity;
+                Sheet.Cells[string.Format("I{0}", row)].Value = item.mvoh;
+                Sheet.Cells[string.Format("J{0}", row)].Value = item.lvoh;
+                Sheet.Cells[string.Format("K{0}", row)].Value = item.mvug;
+                Sheet.Cells[string.Format("L{0}", row)].Value = item.lvug;
+                Sheet.Cells[string.Format("M{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
                 
 
                 row++;

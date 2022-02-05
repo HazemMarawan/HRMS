@@ -204,6 +204,10 @@
     <Compile Include="Migrations\202202042324338_addAreaTable.Designer.cs">
       <DependentUpon>202202042324338_addAreaTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202050246592_updateUserProject.cs" />
+    <Compile Include="Migrations\202202050246592_updateUserProject.Designer.cs">
+      <DependentUpon>202202050246592_updateUserProject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Branch.cs" />
@@ -2732,6 +2736,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202042324338_addAreaTable.resx">
       <DependentUpon>202202042324338_addAreaTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202050246592_updateUserProject.resx">
+      <DependentUpon>202202050246592_updateUserProject.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

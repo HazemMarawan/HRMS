@@ -21,6 +21,12 @@
                                 @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "project_id", @style = "width:100%", @id = "project_id", @required = "@required" })
                             </div>
                             <div class="form-group col-md-4">
+                                <label>Area</label>
+                                <select class="form-control" id="area_id" name="area_id" required>
+                                    <option value="">Select Area</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>Working Date</label>
                                 <input required name="working_date" id="working_date" type="date" class="form-control radius-30" />
                             </div>
@@ -117,6 +123,7 @@
                         <th>#</th>
                         <th>Working Date</th>
                         <th>Project</th>
+                        <th>Area</th>
                         <th>Hours</th>
                         <th>Info</th>
                         <th>Status</th>
@@ -186,6 +193,10 @@
                             "searchable": true
                         },
                         {
+                            "data": "area_name",
+                            "searchable": true
+                        },
+                        {
                             "data": "no_of_numbers",
                             "searchable": true
                         },
@@ -212,7 +223,7 @@
                                     html += "<br>";
                                 }
 
-                                if (oData.part_id) 
+                                if (oData.part_id)
                                     html += "<b>Part ID: </b>" + oData.part_id+"<br>";
 
                                 if (oData.equipment_quantity)
@@ -296,7 +307,32 @@
 
                 }, function (dialog) {
 
+                        $(document).on("change", "#project_id", function () {
+                            var project_id = $(this).val();
+                            dialog.find("#area_id").empty();
+                            var html = `<option value=''>Select Area</option>`;
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreaByProjectId", "Project")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": project_id },
+                            datatype: "json",
+                                success: function (data) {
+                                    if (data.areas.length != 0) {
 
+                                    data.areas.forEach(function (value) {
+                                        html += `<option value='${value.id}'>${value.name}</option>`;
+                                    });
+
+                                    }
+                                    dialog.find("#area_id").append(html);
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+
+                        });
                 });
             });
 
@@ -330,6 +366,61 @@
                         dialog.find('#mvug').val(data.mvug);
                         dialog.find('#lvug').val(data.lvug);
                         dialog.find('#note').val(data.note);
+
+                            var project_id = data.project_id;
+                            dialog.find("#area_id").empty();
+                            var html = `<option value=''>Select Area</option>`;
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreaByProjectId", "Project")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": project_id },
+                            datatype: "json",
+                                success: function (data) {
+                                    if (data.areas.length != 0) {
+
+                                        data.areas.forEach(function (value) {
+                                        if(parseInt(data.area_id) == parseInt(value.id))
+                                            html += `<option selected value='${value.id}'>${value.name}</option>`;
+                                        else
+                                            html += `<option value='${value.id}'>${value.name}</option>`;
+
+                                    });
+
+                                    }
+                                    dialog.find("#area_id").append(html);
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+
+                        $(document).on("change", "#project_id", function () {
+                            var project_id = $(this).val();
+                            dialog.find("#area_id").empty();
+                            var html = `<option value=''>Select Area</option>`;
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreaByProjectId", "Project")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": project_id },
+                            datatype: "json",
+                                success: function (data) {
+                                    if (data.areas.length != 0) {
+
+                                    data.areas.forEach(function (value) {
+                                        html += `<option value='${value.id}'>${value.name}</option>`;
+                                    });
+
+                                    }
+                                    dialog.find("#area_id").append(html);
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+
+                        });
                 });
 
             });

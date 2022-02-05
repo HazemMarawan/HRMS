@@ -17,6 +17,9 @@ namespace HRMS.Models
         [ForeignKey("Project")]
         public int? project_id { get; set; }
         public Project Project { get; set; }
+        [ForeignKey("Area")]
+        public int? area_id { get; set; }
+        public Area Area { get; set; }
         public DateTime? working_date { get; set; }
         public int? no_of_numbers { get; set; }
         public int? productivity_type { get; set; }

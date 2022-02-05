@@ -159,5 +159,17 @@ namespace HRMS.Controllers
             db.SaveChanges();
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public JsonResult getAreaByProjectId(int id)
+        {
+            List<AreaViewModel> areas = db.Areas.Where(a => a.project_id == id).Select(a => new AreaViewModel
+            {
+                id = a.id,
+                name = a.name,
+                active = a.active
+            }).Where(a=>a.active == (int)RowStatus.ACTIVE).ToList();
+            return Json(new { areas = areas }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

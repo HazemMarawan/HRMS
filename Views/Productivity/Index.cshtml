@@ -10,6 +10,11 @@
             @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
         </div>
         <div class="form-group col-md-4">
+            <select class="form-control" id="search_area_id" name="area_id">
+                <option value="">Select Area</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
             <select class="form-control" name="productivity_type" id="search_productivity_type">
                 <option value="">Select Type</option>
                 <option value="1">Normal</option>
@@ -118,6 +123,7 @@
                         <th>Employee</th>
                         <th>Working Date</th>
                         <th>Project</th>
+                        <th>Area</th>
                         <th>Hours</th>
                         <th>Info</th>
                         <th>Status</th>
@@ -188,6 +194,10 @@
                         },
                         {
                             "data": "project_name",
+                            "searchable": true
+                        },
+                        {
+                            "data": "area_name",
                             "searchable": true
                         },
                         {
@@ -264,15 +274,24 @@
 
 
             datatable.on('xhr.dt', function (e, settings, json, xhr) {
-                console.log(json);                $("#hours_counter").text(json.Hours);                $("#projects_counter").text(json.Projects);                $("#employees_counter").text(json.Employees);                $("#cost_counter").text((addCommas(json.Cost.toFixed(2))));            });
+                console.log(json);
+
+                $("#hours_counter").text(json.Hours);
+                $("#projects_counter").text(json.Projects);
+                $("#employees_counter").text(json.Employees);
+                $("#cost_counter").text((addCommas(json.Cost.toFixed(2))));
+
+
+            });
 
             $('#search').on('click', function () {
                 datatable.search($("#text_search").val());
                 datatable.columns(0).search($("#search_project_id").val());
-                datatable.columns(1).search($("#search_productivity_type").val());
-                datatable.columns(2).search($("#search_work_place").val());
-                datatable.columns(3).search($("#from_date").val());
-                datatable.columns(4).search($("#to_date").val());
+                datatable.columns(1).search($("#search_area_id").val());
+                datatable.columns(2).search($("#search_productivity_type").val());
+                datatable.columns(3).search($("#search_work_place").val());
+                datatable.columns(4).search($("#from_date").val());
+                datatable.columns(5).search($("#to_date").val());
                 datatable.draw();
             });
 
@@ -284,6 +303,7 @@
             $('#reset').on('click', function () {
                 $("#text_search").val("");
                 $("#search_project_id").val("");
+                $("#search_area_id").val("");
                 $("#search_productivity_type").val("");
                 $("#search_work_place").val("");
                 $("#from_date").val("");
@@ -332,12 +352,40 @@
                 });
             });
 
+            $(document).on("change", "#search_project_id", function () {
+                var project_id = $(this).val();
+                
+                            $("#search_area_id").empty();
+                            var html = `<option value=''>Select Area</option>`;
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreaByProjectId", "Project")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": project_id },
+                            datatype: "json",
+                                success: function (data) {
+                                    if (data.areas.length != 0) {
+
+                                    data.areas.forEach(function (value) {
+                                        html += `<option value='${value.id}'>${value.name}</option>`;
+                                    });
+
+                                    }
+                                    $("#search_area_id").append(html);
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+
+                        });
 
             $("#generate_productivity_report").click(function () {
 
                 $("#GenerateProductivityReportForm").submit();
             });
-           
+
+
 
         });
 

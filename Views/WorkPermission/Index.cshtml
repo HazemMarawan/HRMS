@@ -17,49 +17,23 @@
                     <div class="form-body">
                         <div class="form-row">
                             <input type="hidden" name="id" id="id" value="0" />
-                            <div class="form-group col-md-12">
-                                <label>Name</label>
-                                <input required name="name" id="name" type="text" class="form-control radius-30" />
+                            <div class="form-group col-md-6">
+                                <label>Date</label>
+                                <input required name="date" id="date" type="datetime" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-12">
-                                <label>Status</label>
-                                <select class="form-control" name="active" id="active">
-                                    <option value="1">Active</option>
-                                    <option value="2">Inactive</option>
+                            <div class="form-group col-md-6">
+                                <label>Duration</label>
+                                <select  required name="minute" id="minute" type="datetime" class="form-control radius-30">
+                                    <option value="15">15 Minute</option>
+                                    <option value="30">30 Minute</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="90">1 Hour and 30 Minute</option>
+                                    <option value="120">2 Hours</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-
-<div class="modal fade" id="manage_WorkPermission_project_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <form action="" method="post" enctype='multipart/form-data'>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal_title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-body">
-                        <div class="form-row">
-                            <input type="hidden" name="id" id="id" value="0" />
-                            <input type="hidden" name="WorkPermission_id" id="WorkPermission_id" value="0" />
                             <div class="form-group col-md-12">
-                                <label>Project</label>
-                                <select id="project_id" name="project_id" class="form-control">
-                                </select>
-                                @*@Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "project_type_id", @style = "width:100%", @id = "project_id" })*@
+                                <label>Reason</label>
+                                <textarea required name="date" id="date" type="datetime" class="form-control radius-30"> </textarea>
                             </div>
                         </div>
                     </div>

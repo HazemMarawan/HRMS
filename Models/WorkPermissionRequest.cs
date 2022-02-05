@@ -16,6 +16,7 @@ namespace HRMS.Models
         [ForeignKey("User")]
         public int? user_id { get; set; }
         public User User { get; set; }
+        public string reason { get; set; }
         public DateTime? date { get; set; }
         public int? minutes { get; set; }
         public int? status { get; set; }

@@ -13,6 +13,7 @@ namespace HRMS.ViewModels
         public int? year { get; set; }
         public int? month { get; set; }
         public int? user_id { get; set; }
+        public string reason { get; set; }
         public DateTime? date { get; set; }
         public int? minutes { get; set; }
         public int? status { get; set; }

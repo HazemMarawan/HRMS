@@ -99,6 +99,7 @@ namespace HRMS.Controllers
                 WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
                 WorkPermissionRequest.created_at = DateTime.Now;
                 WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
+                WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
 
                 db.WorkPermissionRequests.Add(WorkPermissionRequest);
                 db.SaveChanges();
@@ -109,11 +110,12 @@ namespace HRMS.Controllers
                 WorkPermissionRequest WorkPermissionRequest = db.WorkPermissionRequests.Find(workPermissionRequestViewModel.id);
 
                 WorkPermissionRequest.user_id = currentUser.id;
+                WorkPermissionRequest.reason = workPermissionRequestViewModel.reason;
                 WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
                 WorkPermissionRequest.date = workPermissionRequestViewModel.date;
                 WorkPermissionRequest.year = ((DateTime)(workPermissionRequestViewModel.date)).Year;
                 WorkPermissionRequest.month = ((DateTime)(workPermissionRequestViewModel.date)).Month;
-                WorkPermissionRequest.active = workPermissionRequestViewModel.active;
+                WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
                 WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
                 WorkPermissionRequest.updated_at = DateTime.Now;
 

@@ -231,6 +231,14 @@
     <Compile Include="Migrations\202202051806408_updates.Designer.cs">
       <DependentUpon>202202051806408_updates.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202051854206_updates1.cs" />
+    <Compile Include="Migrations\202202051854206_updates1.Designer.cs">
+      <DependentUpon>202202051854206_updates1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202051856320_updates2.cs" />
+    <Compile Include="Migrations\202202051856320_updates2.Designer.cs">
+      <DependentUpon>202202051856320_updates2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Branch.cs" />
@@ -2790,6 +2798,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202051806408_updates.resx">
       <DependentUpon>202202051806408_updates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202051854206_updates1.resx">
+      <DependentUpon>202202051854206_updates1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202051856320_updates2.resx">
+      <DependentUpon>202202051856320_updates2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -24,5 +24,6 @@ namespace HRMS.ViewModel
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
         public string full_name { get; set; }
+        public int? permission_count { get; set; }
     }
 }

@@ -264,6 +264,22 @@
     <Compile Include="Migrations\202202052024133_updates4.Designer.cs">
       <DependentUpon>202202052024133_updates4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202061051258_updates5.cs" />
+    <Compile Include="Migrations\202202061051258_updates5.Designer.cs">
+      <DependentUpon>202202061051258_updates5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202061054019_updates6.cs" />
+    <Compile Include="Migrations\202202061054019_updates6.Designer.cs">
+      <DependentUpon>202202061054019_updates6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202061059182_updates7.cs" />
+    <Compile Include="Migrations\202202061059182_updates7.Designer.cs">
+      <DependentUpon>202202061059182_updates7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202061108420_updates8.cs" />
+    <Compile Include="Migrations\202202061108420_updates8.Designer.cs">
+      <DependentUpon>202202061108420_updates8.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Branch.cs" />
@@ -2849,6 +2865,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202052024133_updates4.resx">
       <DependentUpon>202202052024133_updates4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202061051258_updates5.resx">
+      <DependentUpon>202202061051258_updates5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202061054019_updates6.resx">
+      <DependentUpon>202202061054019_updates6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202061059182_updates7.resx">
+      <DependentUpon>202202061059182_updates7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202061108420_updates8.resx">
+      <DependentUpon>202202061108420_updates8.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

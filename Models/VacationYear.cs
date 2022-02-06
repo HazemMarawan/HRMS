@@ -13,6 +13,7 @@ namespace HRMS.Models
         public int? year { get; set; }
         public int? user_id { get; set; }
         public int? vacation_balance { get; set; }
+        public int? remaining { get; set; }
         public int? a3tyady_vacation_counter { get; set; }
         public int? arda_vacation_counter { get; set; }
         public int? medical_vacation_counter { get; set; }

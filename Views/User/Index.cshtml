@@ -136,7 +136,7 @@
                            
                             <div class="form-group col-md-8" style="display:none;" id="vacations_balance_div">
                                 <label>Vacation Balance</label>
-                                <input name="vacations_balance" id="vacations_balance" type="text" class="form-control radius-30" />
+                                <input name="vacations_balance" id="vacations_balance" type="number" class="form-control radius-30" />
                             </div>
                            
                             <div class="form-group col-md-8">
@@ -504,8 +504,13 @@
                                     dialog.find("#team_leader_id").prop('required', false);
                                     dialog.find("#team_leader_div").hide();
                                 }
+                            }
 
-                                    
+                            if ($(this).val() != 1)
+                                dialog.find('#vacations_balance_div').show();
+                            else {
+                                dialog.find('#vacations_balance_div').hide();
+                                dialog.find('#vacations_balance').val("");
                             }
                         });
                 });
@@ -573,6 +578,10 @@
 
                         }
 
+                        if (data.type != 1) {
+                            dialog.find('#vacations_balance_div').show();
+                        }
+
                         $(document).on('change', '#type', function (event) {
                             if ($(this).val() == 3)
                                 dialog.find('#team_leader_div').show();
@@ -580,9 +589,11 @@
                                 dialog.find('#team_leader_div').hide();
 
                             if ($(this).val() != 1)
-                                dialog.find('#team_leader_div').show();
-                            else
-                                dialog.find('#team_leader_div').hide();
+                                dialog.find('#vacations_balance_div').show();
+                            else {
+                                dialog.find('#vacations_balance_div').hide();
+                                dialog.find('#vacations_balance').val("");
+                            }
                         });
 
                         $(document).on('change', '#image', function (event) {

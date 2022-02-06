@@ -11,6 +11,7 @@ namespace HRMS.Models
         [Key]
         public int id { get; set; }
         public string name { get; set; }
+        public int? value { get; set; }
         public int? must_inform_before_duration { get; set; }
         public int? inform_before_duration { get; set; }
         public int? inform_before_duration_measurement { get; set; }

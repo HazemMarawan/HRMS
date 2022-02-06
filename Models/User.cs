@@ -52,7 +52,6 @@ namespace HRMS.Models
         public double? last_salary { get; set; }
         public double? last_hour_price { get; set; }
         public double? last_over_time_price { get; set; }
-        public int? vacation_balance { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

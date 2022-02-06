@@ -176,7 +176,7 @@ namespace HRMS.Controllers
             if (branch_id != null)
             {
                 ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
-                ViewBag.TeamLeaders = db.Users.Where(b => b.branch_id == branch_id && b.type == (int)UserRole.TeamLeader).Select(s=>new UserViewModel { id = s.id, full_name =s.full_name}).ToList();
+                ViewBag.TeamLeaders = db.Users.Where(b => b.branch_id == branch_id && b.type == (int)UserRole.TeamLeader).Select(s => new UserViewModel { id = s.id, full_name = s.full_name }).ToList();
             }
             return View();
         }
@@ -188,16 +188,17 @@ namespace HRMS.Controllers
 
             if (userVM.id == 0)
             {
-
                 User user = AutoMapper.Mapper.Map<UserViewModel, User>(userVM);
                 if (userVM.last_salary != null)
                 {
                     user.last_hour_price = userVM.last_salary / 30 / 8;
                 }
-                if(userVM.branch_id == null)
+
+                if (userVM.branch_id == null)
                 {
                     user.branch_id = currentUser.branch_id;
                 }
+
                 user.full_name = user.first_name + " " + user.middle_name + " " + user.last_name;
                 user.created_at = DateTime.Now;
                 user.created_by = Session["id"].ToString().ToInt();
@@ -212,6 +213,30 @@ namespace HRMS.Controllers
                 }
                 db.Users.Add(user);
                 db.SaveChanges();
+
+
+
+                VacationYear vacationYear = new VacationYear();
+                vacationYear.year = DateTime.Now.Year;
+                vacationYear.user_id = user.id;
+                if (userVM.vacations_balance != null)
+                    vacationYear.vacation_balance = userVM.vacations_balance;
+                else
+                    vacationYear.vacation_balance = 21;
+
+                vacationYear.a3tyady_vacation_counter = 0;
+                vacationYear.arda_vacation_counter = 0;
+                vacationYear.medical_vacation_counter = 0;
+                vacationYear.married_vacation_counter = 0;
+                vacationYear.work_from_home_vacation_counter = 0;
+                vacationYear.death_vacation_counter = 0;
+                vacationYear.active = 1;
+                vacationYear.created_by = Session["id"].ToString().ToInt();
+                vacationYear.created_at = DateTime.Now;
+
+                db.VacationYears.Add(vacationYear);
+                db.SaveChanges();
+
             }
             else
             {
@@ -240,7 +265,41 @@ namespace HRMS.Controllers
                 oldUser.last_over_time_price = userVM.last_over_time_price;
                 oldUser.last_salary = userVM.last_salary;
                 oldUser.attendance_code = userVM.attendance_code;
-                if(userVM.last_salary != null)
+                oldUser.vacations_balance = userVM.vacations_balance;
+                
+           
+                if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).Any())
+                {
+                    VacationYear vacationYear = new VacationYear();
+                    vacationYear.year = DateTime.Now.Year;
+                    vacationYear.user_id = oldUser.id;
+                    if (userVM.vacations_balance != null)
+                        vacationYear.vacation_balance = userVM.vacations_balance;
+                    else
+                        vacationYear.vacation_balance = 21;
+
+                    vacationYear.a3tyady_vacation_counter = 0;
+                    vacationYear.arda_vacation_counter = 0;
+                    vacationYear.medical_vacation_counter = 0;
+                    vacationYear.married_vacation_counter = 0;
+                    vacationYear.work_from_home_vacation_counter = 0;
+                    vacationYear.death_vacation_counter = 0;
+                    vacationYear.active = 1;
+
+                    db.VacationYears.Add(vacationYear);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    VacationYear vacationYear = db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).FirstOrDefault();
+                    vacationYear.vacation_balance = userVM.vacations_balance;
+
+                    db.SaveChanges();
+                }
+                
+
+
+                if (userVM.last_salary != null)
                 {
                     oldUser.last_hour_price = userVM.last_salary / 30 / 8;
                 }

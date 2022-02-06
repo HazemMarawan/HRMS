@@ -15,7 +15,8 @@ namespace HRMS.Models
         [ForeignKey("VacationType")]
         public int? vacation_type_id { get; set; }
         public VacationType VacationType { get; set; }
-        public DateTime? vacation_date { get; set; }
+        public DateTime? vacation_from { get; set; }
+        public DateTime? vacation_to { get; set; }
         public int? status { get; set; }
         public int? approved_by_super_admin { get; set; }
         public DateTime? approved_by_super_admin_at { get; set; }

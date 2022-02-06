@@ -140,7 +140,6 @@ namespace HRMS.Controllers
                     db.WorkPermissionRequests.Add(WorkPermissionRequest);
                     db.SaveChanges();
                 }
-
               
             }
             else

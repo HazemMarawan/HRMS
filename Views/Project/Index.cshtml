@@ -195,7 +195,11 @@
                                 if (oData.areas.length != 0) {
                                     html += "<ul>";
                                     oData.areas.forEach(function (value) {
-                                        html += `<li>${value.name}</li>`;
+                                        html += `<li>
+                                                    ${value.name}
+                                                    <a href='javascript:void(0)' class='editArea' data-id='${value.id}' data-name='${value.name}'><i class="fa fa-edit"></i></a>
+                                                    <a href='javascript:void(0)' class='deleteArea' data-id='${value.id}' data-name='${value.name}'><i class="fa fa-trash"></i></a>
+                                                 </li>`;
                                     });
                                     html += "</ul>";
                                 }
@@ -231,10 +235,11 @@
                                 if (isSuperAdmin == "True") {
                                     html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
                                     html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;|&nbsp;";
-                                }
-                                if (isBranchAdmin == "True") 
                                     html += "<a class='add_area' href='javascript:void(0)' title='Add Area'><i class='fa fa-plus'></i></a>";
-                               
+
+                                }
+                                //if (isBranchAdmin == "True")
+
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -259,10 +264,10 @@
             });
 
            $("#add_project").click(function () {
-               var modal = $('#manage_project_modal').clone();
+                var modal = $('#manage_project_modal').clone();
                 var action = '@Url.Action("saveProject", "Project")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Project');
+                modal.find('#modal_title').text('Add Project');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -325,12 +330,12 @@
                 });
             });
 
-               $(document).on("click", ".add_area", function () {
-               var data = datatable.row($(this).closest('tr')).data();
-               var modal = $('#manage_area_modal').clone();
+            $(document).on("click", ".add_area", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                var modal = $('#manage_area_modal').clone();
                 var action = '@Url.Action("saveArea", "Project")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Area');
+                modal.find('#modal_title').text('Add Area');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -343,6 +348,53 @@
                 }, function (dialog) {
                         dialog.find("#project_id").val(data.id);
 
+                });
+            });
+
+           $(document).on("click", ".editArea", function () {
+               var data = datatable.row($(this).closest('tr')).data();
+               var id = $(this).attr('data-id');
+               var name = $(this).attr('data-name');
+               var modal = $('#manage_area_modal').clone();
+                var action = '@Url.Action("saveArea", "Project")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Edit Area');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+                    dialog.find("#id").val(id);
+                    //dialog.find("#project_id").val(data.id);
+                    dialog.find("#name").val(name);
+
+
+                });
+           });
+
+           $(document).on("click", ".deleteArea", function () {
+               var data = datatable.row($(this).closest('tr')).data();
+               var id = $(this).attr('data-id');
+               var name = $(this).attr('data-name');
+                warningBox("Are you sure you want to delete this Arae (<b>" + name +"</b>) ?", function () {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("deleteArea", "Project")',
+                        contentType: "application/json; charset=utf-8",
+                        data: { "id": id },
+                        datatype: "json",
+                        success: function (data) {
+                            datatable.draw();
+                        },
+                        error: function () {
+                            alert("Dynamic content load failed.");
+                        }
+                    });
                 });
             });
 

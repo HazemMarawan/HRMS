@@ -47,7 +47,8 @@ namespace HRMS.Controllers
                                            areas = db.Areas.Where(a=>a.project_id == project.id && a.active == (int)RowStatus.ACTIVE).Select(a=>new AreaViewModel
                                            {
                                                id = a.id,
-                                               name = a.name
+                                               name = a.name,
+                                               active = a.active
                                            }).ToList()
                                        }).Where(n => n.active == (int)RowStatus.ACTIVE);
 
@@ -147,15 +148,43 @@ namespace HRMS.Controllers
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult deleteArea(int id)
+        {
+            Area deleteArea = db.Areas.Find(id);
+            deleteArea.active = (int)RowStatus.INACTIVE;
+            deleteArea.deleted_at = DateTime.Now;
+            deleteArea.deleted_by = Session["id"].ToString().ToInt();
+
+            db.SaveChanges();
+
+            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public JsonResult saveArea(AreaViewModel areaViewModel)
         {
-            Area area = AutoMapper.Mapper.Map<AreaViewModel, Area>(areaViewModel);
+            User user = Session["user"] as User;
 
-            area.created_at = DateTime.Now;
-            area.created_by = Session["id"].ToString().ToInt();
+            if (areaViewModel.id == 0)
+            {
+                Area area = AutoMapper.Mapper.Map<AreaViewModel, Area>(areaViewModel);
 
-            db.Areas.Add(area);
+                area.created_at = DateTime.Now;
+                area.created_by = user.id;
+
+                db.Areas.Add(area);
+            }
+            else
+            {
+                Area area = db.Areas.Find(areaViewModel.id);
+                area.name = areaViewModel.name;
+                area.active = areaViewModel.active;
+                area.updated_at = DateTime.Now;
+                area.updated_by = user.id;
+                
+            }
+
             db.SaveChanges();
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }

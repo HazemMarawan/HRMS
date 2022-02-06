@@ -33,6 +33,14 @@ namespace HRMS.ViewModels
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
         public string full_name { get; set; }
-        public int? permission_count { get; set; }
+        public int permission_count { get; set; }
+        public int? branch_id { get; set; }
+        public int? type { get; set; }
+        public int? team_leader_id { get; set; }
+        public string super_admin_name { get; set; }
+        public string branch_admin_name { get; set; }
+        public string team_leader_name { get; set; }
+        public string rejected_by_name { get; set; }
+
     }
 }

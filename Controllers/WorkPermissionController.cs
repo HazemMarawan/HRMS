@@ -131,7 +131,7 @@ namespace HRMS.Controllers
                 WorkPermissionRequest.created_at = DateTime.Now;
                 WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
 
-                if (db.WorkPermissionRequests.Where(w => w.year == WorkPermissionRequest.year && w.month == WorkPermissionRequest.month).Count() >= 2)
+                if (db.WorkPermissionRequests.Where(w => w.year == WorkPermissionRequest.year && w.month == WorkPermissionRequest.month && w.user_id == currentUser.id).Count() >= 2)
                 {
                         return Json(new { message = "faild" }, JsonRequestBehavior.AllowGet);
                 }

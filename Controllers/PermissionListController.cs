@@ -17,7 +17,7 @@ namespace HRMS.Controllers
         HRMSDBContext db = new HRMSDBContext();
 
         // GET: PermissionList
-        public ActionResult Index()
+        public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
             if (!(isA.SuperAdmin() || isA.TeamLeader() || isA.BranchAdmin()))
@@ -90,6 +90,10 @@ namespace HRMS.Controllers
                 else if(isA.SuperAdmin())
                 {
                     permissionData = permissionData.Where(t => t.status == (int)ApprovementStatus.ApprovedByBranchAdmin);
+                    if(branch_id != null)
+                    {
+                        permissionData = permissionData.Where(t => t.branch_id == branch_id);
+                    }
                 }
                 else
                 {

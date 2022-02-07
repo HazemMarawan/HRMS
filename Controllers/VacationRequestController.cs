@@ -33,6 +33,7 @@ namespace HRMS.Controllers
                 vacationYear.year = DateTime.Now.Year;
                 vacationYear.user_id = currentUser.id;
                 vacationYear.vacation_balance = currentUser.vacations_balance;
+                vacationYear.remaining = vacationYear.vacation_balance;
                 vacationYear.a3tyady_vacation_counter = 0;
                 vacationYear.arda_vacation_counter = 0;
                 vacationYear.medical_vacation_counter = 0;
@@ -104,7 +105,7 @@ namespace HRMS.Controllers
         [HttpPost]
         public JsonResult saveVacationRequest(VacationRequestViewModel vacationRequestViewModel)
         {
-
+            User currentUser = Session["user"] as User;
             if (vacationRequestViewModel.id == 0)
             {
                 bool requestStatus = true;
@@ -132,25 +133,63 @@ namespace HRMS.Controllers
                         int Days = ((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).Days + 1;
                         if (Days < (int)selectedVacation.inform_before_duration)
                         {
+                            requestStatus = false;
                             errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Days Before";
                         }
                     }
                     else
                     {
-
+                        int Hours = (((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).Days)*24+24;
+                        if (Hours < (int)selectedVacation.inform_before_duration)
+                        {
+                            requestStatus = false;
+                            errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Hours Before";
+                        }
                     }
                 }
 
-                VacationRequest vacationRequest = AutoMapper.Mapper.Map<VacationRequestViewModel, VacationRequest>(vacationRequestViewModel);
-                
-                vacationRequest.user_id = Session["id"].ToString().ToInt();
-                vacationRequest.year = ((DateTime)vacationRequestViewModel.vacation_from).Year;
-                vacationRequest.created_at = DateTime.Now;
-                vacationRequest.created_by = Session["id"].ToString().ToInt();
-                vacationRequest.status = (int)ApprovementStatus.PendingApprove;
-                vacationRequest.active = (int)RowStatus.ACTIVE;
-                db.VacationRequests.Add(vacationRequest);
-                db.SaveChanges();
+                if(selectedVacation.max_days != null)
+                {
+                    int selectedVacationCounter = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.vacation_type_id == selectedVacation.id && vr.status != (int)ApprovementStatus.Rejected).Count();
+                    if(selectedVacationCounter>= selectedVacation.max_days)
+                    {
+                        requestStatus = false;
+                        errorReport += "Max Days " + selectedVacation.max_days.ToString() + "per Year";
+                    }
+                }
+
+                if(selectedVacation.closed_at_specific_time == 1)
+                {
+                    
+                    DateTime currentDateTime = DateTime.Now;
+                    TimeSpan currentTime = new TimeSpan(currentDateTime.Hour, currentDateTime.Minute, currentDateTime.Second) ;
+                    if(currentTime > selectedVacation.closed_at)
+                    {
+                        requestStatus = false;
+                        errorReport += "This Vacation can be applied before " + selectedVacation.closed_at.ToString();
+                    }
+
+                }
+                if (requestStatus == true)
+                {
+                    VacationRequest vacationRequest = AutoMapper.Mapper.Map<VacationRequestViewModel, VacationRequest>(vacationRequestViewModel);
+                    vacationRequest.user_id = Session["id"].ToString().ToInt();
+                    vacationRequest.year = ((DateTime)vacationRequestViewModel.vacation_from).Year;
+                    vacationRequest.created_at = DateTime.Now;
+                    vacationRequest.created_by = Session["id"].ToString().ToInt();
+                    if(selectedVacation.need_approve == 1)
+                        vacationRequest.status = (int)ApprovementStatus.PendingApprove;
+                    else
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                    vacationRequest.active = (int)RowStatus.ACTIVE;
+                    db.VacationRequests.Add(vacationRequest);
+                    db.SaveChanges();
+
+                    return Json(new { message = "done",success=true }, JsonRequestBehavior.AllowGet);
+                }
+                else
+
+                    return Json(new { message = errorReport,success=false }, JsonRequestBehavior.AllowGet);
             }
             else
             {

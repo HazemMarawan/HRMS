@@ -206,7 +206,13 @@
                     progressText: 'progress_text',
                 }, function (response) {
 
-                        datatable.draw();
+                        if (response.success == false) {
+                            Swal.fire(
+                                'Sorry!',
+                                response.message,
+                                'error'
+                            );
+                        }
 
                 }, function (response) {
 

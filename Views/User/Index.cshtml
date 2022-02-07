@@ -506,8 +506,10 @@
                                 }
                             }
 
-                            if ($(this).val() != 1)
+                            if ($(this).val() != 1) {
                                 dialog.find('#vacations_balance_div').show();
+                                dialog.find("#vacations_balance").val(21);
+                            }
                             else {
                                 dialog.find('#vacations_balance_div').hide();
                                 dialog.find('#vacations_balance').val("");

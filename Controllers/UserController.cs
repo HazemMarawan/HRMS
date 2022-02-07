@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && branch_id == currentUser.branch_id)))
+            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -165,6 +165,11 @@ namespace HRMS.Controllers
             ViewBag.Branches = db.Branches.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             ViewBag.Departments = db.Departments.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             ViewBag.Jobs = db.Jobs.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
+            
+            if (isA.BranchAdmin())
+            {
+                branch_id = currentUser.branch_id;
+            }
 
             ViewBag.branchId = branch_id;
             if (branch_id != null)
@@ -172,6 +177,12 @@ namespace HRMS.Controllers
                 ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
                 ViewBag.TeamLeaders = db.Users.Where(b => b.branch_id == branch_id && b.type == (int)UserRole.TeamLeader).Select(s => new UserViewModel { id = s.id, full_name = s.full_name }).ToList();
             }
+            else
+            {
+                ViewBag.branchName = "";
+            }
+
+
             return View();
         }
 
@@ -218,6 +229,7 @@ namespace HRMS.Controllers
                 else
                     vacationYear.vacation_balance = 21;
 
+                vacationYear.remaining = vacationYear.vacation_balance;
                 vacationYear.a3tyady_vacation_counter = 0;
                 vacationYear.arda_vacation_counter = 0;
                 vacationYear.medical_vacation_counter = 0;
@@ -272,7 +284,7 @@ namespace HRMS.Controllers
                         vacationYear.vacation_balance = userVM.vacations_balance;
                     else
                         vacationYear.vacation_balance = 21;
-
+                    vacationYear.remaining = vacationYear.vacation_balance;
                     vacationYear.a3tyady_vacation_counter = 0;
                     vacationYear.arda_vacation_counter = 0;
                     vacationYear.medical_vacation_counter = 0;

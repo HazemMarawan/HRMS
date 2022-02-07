@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || isA.TeamLeader() || isA.BranchAdmin()))
+            if (!(isA.SuperAdmin() || isA.TeamLeader() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id==null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -115,7 +115,19 @@ namespace HRMS.Controllers
                 }, JsonRequestBehavior.AllowGet);
 
             }
-
+            if (isA.BranchAdmin() || isA.TeamLeader())
+            {
+                branch_id = currentUser.branch_id;
+            }
+            ViewBag.branchId = branch_id;
+            if (branch_id != null)
+            {
+                ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
+            }
+            else
+            {
+                ViewBag.branchName = "Company";
+            }
             return View();
         }
 

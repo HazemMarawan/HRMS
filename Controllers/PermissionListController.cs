@@ -130,17 +130,17 @@ namespace HRMS.Controllers
                 if (status == 1)
                 {
                     workPermissionRequest.status += 1;
-                    if (currentUser.type == (int)UserRole.TeamLeader)
+                    if (isA.TeamLeader())
                     {
                         workPermissionRequest.approved_by_team_leader = currentUser.id;
                         workPermissionRequest.approved_by_team_leader_at = DateTime.Now;
                     }
-                    else if (currentUser.type == (int)UserRole.BranchAdmin)
+                    else if (isA.BranchAdmin())
                     {
                         workPermissionRequest.approved_by_branch_admin = currentUser.id;
                         workPermissionRequest.approved_by_branch_admin_at = DateTime.Now;
                     }
-                    else
+                    else if(isA.SuperAdmin())
                     {
                         workPermissionRequest.approved_by_super_admin = currentUser.id;
                         workPermissionRequest.approved_by_super_admin_at = DateTime.Now;

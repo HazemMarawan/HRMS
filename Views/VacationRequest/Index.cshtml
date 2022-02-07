@@ -172,7 +172,7 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<a href='/VacationRequest/History?id=" + oData.id +"' title='History'><i class='fas fa-eye'></i></a>";
+                                html += "<a href='/VacationRequest/History?id=" + oData.year +"' title='History'><i class='fas fa-eye'></i></a>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

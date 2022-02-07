@@ -101,7 +101,7 @@ namespace HRMS.Controllers
                 {
                     if (branch_id != null)
                     {
-                        userData = userData.Where(u => u.branch_id == branch_id);
+                        userData = userData.Where(u => u.branch_id == branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.BranchAdmin));
                     }
                     else
                     {
@@ -109,16 +109,10 @@ namespace HRMS.Controllers
 
                     }
                 }
-                else
+
+                else if (isA.BranchAdmin())
                 {
-                    if (isA.BranchAdmin() && (branch_id == currentUser.branch_id || branch_id == null))
-                    {
-                        userData = userData.Where(u => u.branch_id == currentUser.branch_id);
-                    }
-                    else
-                    {
-                        userData = userData.Where(u => u.branch_id == -1);
-                    }
+                    userData = userData.Where(u => u.branch_id == currentUser.branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader));
                 }
 
                 if (!string.IsNullOrEmpty(search_id_type))
@@ -266,6 +260,7 @@ namespace HRMS.Controllers
                 oldUser.last_salary = userVM.last_salary;
                 oldUser.attendance_code = userVM.attendance_code;
                 oldUser.vacations_balance = userVM.vacations_balance;
+                oldUser.team_leader_id = userVM.team_leader_id;
                 
            
                 if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).Any())

@@ -64,6 +64,7 @@ namespace HRMS.Controllers
                                             year = vacationYear.year,
                                             user_id = vacationYear.user_id,
                                             vacation_balance = vacationYear.vacation_balance,
+                                            remaining = vacationYear.remaining,
                                             a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter,
                                             arda_vacation_counter = vacationYear.arda_vacation_counter,
                                             medical_vacation_counter = vacationYear.medical_vacation_counter,
@@ -107,6 +108,7 @@ namespace HRMS.Controllers
             if (vacationRequestViewModel.id == 0)
             {
                 bool requestStatus = true;
+                string errorReport = String.Empty;
                 VacationTypeViewModel selectedVacation = db.VacationTypes.Where(vt => vt.id == vacationRequestViewModel.vacation_type_id).Select(vt => new VacationTypeViewModel
                 {
                     id = vt.id,
@@ -128,10 +130,10 @@ namespace HRMS.Controllers
                     if(selectedVacation.inform_before_duration_measurement == 1)
                     {
                         int Days = ((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).Days + 1;
-                        //if(Days < (int)vacationRequestViewModel.inform_before_duration)
-                        //{
-
-                        //}
+                        if (Days < (int)selectedVacation.inform_before_duration)
+                        {
+                            errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Days Before";
+                        }
                     }
                     else
                     {

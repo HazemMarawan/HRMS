@@ -132,6 +132,7 @@ namespace HRMS.Controllers
                 double? currentVacationDays = (int?)Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_to).ToShortDateString()).Date.Subtract(Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString())).TotalDays + 1;
                 VacationYearViewModel userVacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && vy.year == DateTime.Now.Year).Select(vy => new VacationYearViewModel { vacation_balance = vy.vacation_balance, remaining = vy.remaining }).FirstOrDefault();
                 int? totalVacations = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
+                totalVacations = totalVacations == null ? 0 : totalVacations;
                 int? actualRemaining = userVacationYear.vacation_balance - totalVacations;
                 if (currentVacationDays <= actualRemaining)
                 {

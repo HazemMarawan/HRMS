@@ -2776,6 +2776,7 @@
     <Content Include="Views\VacationType\Index.cshtml" />
     <Content Include="Views\VacationRequest\Index.cshtml" />
     <Content Include="Views\PermissionList\Index.cshtml" />
+    <Content Include="Views\VacationRequest\History.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

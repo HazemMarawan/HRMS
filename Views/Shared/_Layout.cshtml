@@ -432,6 +432,23 @@
             return output_date;
         }
 
+        function fixTime(input_time) {
+
+            var Hours = null;
+            if (input_time.Hours < 10)
+                Hours = "0" + input_time.Hours;
+            else
+                Hours = input_time.Hours;
+
+            var Minutes = null;
+            if (input_time.Minutes < 10)
+                Minutes = "0" + input_time.Minutes;
+            else
+                Minutes = input_time.Minutes;
+            var output_time = Hours + ":" + Minutes;
+            return output_time;
+        }
+
         $("#change_password").click(function () {
                var modal = $('#manage_change_password_modal').clone();
                 var action = '@Url.Action("changePassword", "Account")';

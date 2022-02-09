@@ -84,9 +84,10 @@ namespace HRMS.Controllers
 
                 if (HRMS.Auth.isA.SuperAdmin())
                 {
+                    productivityData = productivityData.Where(p => p.user_id != currentUser.id && p.branch_id == p.branch_id_branch_project && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader || p.type == (int)UserRole.BranchAdmin));
                     if (branch_id != null)
                     {
-                        productivityData = productivityData.Where(p => p.branch_id == branch_id && p.user_id != currentUser.id && p.branch_id == p.branch_id_branch_project && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader || p.type == (int)UserRole.BranchAdmin));
+                        productivityData = productivityData.Where(p => p.branch_id == branch_id);
                     }
                 }
 
@@ -281,9 +282,10 @@ namespace HRMS.Controllers
 
                 if(isA.SuperAdmin())
                 {
+                    productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.BranchAdmin));
                     if (branch_id != null)
                     {
-                        productivityData = productivityData.Where(s => s.branch_id == branch_id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.BranchAdmin));
+                        productivityData = productivityData.Where(s => s.branch_id == branch_id);
                     }
                 }
 

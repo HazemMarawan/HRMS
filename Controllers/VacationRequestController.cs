@@ -24,10 +24,11 @@ namespace HRMS.Controllers
             User currentUser = Session["user"] as User;
             if (currentUser.vacations_balance == null)
             {
-                currentUser.vacations_balance = 21;
+                User updatedUser = db.Users.Find(currentUser.id);
+                updatedUser.vacations_balance = 21;
                 db.SaveChanges();
             }
-            if (!db.VacationYears.Where(vy=>vy.year == DateTime.Now.Year && vy.user_id == currentUser.id).Any())
+            if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentUser.id).Any())
             {
                 VacationYear vacationYear = new VacationYear();
                 vacationYear.year = DateTime.Now.Year;
@@ -61,24 +62,24 @@ namespace HRMS.Controllers
                 int? totalPendingVacations = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
                 // Getting all data    
                 var vacationYearsData = (from vacationYear in db.VacationYears
-                                        select new VacationYearViewModel
-                                        {
-                                            id = vacationYear.id,
-                                            year = vacationYear.year,
-                                            user_id = vacationYear.user_id,
-                                            vacation_balance = vacationYear.vacation_balance,
-                                            remaining = vacationYear.remaining,
-                                            actual_remaining = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum()!=null?vacationYear.vacation_balance - db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum():vacationYear.vacation_balance,
-                                            pending = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum()!=null? db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() : 0,
-                                            a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter,
-                                            arda_vacation_counter = vacationYear.arda_vacation_counter,
-                                            medical_vacation_counter = vacationYear.medical_vacation_counter,
-                                            married_vacation_counter = vacationYear.married_vacation_counter,
-                                            work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter,
-                                            death_vacation_counter = vacationYear.death_vacation_counter,
-                                            active = vacationYear.active,
-                                            created_at = vacationYear.created_at
-                                        }).Where(n => n.user_id == currentUser.id && n.active == (int)RowStatus.ACTIVE);
+                                         select new VacationYearViewModel
+                                         {
+                                             id = vacationYear.id,
+                                             year = vacationYear.year,
+                                             user_id = vacationYear.user_id,
+                                             vacation_balance = vacationYear.vacation_balance,
+                                             remaining = vacationYear.remaining,
+                                             actual_remaining = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() != null ? vacationYear.vacation_balance - db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() : vacationYear.vacation_balance,
+                                             pending = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() != null ? db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() : 0,
+                                             a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter,
+                                             arda_vacation_counter = vacationYear.arda_vacation_counter,
+                                             medical_vacation_counter = vacationYear.medical_vacation_counter,
+                                             married_vacation_counter = vacationYear.married_vacation_counter,
+                                             work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter,
+                                             death_vacation_counter = vacationYear.death_vacation_counter,
+                                             active = vacationYear.active,
+                                             created_at = vacationYear.created_at
+                                         }).Where(n => n.user_id == currentUser.id && n.active == (int)RowStatus.ACTIVE);
 
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
@@ -326,12 +327,12 @@ namespace HRMS.Controllers
 
         public ActionResult History(int year)
         {
-            if(!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin()))
                 return RedirectToAction("Index", "Dashboard");
             User currentUser = Session["user"] as User;
             if (Request.IsAjaxRequest())
             {
-                
+
                 var draw = Request.Form.GetValues("draw").FirstOrDefault();
                 var start = Request.Form.GetValues("start").FirstOrDefault();
                 var length = Request.Form.GetValues("length").FirstOrDefault();
@@ -381,6 +382,183 @@ namespace HRMS.Controllers
             ViewBag.currentYear = DateTime.Now.Year;
             ViewBag.VacationTypes = db.VacationTypes.Select(v => new { v.id, v.name }).ToList();
             return View();
+        }
+
+        public ActionResult Approval(int? branch_id)
+        {
+            User currentUser = Session["user"] as User;
+
+            if (!(isA.TeamLeader() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null)) || isA.SuperAdmin()))
+                return RedirectToAction("Index", "Dashboard");
+
+            if (Request.IsAjaxRequest())
+            {
+
+                var draw = Request.Form.GetValues("draw").FirstOrDefault();
+                var start = Request.Form.GetValues("start").FirstOrDefault();
+                var length = Request.Form.GetValues("length").FirstOrDefault();
+                var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                // Getting all data    
+                var productitvityData = (from vacationRequest in db.VacationRequests
+                                         join vacationType in db.VacationTypes on vacationRequest.vacation_type_id equals vacationType.id
+                                         join user in db.Users on vacationRequest.user_id equals user.id
+                                         join superAd in db.Users on vacationRequest.approved_by_super_admin equals superAd.id into sa
+                                         from superAdmin in sa.DefaultIfEmpty()
+                                         join branchAd in db.Users on vacationRequest.approved_by_branch_admin equals branchAd.id into ba
+                                         from branchAdmin in ba.DefaultIfEmpty()
+                                         join teamLead in db.Users on vacationRequest.approved_by_team_leader equals teamLead.id into tl
+                                         from teamLeader in tl.DefaultIfEmpty()
+                                         select new VacationRequestViewModel
+                                         {
+                                             id = vacationRequest.id,
+                                             user_id = vacationRequest.user_id,
+                                             branch_id = user.branch_id,
+                                             team_leader_id = user.team_leader_id,
+                                             user_type = user.type,
+                                             full_name = user.full_name,
+                                             year = vacationRequest.year,
+                                             vacation_type_id = vacationRequest.vacation_type_id,
+                                             vacation_name = vacationType.name,
+                                             vacation_from = vacationRequest.vacation_from,
+                                             vacation_to = vacationRequest.vacation_to,
+                                             days = vacationRequest.days,
+                                             status = vacationRequest.status,
+                                             active = vacationRequest.active,
+                                             created_at = vacationRequest.created_at,
+                                             approved_by_super_admin_name = superAdmin.full_name,
+                                             approved_by_branch_admin_name = branchAdmin.full_name,
+                                             approved_by_team_leader_name = teamLeader.full_name,
+                                             approved_by_super_admin_at = vacationRequest.approved_by_super_admin_at,
+                                             approved_by_branch_admin_at = vacationRequest.approved_by_branch_admin_at,
+                                             approved_by_team_leader_at = vacationRequest.approved_by_team_leader_at,
+                                         }).Where(n => n.active == (int)RowStatus.ACTIVE);
+
+                //Search    
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    productitvityData = productitvityData.Where(m => m.vacation_name.ToLower().Contains(searchValue.ToLower()) || m.id.ToString().ToLower().Contains(searchValue.ToLower()));
+                }
+
+                if (isA.SuperAdmin())
+                {
+                    productitvityData = productitvityData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.BranchAdmin));
+                    if (branch_id != null)
+                    {
+                        productitvityData = productitvityData.Where(p => p.branch_id == branch_id);
+                    }
+                }
+
+                if (isA.BranchAdmin())
+                {
+                    productitvityData = productitvityData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTeamLeader && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader));
+
+                }
+
+                if (isA.TeamLeader())
+                {
+                    productitvityData = productitvityData.Where(p => p.team_leader_id == currentUser.id && p.status == (int)ApprovementStatus.PendingApprove && p.user_id != currentUser.id && p.user_type == (int)UserRole.Employee);
+
+                }
+                //total number of rows count     
+                var displayResult = productitvityData.OrderByDescending(u => u.id).Skip(skip)
+                     .Take(pageSize).ToList();
+                var totalRecords = productitvityData.Count();
+
+                return Json(new
+                {
+                    draw = draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = totalRecords,
+                    data = displayResult
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+
+            if (isA.BranchAdmin() || isA.TeamLeader())
+            {
+                branch_id = currentUser.branch_id;
+            }
+            ViewBag.branchId = branch_id;
+            if (branch_id != null)
+            {
+                ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
+            }
+            else
+            {
+                ViewBag.branchName = "Company";
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public JsonResult acceptVacation(int? id)
+        {
+            VacationRequest vacationRequest = db.VacationRequests.Find(id);
+            if (isA.SuperAdmin())
+            {
+                vacationRequest.approved_by_super_admin = Session["id"].ToString().ToInt();
+                vacationRequest.approved_by_super_admin_at = DateTime.Now;
+                vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+            }
+
+            if (isA.BranchAdmin())
+            {
+                vacationRequest.approved_by_branch_admin = Session["id"].ToString().ToInt();
+                vacationRequest.approved_by_branch_admin_at = DateTime.Now;
+                vacationRequest.status = (int)ApprovementStatus.ApprovedByBranchAdmin;
+            }
+
+            if (isA.TeamLeader())
+            {
+                vacationRequest.approved_by_team_leader = Session["id"].ToString().ToInt();
+                vacationRequest.approved_by_team_leader_at = DateTime.Now;
+                vacationRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
+            }
+
+            db.SaveChanges();
+            if (isA.SuperAdmin())
+            {
+                VacationTypeViewModel vacationTypeView = db.VacationTypes.Where(vt => vt.id == vacationRequest.vacation_type_id).Select(vt => new VacationTypeViewModel
+                {
+                    value = vt.value
+                }).FirstOrDefault();
+                VacationYear vacationYear = db.VacationYears.Where(vy => vy.year == vacationRequest.year && vy.user_id == vacationRequest.user_id).FirstOrDefault();
+                if (vacationTypeView.value == 1)
+                    vacationYear.a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter != null ? vacationYear.a3tyady_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                else if (vacationTypeView.value == 2)
+                    vacationYear.arda_vacation_counter = vacationYear.arda_vacation_counter != null ? vacationYear.arda_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                else if (vacationTypeView.value == 3)
+                    vacationYear.medical_vacation_counter = vacationYear.medical_vacation_counter != null ? vacationYear.medical_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                else if (vacationTypeView.value == 4)
+                    vacationYear.married_vacation_counter = vacationYear.married_vacation_counter != null ? vacationYear.married_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                else if (vacationTypeView.value == 5)
+                    vacationYear.work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter != null ? vacationYear.work_from_home_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                else if (vacationTypeView.value == 6)
+                    vacationYear.death_vacation_counter = vacationYear.death_vacation_counter != null ? vacationYear.death_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                db.SaveChanges();
+            }
+            return Json(new { msg = "done" }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public JsonResult rejectVacation(int? id)
+        {
+            VacationRequest vacationRequest = db.VacationRequests.Find(id);
+            vacationRequest.rejected_by = Session["id"].ToString().ToInt();
+            vacationRequest.rejected_by_at = DateTime.Now;
+            vacationRequest.status = (int)ApprovementStatus.Rejected;
+            db.SaveChanges();
+
+            return Json(new { msg = "done" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

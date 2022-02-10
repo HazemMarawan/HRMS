@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Vacation Requests";
+    ViewBag.Title = "History";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -58,23 +58,21 @@
 
 <div class="card">
     <div class="card-header">
-        <a href="javascript:void(0)" id="add_vacation_request"><i class="fa fa-plus"></i> Vacation Request</a>
+        <a style="color:blue;" href="@Url.Action("Index","VacationRequest")"><i class="fas fa-home"></i></a> @ViewBag.year <span>Vacations</span>
+
     </div>
     <div class="card-body">
 
         <div class="table-responsive">
-            <table id="vacationYearTable" class="table table-striped table-bordered" style="width:100%">
+            <table id="vacationHistoryTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Year</th>
-                        <th>Regular</th>
-                        <th>Casual</th>
-                        <th>Medical</th>
-                        <th>Married</th>
-                        <th>WFH</th>
-                        <th>Death</th>
-                        <th>Balance</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Days</th>
+                        <th>Status</th>
+                        <th>Active</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -89,7 +87,7 @@
     <script>
        $(document).ready(function () {
 
-           var datatable = $('#vacationYearTable')
+           var datatable = $('#vacationHistoryTable')
                .DataTable({/* we added this from the other system to have same search and same pagination*/
                    "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                        "<'table-responsive  'tr>" +
@@ -120,7 +118,7 @@
                     "pageLength":10,
                     "rowId": 'id',
                     "ajax": {
-                        "url": "@Url.Action("Index", "VacationRequest")",
+                        "url": "@Url.Action("History", "VacationRequest")?year=@ViewBag.year",
                         "type": "POST",
                         "datatype": "json",
                         "dataSrc": "data"
@@ -131,55 +129,54 @@
                             "searchable": true
                         },
                         {
-                            "data": "year",
+                            "data": "vacation_name",
                             "searchable": true
                         },
                         {
-                            "data": "a3tyady_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "arda_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "medical_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "married_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "work_from_home_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "death_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "vacation_balance", "searchable": true,
+                            "data": "vacation_from", "seisAarchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-                               
-                                if (oData.vacation_balance)
-                                    html += "<b>Total: </b>" + oData.vacation_balance + "<br>";
+                                if (oData.vacation_from)
+                                    html += "<b>From: </b>" + fixDate(oData.vacation_from)+"<br>";
+                                if (oData.vacation_to)
+                                    html += "<b>To: </b>" + fixDate(oData.vacation_to) + "<br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "days",
+                            "searchable": true
+                        },
+                        {
+                            "data": "status", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
+                                var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
+                                var isEmployee = '@HRMS.Auth.isA.Employee()';
+
+                                if (oData.status == 1)
+                                    html = "<span class='badge badge-info'>Pending Team Leader Approval</span>";
+                                else if (oData.status == 2)
+                                    html = "<span class='badge badge-warning'>Pending HR Approval</span>";
+                                else if (oData.status == 3)
+                                    html = "<span class='badge badge-primary'>Pending Executive Director Approval</span>";
+                                else if (oData.status == 4)
+                                    html = "<span class='badge badge-success'>Approved</span>";
+                                else if (oData.status == 5)
+                                    html = "<span class='badge badge-danger'>Rejected</span>";
+
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                         {
+                            "data": "active", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.active == 1)
+                                    html += "<span class='badge badge-primary'>Active</span>";
                                 else
-                                    html += "<b>Pending: </b>21<br>";
-
-                                if (oData.pending)
-                                    html += "<b>Pending: </b>" + oData.pending + "<br>";
-                                else
-                                    html += "<b>Pending: </b>0<br>";
-
-                                if (oData.actual_remaining)
-                                    html += "<b>Remaining: </b>" + oData.actual_remaining + "<br>";
-                                else
-                                    html += "<b>Remaining: </b>" + oData.vacation_balance + "<br>";
-
-                                
-
+                                    html += "<span class='badge badge-danger'>Not Active</span>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -187,8 +184,19 @@
                             "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
+                                var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
+                                var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
+                                var isEmployee = '@HRMS.Auth.isA.Employee()';
 
-                                html += "<a href='/VacationRequest/History?year=" + oData.year +"' title='History'><i class='fas fa-eye'></i></a>";
+                                if ('@ViewBag.year' == '@ViewBag.currentYear') {
+                                    if ((isBranchAdmin == "True" && oData.status == 3) || (isTeamLeader == "True" && oData.status == 2) || (isEmployee == "True" && oData.status == 1)) {
+                                        html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                        html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;";
+                                    }
+                                }
+
+
+
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -212,16 +220,16 @@
 
             });
 
-           $("#add_vacation_request").click(function () {
-               var modal = $('#manage_vacation_request_modal').clone();
+            $(document).on("click", ".edit", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                var modal = $('#manage_vacation_request_modal').clone();
                 var action = '@Url.Action("saveVacationRequest", "VacationRequest")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Vacation Request');
+                modal.find('#modal_title').text('Edit Vacation');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
                 }, function (response) {
-
                         if (response.success == false) {
                             Swal.fire(
                                 'Sorry!',
@@ -242,41 +250,20 @@
 
                 }, function (dialog) {
 
-
-                });
-            });
-
-            $(document).on("click", ".edit", function () {
-                var data = datatable.row($(this).closest('tr')).data();
-                console.log(data);
-                var modal = $('#manage_vacation_request_modal').clone();
-                var action = '@Url.Action("saveVacationRequest", "VacationRequest")';
-                modal.find('form').attr('action', action);
-                modal.find('#modal_title').text('Edit Vacation Request');
-                modal.execModal({
-                    progressBar: 'progress_bar',
-                    progressText: 'progress_text',
-                }, function (response) {
-                        datatable.draw();
-
-                }, function (response) {
-
-                }, function (dialog) {
-
                         dialog.find('#id').val(data.id);
-                        dialog.find('#name').val(data.name);
-                        dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
-
+                        dialog.find('#vacation_type_id option[value=' + data.vacation_type_id + ']').attr('selected', 'selected');
+                        dialog.find('#vacation_from').val(fixDate(data.vacation_from));
+                        dialog.find('#vacation_to').val(fixDate(data.vacation_to));
                 });
 
             });
 
             $(document).on("click", ".delete", function () {
                 var data = datatable.row($(this).closest('tr')).data();
-                warningBox("Are you sure you want to delete this Request?", function () {
+                warningBox("Are you sure you want to delete this Vacation (<b>" + data.vacation_name +"</b>) ?", function () {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("deleteProjectType", "ProjectType")',
+                        url: '@Url.Action("deleteVacationRequest", "VacationRequest")',
                         contentType: "application/json; charset=utf-8",
                         data: { "id": data.id },
                         datatype: "json",
@@ -289,6 +276,8 @@
                     });
                 });
             });
+
+
 
         });
 

@@ -19,7 +19,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User user = Session["user"] as User;
-            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && branch_id == user.branch_id)))
+            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && (user.branch_id == branch_id || branch_id == null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -65,18 +65,10 @@ namespace HRMS.Controllers
                         productitvityData = productitvityData.Where(p => branchProjects.Contains(p.id));
                     }
                 }
-                else
+                else if (isA.BranchAdmin())
                 {
-                    
-                    if(isA.BranchAdmin() && branch_id == user.branch_id)
-                    {
-                        List<int?> branchProjects = db.BranchProjects.Where(b => b.branch_id == branch_id).Select(b => b.project_id).ToList();
-                        productitvityData = productitvityData.Where(p => branchProjects.Contains(p.id));
-                    }
-                    else
-                    {
-                        productitvityData = productitvityData.Where(p => p.id == -1);
-                    }
+                    List<int?> branchProjects = db.BranchProjects.Where(b => b.branch_id == user.branch_id).Select(b => b.project_id).ToList();
+                    productitvityData = productitvityData.Where(p => branchProjects.Contains(p.id));
                 }
                 
 
@@ -96,6 +88,10 @@ namespace HRMS.Controllers
 
             }
             ViewBag.ProjectTypes = db.ProjectTypes.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
+            if (isA.BranchAdmin())
+            {
+                branch_id = user.branch_id;
+            }
             ViewBag.branchId = branch_id;
             if(branch_id != null)
                 ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;

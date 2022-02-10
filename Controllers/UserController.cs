@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && branch_id == currentUser.branch_id)))
+            if (!(isA.SuperAdmin() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -41,7 +41,8 @@ namespace HRMS.Controllers
                 var userData = (from user in db.Users
                                 join idtype in db.IDTypes on user.id_type equals idtype.id
                                 join nationality in db.Nationalities on user.nationality_id equals nationality.id
-                                join branch in db.Branches on user.branch_id equals branch.id
+                                join bran in db.Branches on user.branch_id equals bran.id into br
+                                from branch in br.DefaultIfEmpty()
                                 join department in db.Departments on user.department_id equals department.id
                                 join job in db.Jobs on user.job_id equals job.id
                                 select new UserViewModel
@@ -99,26 +100,16 @@ namespace HRMS.Controllers
 
                 if (isA.SuperAdmin())
                 {
+                    userData = userData.Where(u => u.type == (int)UserRole.SuperAdmin || u.type == (int)UserRole.BranchAdmin);
                     if (branch_id != null)
                     {
                         userData = userData.Where(u => u.branch_id == branch_id);
                     }
-                    else
-                    {
-                        userData = userData.Where(u => u.type == (int)UserRole.SuperAdmin || u.type == (int)UserRole.BranchAdmin);
-
-                    }
                 }
-                else
+
+                else if (isA.BranchAdmin())
                 {
-                    if (isA.BranchAdmin() && (branch_id == currentUser.branch_id || branch_id == null))
-                    {
-                        userData = userData.Where(u => u.branch_id == currentUser.branch_id);
-                    }
-                    else
-                    {
-                        userData = userData.Where(u => u.branch_id == -1);
-                    }
+                    userData = userData.Where(u => u.branch_id == currentUser.branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader));
                 }
 
                 if (!string.IsNullOrEmpty(search_id_type))
@@ -171,6 +162,11 @@ namespace HRMS.Controllers
             ViewBag.Branches = db.Branches.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             ViewBag.Departments = db.Departments.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             ViewBag.Jobs = db.Jobs.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
+            
+            if (isA.BranchAdmin())
+            {
+                branch_id = currentUser.branch_id;
+            }
 
             ViewBag.branchId = branch_id;
             if (branch_id != null)
@@ -178,6 +174,12 @@ namespace HRMS.Controllers
                 ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
                 ViewBag.TeamLeaders = db.Users.Where(b => b.branch_id == branch_id && b.type == (int)UserRole.TeamLeader).Select(s => new UserViewModel { id = s.id, full_name = s.full_name }).ToList();
             }
+            else
+            {
+                ViewBag.branchName = "";
+            }
+
+
             return View();
         }
 
@@ -198,8 +200,12 @@ namespace HRMS.Controllers
                 {
                     user.branch_id = currentUser.branch_id;
                 }
-
-                user.full_name = user.first_name + " " + user.middle_name + " " + user.last_name;
+                if (userVM.vacations_balance != null)
+                    user.vacations_balance = userVM.vacations_balance;
+                else
+                {
+                    user.vacations_balance = 21;
+                }
                 user.created_at = DateTime.Now;
                 user.created_by = Session["id"].ToString().ToInt();
 
@@ -219,11 +225,8 @@ namespace HRMS.Controllers
                 VacationYear vacationYear = new VacationYear();
                 vacationYear.year = DateTime.Now.Year;
                 vacationYear.user_id = user.id;
-                if (userVM.vacations_balance != null)
-                    vacationYear.vacation_balance = userVM.vacations_balance;
-                else
-                    vacationYear.vacation_balance = 21;
-
+                vacationYear.vacation_balance = user.vacations_balance;
+                vacationYear.remaining = vacationYear.vacation_balance;
                 vacationYear.a3tyady_vacation_counter = 0;
                 vacationYear.arda_vacation_counter = 0;
                 vacationYear.medical_vacation_counter = 0;
@@ -249,7 +252,7 @@ namespace HRMS.Controllers
                 oldUser.first_name = userVM.first_name;
                 oldUser.middle_name = userVM.middle_name;
                 oldUser.last_name = userVM.last_name;
-                oldUser.full_name = userVM.first_name + " " + userVM.middle_name + " " + userVM.last_name;
+                oldUser.full_name = userVM.full_name;
                 oldUser.id_type = userVM.id_type;
                 oldUser.id_number = userVM.id_number;
                 oldUser.birth_date = userVM.birth_date;
@@ -265,39 +268,13 @@ namespace HRMS.Controllers
                 oldUser.last_over_time_price = userVM.last_over_time_price;
                 oldUser.last_salary = userVM.last_salary;
                 oldUser.attendance_code = userVM.attendance_code;
-                oldUser.vacations_balance = userVM.vacations_balance;
-                
-           
-                if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).Any())
-                {
-                    VacationYear vacationYear = new VacationYear();
-                    vacationYear.year = DateTime.Now.Year;
-                    vacationYear.user_id = oldUser.id;
-                    if (userVM.vacations_balance != null)
-                        vacationYear.vacation_balance = userVM.vacations_balance;
-                    else
-                        vacationYear.vacation_balance = 21;
-
-                    vacationYear.a3tyady_vacation_counter = 0;
-                    vacationYear.arda_vacation_counter = 0;
-                    vacationYear.medical_vacation_counter = 0;
-                    vacationYear.married_vacation_counter = 0;
-                    vacationYear.work_from_home_vacation_counter = 0;
-                    vacationYear.death_vacation_counter = 0;
-                    vacationYear.active = 1;
-
-                    db.VacationYears.Add(vacationYear);
-                    db.SaveChanges();
-                }
+                oldUser.team_leader_id = userVM.team_leader_id;
+                if (userVM.vacations_balance != null)
+                    oldUser.vacations_balance = userVM.vacations_balance;
                 else
                 {
-                    VacationYear vacationYear = db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).FirstOrDefault();
-                    vacationYear.vacation_balance = userVM.vacations_balance;
-
-                    db.SaveChanges();
+                    oldUser.vacations_balance = 21;
                 }
-                
-
 
                 if (userVM.last_salary != null)
                 {
@@ -320,6 +297,32 @@ namespace HRMS.Controllers
                 oldUser.updated_at = DateTime.Now;
                 oldUser.updated_by = Session["id"].ToString().ToInt();
                 db.SaveChanges();
+
+                if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).Any())
+                {
+                    VacationYear vacationYear = new VacationYear();
+                    vacationYear.year = DateTime.Now.Year;
+                    vacationYear.user_id = oldUser.id;
+                    vacationYear.vacation_balance = oldUser.vacations_balance;
+                    vacationYear.remaining = vacationYear.vacation_balance;
+                    vacationYear.a3tyady_vacation_counter = 0;
+                    vacationYear.arda_vacation_counter = 0;
+                    vacationYear.medical_vacation_counter = 0;
+                    vacationYear.married_vacation_counter = 0;
+                    vacationYear.work_from_home_vacation_counter = 0;
+                    vacationYear.death_vacation_counter = 0;
+                    vacationYear.active = 1;
+
+                    db.VacationYears.Add(vacationYear);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    VacationYear vacationYear = db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == oldUser.id).FirstOrDefault();
+                    vacationYear.vacation_balance = userVM.vacations_balance;
+
+                    db.SaveChanges();
+                }
             }
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

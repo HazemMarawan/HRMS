@@ -184,7 +184,7 @@
                                 }
                                
                                 if (oData.closed_at_specific_time == 1) {
-                                    html += "<b>Closed at: </b>"+oData.closed_at.Hours + ":" + oData.closed_at.Minutes;
+                                    html += "<b>Closed at: </b>" + fixTime(oData.closed_at);
                                     html += "<br>";
                                 }
 
@@ -321,7 +321,10 @@
                         if (data.closed_at_specific_time == 1) {
                             dialog.find("#closed_at_specific_time").prop('checked', true);
                             dialog.find("#closed_at_div").show();
-                            dialog.find("#closed_at").val(data.closed_at.Hours + ":" + data.closed_at.Minutes);
+                            console.log(data.closed_at);
+                            if (data.closed_at) {
+                                dialog.find("#closed_at").val(fixTime(data.closed_at));
+                            }
                         }
                         if (data.include_official_vacation == 1) {
                             dialog.find("#include_official_vacation").prop('checked', true);

@@ -17,6 +17,7 @@ namespace HRMS.ViewModels
         public TimeSpan? closed_at { get; set; }
         public int? max_days { get; set; }
         public int? include_official_vacation { get; set; }
+        public int? value { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

@@ -20,33 +20,25 @@
                             <div class="form-group col-md-12">
                                 <center><img src="~/images/userProfile.jpeg" width="150" height="150" id="imageProfile" class="rounded-circle shadow" alt="" /></center>
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Code <small id="code_error" style="display:none;" class="badge badge-danger"> <i class="lni lni-close"></i> code already taken</small><small id="code_valid" class="badge badge-success" style="display:none;"><i class="lni lni-checkmark"></i> valid code</small></label>
                                 <input name="code" id="code" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Attendance Code</label>
                                 <input name="attendance_code" id="attendance_code" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Username <small id="user_name_error" style="display:none;" class="badge badge-danger"> <i class="lni lni-close"></i> username already taken</small><small id="user_name_valid" class="badge badge-success" style="display:none;"><i class="lni lni-checkmark"></i> valid username</small></label>
                                 <input required name="user_name" id="user_name" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label>Password</label>
                                 <input required name="password" id="password" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-4">
-                                <label>First Name</label>
-                                <input required name="first_name" id="first_name" type="text" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>Middle Name</label>
-                                <input required name="middle_name" id="middle_name" type="text" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>Last Name</label>
-                                <input required name="last_name" id="last_name" type="text" class="form-control radius-30" />
+                            <div class="form-group col-md-12">
+                                <label>Full Name</label>
+                                <input required name="full_name" id="full_name" type="text" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Last Salary</label>
@@ -78,19 +70,8 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Nationality</label>
-                                @Html.DropDownList("nationality_id", new SelectList(ViewBag.Nationalities, "id", "name"), "Select Nationality", new { @class = "form-control", @name = "nationality_id", @style = "width:100%", @id = "nationality_id",@required="required" })
+                                @Html.DropDownList("nationality_id", new SelectList(ViewBag.Nationalities, "id", "name"), "Select Nationality", new { @class = "form-control", @name = "nationality_id", @style = "width:100%", @id = "nationality_id", @required = "required" })
                             </div>
-                            @if (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId == null)
-                            {
-                                <div class="form-group col-md-4" id="branch_div">
-                                    <label>Branch</label>
-                                    @Html.DropDownList("branch_id", new SelectList(ViewBag.Branches, "id", "name"), "Select Branch", new { @class = "form-control", @name = "branch_id", @style = "width:100%", @id = "branch_id", @required = "required" })
-                                </div>
-                            }
-                            else
-                            {
-                                <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
-                            }
                             <div class="form-group col-md-4">
                                 <label>Department</label>
                                 @Html.DropDownList("department_id", new SelectList(ViewBag.Departments, "id", "name"), "Select Department", new { @class = "form-control", @name = "department_id", @style = "width:100%", @id = "department_id", @required = "required" })
@@ -126,6 +107,17 @@
                                     }
                                 </select>
                             </div>
+                            @if (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId == null)
+                            {
+                                <div class="form-group col-md-4" id="branch_div" style="display:none;">
+                                    <label>Branch</label>
+                                    @Html.DropDownList("branch_id", new SelectList(ViewBag.Branches, "id", "name"), "Select Branch", new { @class = "form-control", @name = "branch_id", @style = "width:100%", @id = "branch_id", @required = "required" })
+                                </div>
+                            }
+                            else
+                            {
+                                <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
+                            }
                             @if (HRMS.Auth.isA.BranchAdmin() || (HRMS.Auth.isA.SuperAdmin() && ViewBag.branchId != null))
                             {
                                 <div class="form-group col-md-4" style="display:none;" id="team_leader_div">
@@ -133,12 +125,12 @@
                                     @Html.DropDownList("team_leader_id", new SelectList(ViewBag.TeamLeaders, "id", "full_name"), "Select Team Leader", new { @class = "form-control", @name = "team_leader_id", @style = "width:100%", @id = "team_leader_id" })
                                 </div>
                             }
-                           
-                            <div class="form-group col-md-8" style="display:none;" id="vacations_balance_div">
+
+                            <div class="form-group col-md-4" style="display:none;" id="vacations_balance_div">
                                 <label>Vacation Balance</label>
                                 <input name="vacations_balance" id="vacations_balance" type="number" class="form-control radius-30" />
                             </div>
-                           
+
                             <div class="form-group col-md-8">
                                 <label>Notes</label>
                                 <input name="notes" id="notes" type="text" class="form-control radius-30" />
@@ -486,17 +478,29 @@
 
                         dialog.find("#type").change(function () {
                             var currentRole = $(this).val();
-                            if (currentRole == 1) {
-                                dialog.find("#branch_id").val("");
-                                dialog.find("#branch_div").hide();
-                            }
-                            else {
-                                dialog.find("#branch_id").val("");
-                                dialog.find("#branch_div").show();
+                            if (currentRole) {
+                                if (currentRole == 1) {
+                                    dialog.find('#branch_id').prop("required", false);
+                                    dialog.find("#branch_id").val("");
+                                    dialog.find("#branch_div").hide();
+
+                                    dialog.find('#vacations_balance_div').prop("required", false);
+                                    dialog.find('#vacations_balance_div').hide();
+                                    dialog.find('#vacations_balance').val("");
+                                }
+                                else {
+                                    dialog.find('#branch_id').prop("required", true);
+                                    dialog.find("#branch_id").val("");
+                                    dialog.find("#branch_div").show();
+
+                                    dialog.find('#vacations_balance_div').prop("required", true);
+                                    dialog.find('#vacations_balance_div').show();
+                                    dialog.find("#vacations_balance").val(21);
+                                }
 
                                 if (currentRole == 3) {
                                     dialog.find("#team_leader_id").val("");
-                                    dialog.find("#team_leader_id").prop('required',true);
+                                    dialog.find("#team_leader_id").prop('required', true);
                                     dialog.find("#team_leader_div").show();
                                 }
                                 else {
@@ -505,12 +509,18 @@
                                     dialog.find("#team_leader_div").hide();
                                 }
                             }
-
-                            if ($(this).val() != 1)
-                                dialog.find('#vacations_balance_div').show();
                             else {
+                                dialog.find('#branch_id').prop("required", false);
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").hide();
+
+                                dialog.find('#vacations_balance_div').prop("required", false);
                                 dialog.find('#vacations_balance_div').hide();
                                 dialog.find('#vacations_balance').val("");
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
                             }
                         });
                 });
@@ -541,6 +551,7 @@
                         dialog.find('#first_name').val(data.first_name);
                         dialog.find('#middle_name').val(data.middle_name);
                         dialog.find('#last_name').val(data.last_name);
+                        dialog.find('#full_name').val(data.full_name);
                         dialog.find('#id_type option[value=' + data.id_type + ']').attr('selected', 'selected');
                         dialog.find('#id_number').val(data.id_number);
                         if (data.birth_date != null) {
@@ -562,7 +573,10 @@
                             dialog.find('#hiring_date').val(fixDate(data.hiring_date));
                         }
                         dialog.find('#type option[value=' + data.type + ']').attr('selected', 'selected');
-                        dialog.find('#vacations_balance').val(data.vacations_balance);
+                        if (data.vacations_balance)
+                            dialog.find('#vacations_balance').val(data.vacations_balance);
+                        else
+                            dialog.find('#vacations_balance').val(21);
                         dialog.find('#notes').val(data.notes);
                         
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
@@ -582,17 +596,61 @@
                             dialog.find('#vacations_balance_div').show();
                         }
 
-                        $(document).on('change', '#type', function (event) {
-                            if ($(this).val() == 3)
-                                dialog.find('#team_leader_div').show();
-                            else
-                                dialog.find('#team_leader_div').hide();
+                        if (data.type == 1) {
+                            dialog.find('#branch_id').prop("required", false);
+                            dialog.find("#branch_id").val("");
+                            dialog.find("#branch_div").hide();
+                        }
+                       
 
-                            if ($(this).val() != 1)
-                                dialog.find('#vacations_balance_div').show();
+                        $(document).on('change', '#type', function (event) {
+                            var currentRole = $(this).val();
+                            if (currentRole) {
+                                if (currentRole == 1) {
+                                    dialog.find('#branch_id').prop("required", false);
+                                    dialog.find("#branch_id").val("");
+                                    dialog.find("#branch_div").hide();
+
+                                    dialog.find('#vacations_balance').prop("required", false);
+                                    dialog.find('#vacations_balance_div').hide();
+                                    dialog.find('#vacations_balance').val("");
+                                }
+                                else {
+                                    dialog.find('#branch_id').prop("required", true);
+                                    dialog.find("#branch_id").val("");
+                                    dialog.find("#branch_div").show();
+
+                                    dialog.find('#vacations_balance').prop("required", true);
+                                    if (data.vacations_balance)
+                                        dialog.find('#vacations_balance').val(data.vacations_balance);
+                                    else
+                                        dialog.find('#vacations_balance').val(21);
+                                    dialog.find('#vacations_balance_div').show();
+                                }
+
+                                if (currentRole == 3) {
+                                    dialog.find('#team_leader_id').prop("required", true);
+                                    dialog.find('#team_leader_id').val(data.team_leader_id);
+                                    dialog.find('#team_leader_div').show();
+                                }
+                                else {
+                                    dialog.find('#team_leader_id').prop("required", false);
+                                    dialog.find('#team_leader_div').hide();
+                                    dialog.find('#team_leader_id').val("");
+                                }
+                            }
                             else {
+                                dialog.find('#branch_id').prop("required", false);
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").hide();
+
+                                dialog.find('#vacations_balance').prop("required", false);
                                 dialog.find('#vacations_balance_div').hide();
                                 dialog.find('#vacations_balance').val("");
+
+                                dialog.find('#team_leader_id').prop("required", false);
+                                dialog.find('#team_leader_div').hide();
+                                dialog.find('#team_leader_id').val("");
                             }
                         });
 

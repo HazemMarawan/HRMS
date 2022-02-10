@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using HRMS.ViewModels;
 using HRMS.Models;
 using HRMS.Enum;
+using HRMS.Auth;
 
 namespace HRMS.Controllers
 {
@@ -53,6 +54,30 @@ namespace HRMS.Controllers
             Session.Abandon();
             Session.Clear();
             return RedirectToAction("Login");
+        }
+        [CustomAuthenticationFilter]
+        public JsonResult changePassword(ChangePasswordViewModel changePasswordViewModel)
+        {
+            User currentUSer = Session["user"] as User;
+            if (currentUSer.password == changePasswordViewModel.old_password)
+            {
+                if(changePasswordViewModel.new_password == changePasswordViewModel.new_password_confirm)
+                {
+                    User changedUser = db.Users.Find(currentUSer.id);
+                    changedUser.password = changePasswordViewModel.new_password;
+                    db.SaveChanges();
+                    return Json(new { message = "done", success = true }, JsonRequestBehavior.AllowGet);
+
+                }
+                else
+                {
+                    return Json(new { message = "Password doesn't match", success = false }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                return Json(new { message="Wrong Old Password", success =false }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -192,14 +192,17 @@
                             "data": "areas", "seisAarchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
+                                var isSuperAdmin = '@HRMS.Auth.isA.SuperAdmin()';
                                 if (oData.areas.length != 0) {
                                     html += "<ul>";
                                     oData.areas.forEach(function (value) {
                                         html += `<li>
-                                                    ${value.name}
-                                                    <a href='javascript:void(0)' class='editArea' data-id='${value.id}' data-name='${value.name}'><i class="fa fa-edit"></i></a>
-                                                    <a href='javascript:void(0)' class='deleteArea' data-id='${value.id}' data-name='${value.name}'><i class="fa fa-trash"></i></a>
-                                                 </li>`;
+                                                    ${value.name}`;
+                                        if (isSuperAdmin == 'True') {
+                                            html += `<a href='javascript:void(0)' class='editArea' data-id='${value.id}' data-name='${value.name}' data-active='${value.active}'><i class="fa fa-edit"></i></a>
+                                                    <a href='javascript:void(0)' class='deleteArea' data-id='${value.id}' data-name='${value.name}'><i class="fa fa-trash"></i></a>`
+                                        }
+                                                 html += `</li>`;
                                     });
                                     html += "</ul>";
                                 }
@@ -355,6 +358,7 @@
                var data = datatable.row($(this).closest('tr')).data();
                var id = $(this).attr('data-id');
                var name = $(this).attr('data-name');
+               var active = $(this).attr('data-active');
                var modal = $('#manage_area_modal').clone();
                 var action = '@Url.Action("saveArea", "Project")';
                 modal.find('form').attr('action', action);
@@ -370,8 +374,9 @@
 
                 }, function (dialog) {
                     dialog.find("#id").val(id);
-                    //dialog.find("#project_id").val(data.id);
-                    dialog.find("#name").val(name);
+                        dialog.find("#name").val(name);
+                        dialog.find('#active option[value=' + active + ']').attr('selected', 'selected');
+
 
 
                 });

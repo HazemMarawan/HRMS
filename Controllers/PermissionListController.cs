@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || isA.TeamLeader() || isA.BranchAdmin()))
+            if (!(isA.SuperAdmin() || isA.TeamLeader() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id==null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -130,6 +130,19 @@ namespace HRMS.Controllers
             }
             ViewBag.years = db.WorkPermissionRequests.Select(y => new { id = y.id, year = y.year }).GroupBy(w => w.year).ToList();
             ViewBag.months = db.WorkPermissionRequests.Select(y => new { id = y.id, month = y.month }).GroupBy(w => w.month).ToList();
+            if (isA.BranchAdmin() || isA.TeamLeader())
+            {
+                branch_id = currentUser.branch_id;
+            }
+            ViewBag.branchId = branch_id;
+            if (branch_id != null)
+            {
+                ViewBag.branchName = db.Branches.Where(b => b.id == branch_id).FirstOrDefault().name;
+            }
+            else
+            {
+                ViewBag.branchName = "Company";
+            }
             return View();
         }
 
@@ -144,17 +157,17 @@ namespace HRMS.Controllers
                 if (status == 1)
                 {
                     workPermissionRequest.status += 1;
-                    if (currentUser.type == (int)UserRole.TeamLeader)
+                    if (isA.TeamLeader())
                     {
                         workPermissionRequest.approved_by_team_leader = currentUser.id;
                         workPermissionRequest.approved_by_team_leader_at = DateTime.Now;
                     }
-                    else if (currentUser.type == (int)UserRole.BranchAdmin)
+                    else if (isA.BranchAdmin())
                     {
                         workPermissionRequest.approved_by_branch_admin = currentUser.id;
                         workPermissionRequest.approved_by_branch_admin_at = DateTime.Now;
                     }
-                    else
+                    else if(isA.SuperAdmin())
                     {
                         workPermissionRequest.approved_by_super_admin = currentUser.id;
                         workPermissionRequest.approved_by_super_admin_at = DateTime.Now;

@@ -28,6 +28,42 @@
     @RenderSection("css", required: false)
 </head>
 <body class="sidebar-noneoverflow">
+    <div class="modal fade" id="manage_change_password_modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <form action="" method="post" enctype='multipart/form-data'>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal_title"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-body">
+                            <div class="form-row">
+                                <input type="hidden" name="id" id="id" value="0" />
+                                <div class="form-group col-md-12">
+                                    <input required name="old_password" id="old_password" type="password" placeholder="Old Password" class="form-control radius-30" />
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <input required name="new_password" id="new_password" type="password" placeholder="New Password" class="form-control radius-30" />
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <input required name="new_password_confirm" id="new_password_confirm" type="password" placeholder="Confirm New Password" class="form-control radius-30" />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- BEGIN LOADER -->
     <div id="load_screen">
         <div class="loader">
@@ -87,6 +123,9 @@
                         </div>
 
                         <div class="dropdown-item">
+                            <a href="javascript:void(0)" id="change_password">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fas fa-key"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> <span>Change Password</span>
+                            </a>
                             <a href="@Url.Action("Logout","Account")">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> <span>Log Out</span>
                             </a>
@@ -254,11 +293,27 @@
                         </li>
                     }
 
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Employee())
+                    @if (!HRMS.Auth.isA.SuperAdmin())
                     {
                         <li class="menu menu-heading">
                             <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Manage Vacations</span></div>
                         </li>
+                    }
+                    @if (HRMS.Auth.isA.TeamLeader())
+                    {
+
+                        <li class="menu">
+                            <a href="@Url.Action("Approval", "VacationRequest")" aria-expanded="false" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fas fa-street-view"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                                    <span>Vacations List</span>
+                                </div>
+                            </a>
+                        </li>
+                    }
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Employee())
+                    {
+
                         <li class="menu">
                             <a href="@Url.Action("Index", "VacationRequest")" aria-expanded="false" class="dropdown-toggle">
                                 <div class="">
@@ -282,10 +337,14 @@
                             </a>
                         </li>
                     }
-                    <li class="menu menu-heading">
-                        <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Manage Permissions</span></div>
-                    </li>
-                    @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin())
+
+                    @if (!HRMS.Auth.isA.SuperAdmin())
+                    {
+                        <li class="menu menu-heading">
+                            <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Manage Permissions</span></div>
+                        </li>
+                    }
+                    @if (HRMS.Auth.isA.TeamLeader())
                     {
                         <li class="menu">
                             <a href="@Url.Action("Index", "PermissionList")" aria-expanded="false" class="dropdown-toggle">
@@ -331,8 +390,8 @@
                     <p class="">Copyright Reserved to AJC © @DateTime.Now.Year </p>
                 </div>
                 @*<div class="footer-section f-section-2">
-                    <p class="">Coded with UpAgency<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
-                </div>*@
+                        <p class="">Coded with UpAgency<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
+                    </div>*@
             </div>
         </div>
         <!--  END CONTENT AREA  -->
@@ -370,7 +429,7 @@
                 zeroPadded(value.getDate());
             return output_date;
         }
-       
+
         function fixDateTimeLocal(input_date) {
 
             var value = new Date
@@ -388,6 +447,52 @@
                 + zeroPadded(value.getMinutes());
             return output_date;
         }
+
+        function fixTime(input_time) {
+
+            var Hours = null;
+            if (input_time.Hours < 10)
+                Hours = "0" + input_time.Hours;
+            else
+                Hours = input_time.Hours;
+
+            var Minutes = null;
+            if (input_time.Minutes < 10)
+                Minutes = "0" + input_time.Minutes;
+            else
+                Minutes = input_time.Minutes;
+            var output_time = Hours + ":" + Minutes;
+            return output_time;
+        }
+
+        $("#change_password").click(function () {
+               var modal = $('#manage_change_password_modal').clone();
+                var action = '@Url.Action("changePassword", "Account")';
+                modal.find('form').attr('action', action);
+               modal.find('#modal_title').text('Change Password');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        if (response.success == false) {
+                            Swal.fire(
+                                'Sorry!',
+                                response.message,
+                                'error'
+                            );
+                        }
+                        else {
+                            location.href = '@Url.Action("Logout","Account")';
+                        }
+
+                }, function (response) {
+
+                }, function (dialog) {
+
+
+                });
+            });
     </script>
     <script src="~/Content/AdminPanelAssets/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->

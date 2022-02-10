@@ -102,7 +102,7 @@ namespace HRMS.Controllers
                 {
                     if (branch_id != null)
                     {
-                        userData = userData.Where(u => u.branch_id == branch_id);
+                        userData = userData.Where(u => u.branch_id == branch_id &&(u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.TechnicalManager));
                     }
                     else
                     {
@@ -112,7 +112,7 @@ namespace HRMS.Controllers
 
                 else if (isA.BranchAdmin())
                 {
-                    userData = userData.Where(u => u.branch_id == currentUser.branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader));
+                    userData = userData.Where(u => u.branch_id == currentUser.branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.TechnicalManager));
                 }
 
                 if (!string.IsNullOrEmpty(search_id_type))

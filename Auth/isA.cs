@@ -34,5 +34,12 @@ namespace HRMS.Auth
             return false;
         }
 
+        public static bool TechnicalManager()
+        {
+            if (Convert.ToInt32(HttpContext.Current.Session["type"].ToString()) == (int)UserRole.TechnicalManager)
+                return true;
+            return false;
+        }
+
     }
 }

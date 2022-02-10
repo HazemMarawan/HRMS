@@ -98,8 +98,18 @@ namespace HRMS.Controllers
                 else
                 {
                     permissionData = permissionData.Where(t => t.id == -1);
-
                 }
+
+                int? totalPermissions = 0;
+                int? approvedPermissions = 0;
+                int? unCompletedPermissions = 0;
+                int? rejectedPermissions = 0;
+
+                totalPermissions = permissionData.ToList().Count();
+                approvedPermissions = permissionData.Select(c => c.status == (int?)ApprovementStatus.ApprovedBySuperAdmin).ToList().Count();
+                rejectedPermissions = permissionData.Select(c => c.status == (int?)ApprovementStatus.Rejected).ToList().Count();
+                unCompletedPermissions = totalPermissions - approvedPermissions - rejectedPermissions;
+
                 //total number of rows count     
                 var displayResult = permissionData.OrderBy(u => u.status).Skip(skip)
                      .Take(pageSize).ToList();
@@ -110,12 +120,16 @@ namespace HRMS.Controllers
                     draw = draw,
                     recordsTotal = totalRecords,
                     recordsFiltered = totalRecords,
-                    data = displayResult
-
+                    data = displayResult,
+                    totalPermissions = totalPermissions,
+                    approvedPermissions = approvedPermissions,
+                    rejectedPermissions = rejectedPermissions,
+                    unCompletedPermissions = unCompletedPermissions
                 }, JsonRequestBehavior.AllowGet);
 
             }
-
+            ViewBag.years = db.WorkPermissionRequests.Select(y => new { id = y.id, year = y.year }).GroupBy(w => w.year).ToList();
+            ViewBag.months = db.WorkPermissionRequests.Select(y => new { id = y.id, month = y.month }).GroupBy(w => w.month).ToList();
             return View();
         }
 

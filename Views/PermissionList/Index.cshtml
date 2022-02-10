@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Permission List";
-     Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="modal fade" id="manage_PermissionList_modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -59,6 +59,70 @@
     </div>
 
 </div>
+@section css{
+    <style>
+        .counter {
+            background-color: #FFFFFF;
+            padding: 20px 0;
+            border-radius: 5px;
+        }
+
+        .count-title {
+            font-size: 40px;
+            font-weight: normal;
+            margin-top: 10px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .count-text {
+            font-size: 13px;
+            font-weight: normal;
+            margin-top: 10px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+
+        .fa-2x {
+            margin: 0 auto;
+            float: none;
+            display: table;
+            color: #4ad1e5;
+        }
+    </style>
+}
+@if (false)
+{
+    <div class="row text-center mb-2">
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="total">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Total Permissions</p>
+            </div>
+        </div>
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="approved">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Approved Permissions</p>
+            </div>
+        </div>
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="un_completed">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Un Completed Permissions</p>
+            </div>
+        </div>
+
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="rejected">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Rejected Permissions</p>
+            </div>
+        </div>
+
+    </div>
+
+}
 
 <div class="card">
     <div class="card-header">
@@ -230,7 +294,18 @@
                             }
                         },
                     ]
-                 });
+               });
+
+           datatable.on('xhr.dt', function (e, settings, json, xhr) {
+               console.log(json);
+
+               $("#total").text(json.totalPermissions);
+               $("#approved").text(json.approvedPermissions);
+               $("#un_completed").text(json.unCompletedPermissions);
+               $("#rejected").text(json.rejectedPermissions);
+
+
+           });
 
             $('#search').on('click', function () {
                 datatable.search($("#text_search").val());

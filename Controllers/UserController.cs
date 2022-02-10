@@ -100,10 +100,13 @@ namespace HRMS.Controllers
 
                 if (isA.SuperAdmin())
                 {
-                    userData = userData.Where(u => u.type == (int)UserRole.SuperAdmin || u.type == (int)UserRole.BranchAdmin);
                     if (branch_id != null)
                     {
                         userData = userData.Where(u => u.branch_id == branch_id);
+                    }
+                    else
+                    {
+                        userData = userData.Where(u => u.type == (int)UserRole.SuperAdmin || u.type == (int)UserRole.BranchAdmin);
                     }
                 }
 

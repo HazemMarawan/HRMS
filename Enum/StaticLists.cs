@@ -46,5 +46,6 @@ namespace HRMS.Enum
         ApprovedByBranchAdmin = 3,
         ApprovedBySuperAdmin = 4,
         Rejected = 5,
+        ApprovedByTechnicalManager = 6,
     }
 }

@@ -21,7 +21,10 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || isA.TeamLeader() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))))
+            if (!(isA.SuperAdmin() 
+                || isA.TeamLeader() 
+                || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))
+                || (isA.TechnicalManager() && (currentUser.branch_id == branch_id || branch_id == null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -95,6 +98,12 @@ namespace HRMS.Controllers
                 {
                     productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && p.branch_id == p.branch_id_branch_project && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
                 }
+
+                if (HRMS.Auth.isA.TechnicalManager())
+                {
+                    productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && p.branch_id == p.branch_id_branch_project && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
+                }
+
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
                 {
@@ -201,7 +210,10 @@ namespace HRMS.Controllers
         public ActionResult Missing(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || isA.TeamLeader() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))))
+            if (!(isA.SuperAdmin() 
+                || isA.TeamLeader() 
+                || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null)) 
+                || (isA.TechnicalManager() && (currentUser.branch_id == branch_id || branch_id == null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -298,6 +310,11 @@ namespace HRMS.Controllers
                 {
                     productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && s.type == (int)UserRole.Employee);
                 }
+
+                if (isA.TechnicalManager())
+                {
+                    productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader));
+                }
                 //total number of rows count     
                 var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
                      .Take(pageSize).ToList();
@@ -335,7 +352,7 @@ namespace HRMS.Controllers
         }
         public ActionResult Employee()
         {
-            if (!(isA.Employee() || isA.TeamLeader()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             User currentUser = Session["user"] as User;
@@ -436,7 +453,10 @@ namespace HRMS.Controllers
                 userProject.user_id = currentUser.id;
                 userProject.created_at = DateTime.Now;
                 userProject.created_by = Session["id"].ToString().ToInt();
-                userProject.status = (int)ProductivityStatus.PendingApprove;
+                if(isA.TechnicalManager())
+                    userProject.status = (int)ProductivityStatus.Approved;
+                else
+                    userProject.status = (int)ProductivityStatus.PendingApprove;
 
                 db.UserProjects.Add(userProject);
                 db.SaveChanges();

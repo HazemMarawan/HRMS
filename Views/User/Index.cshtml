@@ -104,6 +104,7 @@
                                     {
                                         <option value="3">Employee</option>
                                         <option value="4">Team Leader</option>
+                                        <option value="5">Technical Manager</option>
                                     }
                                 </select>
                             </div>
@@ -344,10 +345,12 @@
                                     html += "Super Admin";
                                 else if (oData.type == 2)
                                     html += "Branch Admin";
+                                else if (oData.type == 3)
+                                    html += "Employee";
                                 else if (oData.type == 4)
                                     html += "Team Leader";
-                                else
-                                    html += "Employee";
+                                else if (oData.type == 5)
+                                    html += "Technical Manager";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -488,11 +491,16 @@
                                     dialog.find('#vacations_balance_div').hide();
                                     dialog.find('#vacations_balance').val("");
                                 }
-                                else {
+                                else if (currentRole == 2) {
                                     dialog.find('#branch_id').prop("required", true);
                                     dialog.find("#branch_id").val("");
                                     dialog.find("#branch_div").show();
 
+                                    dialog.find('#vacations_balance_div').prop("required", true);
+                                    dialog.find('#vacations_balance_div').show();
+                                    dialog.find("#vacations_balance").val(21);
+                                }
+                                else {
                                     dialog.find('#vacations_balance_div').prop("required", true);
                                     dialog.find('#vacations_balance_div').show();
                                     dialog.find("#vacations_balance").val(21);
@@ -510,9 +518,9 @@
                                 }
                             }
                             else {
-                                dialog.find('#branch_id').prop("required", false);
-                                dialog.find("#branch_id").val("");
-                                dialog.find("#branch_div").hide();
+                                //dialog.find('#branch_id').prop("required", false);
+                                //dialog.find("#branch_id").val("");
+                                //dialog.find("#branch_div").hide();
 
                                 dialog.find('#vacations_balance_div').prop("required", false);
                                 dialog.find('#vacations_balance_div').hide();
@@ -563,7 +571,7 @@
                             dialog.find('#imageProfile').attr('src', data.imagePath);
                             dialog.find('#image').val(data.image);
                         }
-                            
+
                         dialog.find('#nationality_id option[value=' + data.nationality_id + ']').attr('selected', 'selected');
                         dialog.find('#branch_id option[value=' + data.branch_id + ']').attr('selected', 'selected');
                         dialog.find('#department_id option[value=' + data.department_id + ']').attr('selected', 'selected');
@@ -578,7 +586,7 @@
                         else
                             dialog.find('#vacations_balance').val(21);
                         dialog.find('#notes').val(data.notes);
-                        
+
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
 
                         dialog.find('#attendance_code').val(data.attendance_code);
@@ -601,7 +609,7 @@
                             dialog.find("#branch_id").val("");
                             dialog.find("#branch_div").hide();
                         }
-                       
+
 
                         $(document).on('change', '#type', function (event) {
                             var currentRole = $(this).val();
@@ -615,7 +623,7 @@
                                     dialog.find('#vacations_balance_div').hide();
                                     dialog.find('#vacations_balance').val("");
                                 }
-                                else {
+                                else if (currentRole == 2) {
                                     dialog.find('#branch_id').prop("required", true);
                                     dialog.find("#branch_id").val("");
                                     dialog.find("#branch_div").show();
@@ -640,9 +648,9 @@
                                 }
                             }
                             else {
-                                dialog.find('#branch_id').prop("required", false);
-                                dialog.find("#branch_id").val("");
-                                dialog.find("#branch_div").hide();
+                                //dialog.find('#branch_id').prop("required", false);
+                                //dialog.find("#branch_id").val("");
+                                //dialog.find("#branch_div").hide();
 
                                 dialog.find('#vacations_balance').prop("required", false);
                                 dialog.find('#vacations_balance_div').hide();

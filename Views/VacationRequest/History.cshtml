@@ -158,7 +158,9 @@
                                 if (oData.status == 1)
                                     html = "<span class='badge badge-info'>Pending Team Leader Approval</span>";
                                 else if (oData.status == 2)
-                                    html = "<span class='badge badge-warning'>Pending HR Approval</span>";
+                                    html = "<span class='badge badge-warning'>Pending Technical Manager Approval</span>";
+                                else if (oData.status == 6)
+                                    html = "<span class='badge badge-primary'>Pending HR Approval</span>";
                                 else if (oData.status == 3)
                                     html = "<span class='badge badge-primary'>Pending Executive Director Approval</span>";
                                 else if (oData.status == 4)
@@ -187,9 +189,10 @@
                                 var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
                                 var isEmployee = '@HRMS.Auth.isA.Employee()';
+                                var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
 
                                 if ('@ViewBag.year' == '@ViewBag.currentYear') {
-                                    if ((isBranchAdmin == "True" && oData.status == 3) || (isTeamLeader == "True" && oData.status == 2) || (isEmployee == "True" && oData.status == 1)) {
+                                    if ((isBranchAdmin == "True" && oData.status == 3) || (isTeamLeader == "True" && oData.status == 2) || (isEmployee == "True" && oData.status == 1) || (isTechnicalManager == "True" && oData.status == 6)) {
                                         html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
                                         html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;";
                                     }

@@ -262,7 +262,9 @@
                             "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-                                if (oData.status == 1) {
+                                var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
+                                var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
+                                if (oData.status == 1 && ((isTeamLeader == 'True' && oData.type == 3) || (isTechnicalManager == 'True' && oData.type == 4))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>";
                                 }
@@ -354,7 +356,7 @@
 
             $(document).on("change", "#search_project_id", function () {
                 var project_id = $(this).val();
-                
+
                             $("#search_area_id").empty();
                             var html = `<option value=''>Select Area</option>`;
                             $.ajax({

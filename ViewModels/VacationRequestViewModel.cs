@@ -28,6 +28,9 @@ namespace HRMS.ViewModels
         public int? approved_by_team_leader { get; set; }
         public string approved_by_team_leader_name { get; set; }
         public DateTime? approved_by_team_leader_at { get; set; }
+        public int? approved_by_technical_manager { get; set; }
+        public string approved_by_technical_manager_name { get; set; }
+        public DateTime? approved_by_technical_manager_at { get; set; }
         public int? rejected_by { get; set; }
         public DateTime? rejected_by_at { get; set; }
         public int? active { get; set; }

@@ -125,6 +125,8 @@
                                         html = `<span class='badge badge-info'>NEW: ${fixDate(oData.created_at)}</span>`;
                                     else if (oData.status == 2)
                                         html = `<span class='badge badge-warning'>APPROVED By TEAM LEADER: ${oData.approved_by_team_leader_name} at ${fixDate(oData.approved_by_team_leader_at)}</span>`;
+                                    else if (oData.status == 6)
+                                        html = `<span class='badge badge-warning'>APPROVED By TECHNICAL MANAGER: ${oData.approved_by_team_leader_name} at ${fixDate(oData.approved_by_team_leader_at)}</span>`;
                                     else if (oData.status == 3)
                                         html = `<span class='badge badge-primary'>Approved By HR: ${oData.approved_by_branch_admin_name} at ${fixDate(oData.approved_by_branch_admin_at)}</span>`;
                                 }
@@ -134,9 +136,18 @@
                                         html = `<span class='badge badge-primary'>Pending Approve</span>`;
                                 }
 
+                                if (oData.user_type == 5) {
+                                    if (oData.status == 6)
+                                        html = `<span class='badge badge-primary'>Pending Approve</span>`;
+                                    else if (oData.status == 3)
+                                        html = `<span class='badge badge-primary'>Approved By HR: ${oData.approved_by_branch_admin_name} at ${fixDate(oData.approved_by_branch_admin_at)}</span>`;
+                                }
+
                                 if (oData.user_type == 4) {
                                     if (oData.status == 2)
                                         html = `<span class='badge badge-warning'>Pending Approve</span>`;
+                                    else if (oData.status == 6)
+                                        html = `<span class='badge badge-primary'>Approved TECHNICAL MANAGER: ${oData.approved_by_technical_manager_name} at ${fixDate(oData.approved_by_technical_manager_at)}</span>`;
                                     else if (oData.status == 3)
                                         html = `<span class='badge badge-primary'>Approved By HR: ${oData.approved_by_branch_admin_name} at ${fixDate(oData.approved_by_branch_admin_at)}</span>`;
                                 }
@@ -162,8 +173,9 @@
                                 var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
                                 var isEmployee = '@HRMS.Auth.isA.Employee()';
+                                var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
 
-                                if ((isSuperAdmin == "True" && oData.status == 3) || (isBranchAdmin == "True" && oData.status == 2) || (isTeamLeader == "True" && oData.status == 1)) {
+                                if ((isSuperAdmin == "True" && oData.status == 3) || (isBranchAdmin == "True" && oData.status == 6) || (isTeamLeader == "True" && oData.status == 1) || (isTechnicalManager == "True" && oData.status == 2)) {
                                     html += "<a class='accept' href='javascript:void(0)' title='Accept'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fa fa-times'></i></a>";
                                 }

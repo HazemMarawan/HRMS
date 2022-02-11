@@ -63,6 +63,7 @@ namespace HRMS.Controllers
                                     last_salary = user.last_salary,
                                     last_hour_price = user.last_hour_price,
                                     last_over_time_price = user.last_over_time_price,
+                                    required_productivity = user.required_productivity,
                                     phone = user.phone,
                                     address = user.address,
                                     nationality_id = user.nationality_id,
@@ -209,6 +210,9 @@ namespace HRMS.Controllers
                 {
                     user.vacations_balance = 21;
                 }
+
+                if (isA.TeamLeader() || isA.TechnicalManager())
+                    user.required_productivity = 1;
                 user.created_at = DateTime.Now;
                 user.created_by = Session["id"].ToString().ToInt();
 
@@ -269,6 +273,10 @@ namespace HRMS.Controllers
                 oldUser.notes = userVM.notes;
                 oldUser.type = userVM.type;
                 oldUser.last_over_time_price = userVM.last_over_time_price;
+                if (isA.TeamLeader() || isA.TechnicalManager())
+                    oldUser.required_productivity = 1;
+                else
+                oldUser.required_productivity = userVM.required_productivity;
                 oldUser.last_salary = userVM.last_salary;
                 oldUser.attendance_code = userVM.attendance_code;
                 oldUser.team_leader_id = userVM.team_leader_id;

@@ -33,6 +33,10 @@ namespace HRMS.Controllers
                     Session["type"] = user.type;
                     Session["user"] = user;
                     Session["job_title"] = db.Jobs.Find(user.job_id).name ;
+                    if(user.required_productivity == 1)
+                        Session["required_productivity"] = 1;
+                    else
+                        Session["required_productivity"] = 0;
 
                     return RedirectToAction("Index", "Dashboard");
                 }

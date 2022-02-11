@@ -131,7 +131,10 @@
                                 <label>Vacation Balance</label>
                                 <input name="vacations_balance" id="vacations_balance" type="number" class="form-control radius-30" />
                             </div>
-
+                            <div class="form-group col-md-12" style="display:none;" id="required_productivity_div">
+                                <label>Required Productivity</label>
+                                <input name="required_productivity" id="required_productivity" type="checkbox" value="1" class="radius-30" />
+                            </div>
                             <div class="form-group col-md-12">
                                 <label>Notes</label>
                                 <input name="notes" id="notes" type="text" class="form-control radius-30" />
@@ -182,7 +185,7 @@
             <option value="">Select Gender</option>
             <option value="1">Male</option>
             <option value="2">Female</option>
-        </select>    
+        </select>
     </div>
     <div class="form-group col-4">
         <select name="search_type" id="search_type" class="form-control radius-30">
@@ -194,7 +197,7 @@
             }
             <option value="3">Employee</option>
             <option value="4">Team Leader</option>
-        </select>   
+        </select>
     </div>
     <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
@@ -438,7 +441,7 @@
                             var user_name = dialog.find('#user_name').val().length != 0 ? dialog.find('#user_name').val() : null;
                             if (user_name != null) {
                                 $.ajax({
-                                    type: "GET",
+                                   type: "GET",
                                     url: '@Url.Action("checkUsernameAvailability", "User")',
                                     contentType: "application/json; charset=utf-8",
                                     data: {
@@ -481,48 +484,102 @@
 
                         dialog.find("#type").change(function () {
                             var currentRole = $(this).val();
-                            if (currentRole) {
-                                if (currentRole == 1) {
-                                    dialog.find('#branch_id').prop("required", false);
-                                    dialog.find("#branch_id").val("");
-                                    dialog.find("#branch_div").hide();
 
-                                    dialog.find('#vacations_balance_div').prop("required", false);
-                                    dialog.find('#vacations_balance_div').hide();
-                                    dialog.find('#vacations_balance').val("");
-                                }
-                                else if (currentRole == 2) {
-                                    dialog.find('#branch_id').prop("required", true);
-                                    dialog.find("#branch_id").val("");
-                                    dialog.find("#branch_div").show();
-
-                                    dialog.find('#vacations_balance_div').prop("required", true);
-                                    dialog.find('#vacations_balance_div').show();
-                                    dialog.find("#vacations_balance").val(21);
-                                }
-                                else {
-                                    dialog.find('#vacations_balance_div').prop("required", true);
-                                    dialog.find('#vacations_balance_div').show();
-                                    dialog.find("#vacations_balance").val(21);
-                                }
-
-                                if (currentRole == 3) {
-                                    dialog.find("#team_leader_id").val("");
-                                    dialog.find("#team_leader_id").prop('required', true);
-                                    dialog.find("#team_leader_div").show();
-                                }
-                                else {
-                                    dialog.find("#team_leader_id").val("");
-                                    dialog.find("#team_leader_id").prop('required', false);
-                                    dialog.find("#team_leader_div").hide();
-                                }
-                            }
-                            else {
-                                //dialog.find('#branch_id').prop("required", false);
-                                //dialog.find("#branch_id").val("");
-                                //dialog.find("#branch_div").hide();
+                            if (currentRole == 1) {
+                                dialog.find('#branch_id').prop("required", false);
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").hide();
 
                                 dialog.find('#vacations_balance_div').prop("required", false);
+                                dialog.find('#vacations_balance_div').hide();
+                                dialog.find('#vacations_balance').val("");
+
+                                dialog.find('#required_productivity').prop("required", false);
+                                dialog.find('#required_productivity').prop("checked", false);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity_div').hide();
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+
+                            }
+                            else if (currentRole == 2) {
+                                dialog.find('#branch_id').prop("required", true);
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").show();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", false);
+                                dialog.find('#required_productivity').prop("checked", false);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity_div').hide();
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+                            }
+
+                            else if (currentRole == 3) {
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', true);
+                                dialog.find("#team_leader_div").show();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("checked", false);
+                                dialog.find('#required_productivity').prop("disabled", false);
+
+                                dialog.find('#required_productivity_div').show();
+                            }
+
+                            else if (currentRole == 4) {
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("checked", true);
+                                dialog.find('#required_productivity').prop("disabled", true);
+
+                                dialog.find('#required_productivity_div').show();
+                            }
+                            else if (currentRole == 5) {
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("checked", true);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity_div').show();
+                            }
+                            else {
+                                dialog.find('#branch_id').prop("required", false);
+                                dialog.find("#branch_id").val("@ViewBag.branchId");
+                                dialog.find("#branch_div").hide();
+
+                                dialog.find('#required_productivity').prop("required", false);
+                                dialog.find('#required_productivity').prop("checked", false);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity_div').hide();
+
+                                dialog.find('#vacations_balance').prop("required", false);
                                 dialog.find('#vacations_balance_div').hide();
                                 dialog.find('#vacations_balance').val("");
 
@@ -530,6 +587,7 @@
                                 dialog.find("#team_leader_id").prop('required', false);
                                 dialog.find("#team_leader_div").hide();
                             }
+
                         });
                 });
             });
@@ -562,29 +620,28 @@
                         dialog.find('#full_name').val(data.full_name);
                         dialog.find('#id_type option[value=' + data.id_type + ']').attr('selected', 'selected');
                         dialog.find('#id_number').val(data.id_number);
+
                         if (data.birth_date != null) {
                             dialog.find('#birth_date').val(fixDate(data.birth_date));
                         }
+
                         dialog.find('#phone').val(data.phone);
                         dialog.find('#address').val(data.address);
+
                         if (data.imagePath) {
                             dialog.find('#imageProfile').attr('src', data.imagePath);
                             dialog.find('#image').val(data.image);
                         }
 
                         dialog.find('#nationality_id option[value=' + data.nationality_id + ']').attr('selected', 'selected');
-                        dialog.find('#branch_id option[value=' + data.branch_id + ']').attr('selected', 'selected');
                         dialog.find('#department_id option[value=' + data.department_id + ']').attr('selected', 'selected');
                         dialog.find('#job_id option[value=' + data.job_id + ']').attr('selected', 'selected');
                         dialog.find('#gender option[value=' + data.gender + ']').attr('selected', 'selected');
+
                         if (data.hiring_date != null) {
                             dialog.find('#hiring_date').val(fixDate(data.hiring_date));
                         }
                         dialog.find('#type option[value=' + data.type + ']').attr('selected', 'selected');
-                        if (data.vacations_balance)
-                            dialog.find('#vacations_balance').val(data.vacations_balance);
-                        else
-                            dialog.find('#vacations_balance').val(21);
                         dialog.find('#notes').val(data.notes);
 
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
@@ -593,72 +650,240 @@
                         dialog.find('#last_salary').val(data.last_salary);
                         dialog.find('#last_over_time_price').val(data.last_over_time_price);
 
-                        if (data.type == 3) {
-                            dialog.find('#team_leader_div').show();
-                            if (data.team_leader_id)
-                                dialog.find('#team_leader_id option[value=' + data.team_leader_id + ']').attr('selected', 'selected');
-
-                        }
-
-                        if (data.type != 1) {
-                            dialog.find('#vacations_balance_div').show();
-                        }
-
                         if (data.type == 1) {
                             dialog.find('#branch_id').prop("required", false);
                             dialog.find("#branch_id").val("");
                             dialog.find("#branch_div").hide();
+
+                            dialog.find('#vacations_balance').prop("required", false);
+                            dialog.find('#vacations_balance_div').hide();
+                            dialog.find('#vacations_balance').val("");
+
+                            dialog.find('#required_productivity').prop("required", false);
+                            dialog.find('#required_productivity').prop("checked", false);
+                            dialog.find('#required_productivity').prop("disabled", true);
+                            dialog.find('#required_productivity_div').hide();
+
+                            dialog.find("#team_leader_id").val("");
+                            dialog.find("#team_leader_id").prop('required', false);
+                            dialog.find("#team_leader_div").hide();
+
+                            }
+                        else if (data.type == 2) {
+                            dialog.find('#branch_id').prop("required", true);
+                            dialog.find('#branch_id option[value=' + data.branch_id + ']').attr('selected', 'selected');
+                            dialog.find("#branch_div").show();
+
+                            dialog.find('#vacations_balance').prop("required", true);
+                            dialog.find('#vacations_balance_div').show();
+                            if (data.vacations_balance)
+                                dialog.find("#vacations_balance").val(data.vacations_balance);
+                            else
+                                dialog.find("#vacations_balance").val(21);
+
+                            dialog.find('#required_productivity').prop("required", false);
+                            dialog.find('#required_productivity').prop("checked", false);
+                            dialog.find('#required_productivity').prop("disabled", true);
+                            dialog.find('#required_productivity_div').hide();
+
+                            dialog.find("#team_leader_id").val("");
+                            dialog.find("#team_leader_id").prop('required', false);
+                            dialog.find("#team_leader_div").hide();
+                            }
+
+                        else if (data.type == 3) {
+                            dialog.find('#team_leader_id option[value=' + data.team_leader_id + ']').attr('selected', 'selected');
+                            dialog.find("#team_leader_id").prop('required', true);
+                            dialog.find("#team_leader_div").show();
+
+                            dialog.find('#vacations_balance').prop("required", true);
+                            dialog.find('#vacations_balance_div').show();
+
+                            if (data.vacations_balance)
+                                dialog.find("#vacations_balance").val(data.vacations_balance);
+                            else
+                                dialog.find("#vacations_balance").val(21);
+
+                            dialog.find('#required_productivity').prop("required", true);
+                            dialog.find('#required_productivity').prop("disabled", false);
+                            if (data.required_productivity == 1)
+                                dialog.find('#required_productivity').prop('checked', true);
+                            else
+                                dialog.find('#required_productivity').prop('checked', false);
+
+                            dialog.find('#required_productivity_div').show();
+                            }
+                        else if (data.type == 4) {
+                            dialog.find("#team_leader_id").val("");
+                            dialog.find("#team_leader_id").prop('required', false);
+                            dialog.find("#team_leader_div").hide();
+
+                            dialog.find('#vacations_balance').prop("required", true);
+                            dialog.find('#vacations_balance_div').show();
+                            if (data.vacations_balance)
+                                dialog.find("#vacations_balance").val(data.vacations_balance);
+                            else
+                                dialog.find("#vacations_balance").val(21);
+
+                            dialog.find('#required_productivity').prop("required", true);
+                            dialog.find('#required_productivity').prop("disabled", true);
+                            dialog.find('#required_productivity').prop('checked', true);
+                            dialog.find('#required_productivity_div').show();
+                        }
+                        else if (data.type == 5) {
+                            dialog.find("#team_leader_id").val("");
+                            dialog.find("#team_leader_id").prop('required', false);
+                            dialog.find("#team_leader_div").hide();
+
+                            dialog.find('#vacations_balance').prop("required", true);
+                            dialog.find('#vacations_balance_div').show();
+                            if (data.vacations_balance)
+                                dialog.find("#vacations_balance").val(data.vacations_balance);
+                            else
+                                dialog.find("#vacations_balance").val(21);
+
+                            dialog.find('#required_productivity').prop("required", true);
+                            dialog.find('#required_productivity').prop("disabled", true);
+                            dialog.find('#required_productivity').prop('checked', true);
+                            dialog.find('#required_productivity_div').show();
+                        }
+                        else {
+                            dialog.find('#branch_id').prop("required", false);
+                            dialog.find("#branch_id").val("@ViewBag.branchId");
+                            dialog.find("#branch_div").hide();
+
+                            dialog.find('#required_productivity').prop("required", false);
+                            dialog.find('#required_productivity').prop("checked", false);
+                            dialog.find('#required_productivity').prop("disabled", true);
+                            dialog.find('#required_productivity_div').hide();
+
+                            dialog.find('#vacations_balance').prop("required", false);
+                            dialog.find('#vacations_balance_div').hide();
+                            dialog.find('#vacations_balance').val("");
+
+                            dialog.find("#team_leader_id").val("");
+                            dialog.find("#team_leader_id").prop('required', false);
+                            dialog.find("#team_leader_div").hide();
                         }
 
 
                         $(document).on('change', '#type', function (event) {
                             var currentRole = $(this).val();
-                            if (currentRole) {
-                                if (currentRole == 1) {
-                                    dialog.find('#branch_id').prop("required", false);
-                                    dialog.find("#branch_id").val("");
-                                    dialog.find("#branch_div").hide();
-
-                                    dialog.find('#vacations_balance').prop("required", false);
-                                    dialog.find('#vacations_balance_div').hide();
-                                    dialog.find('#vacations_balance').val("");
-                                }
-                                else if (currentRole == 2) {
-                                    dialog.find('#branch_id').prop("required", true);
-                                    dialog.find("#branch_id").val("");
-                                    dialog.find("#branch_div").show();
-
-                                    dialog.find('#vacations_balance').prop("required", true);
-                                    if (data.vacations_balance)
-                                        dialog.find('#vacations_balance').val(data.vacations_balance);
-                                    else
-                                        dialog.find('#vacations_balance').val(21);
-                                    dialog.find('#vacations_balance_div').show();
-                                }
-
-                                if (currentRole == 3) {
-                                    dialog.find('#team_leader_id').prop("required", true);
-                                    dialog.find('#team_leader_id').val(data.team_leader_id);
-                                    dialog.find('#team_leader_div').show();
-                                }
-                                else {
-                                    dialog.find('#team_leader_id').prop("required", false);
-                                    dialog.find('#team_leader_div').hide();
-                                    dialog.find('#team_leader_id').val("");
-                                }
-                            }
-                            else {
-                                //dialog.find('#branch_id').prop("required", false);
-                                //dialog.find("#branch_id").val("");
-                                //dialog.find("#branch_div").hide();
+                            if (currentRole == 1) {
+                                dialog.find('#branch_id').prop("required", false);
+                                dialog.find("#branch_id").val("");
+                                dialog.find("#branch_div").hide();
 
                                 dialog.find('#vacations_balance').prop("required", false);
                                 dialog.find('#vacations_balance_div').hide();
                                 dialog.find('#vacations_balance').val("");
 
-                                dialog.find('#team_leader_id').prop("required", false);
-                                dialog.find('#team_leader_div').hide();
-                                dialog.find('#team_leader_id').val("");
+                                dialog.find('#required_productivity').prop("required", false);
+                                dialog.find('#required_productivity').prop("checked", false);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity_div').hide();
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+
+                            }
+                            else if (currentRole == 2) {
+                                dialog.find('#branch_id').prop("required", true);
+                                dialog.find('#branch_id option[value=' + data.branch_id + ']').attr('selected', 'selected');
+                                dialog.find("#branch_div").show();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                if (data.vacations_balance)
+                                    dialog.find("#vacations_balance").val(data.vacations_balance);
+                                else
+                                    dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", false);
+                                dialog.find('#required_productivity').prop("checked", false);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity_div').hide();
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+                            }
+
+                            else if (currentRole == 3) {
+                                dialog.find('#team_leader_id option[value=' + data.team_leader_id + ']').attr('selected', 'selected');
+                                dialog.find("#team_leader_id").prop('required', true);
+                                dialog.find("#team_leader_div").show();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+
+                                if (data.vacations_balance)
+                                    dialog.find("#vacations_balance").val(data.vacations_balance);
+                                else
+                                    dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("disabled", false);
+                                if (data.required_productivity == 1)
+                                    dialog.find('#required_productivity').prop('checked', true);
+                                else
+                                    dialog.find('#required_productivity').prop('checked', false);
+
+                                dialog.find('#required_productivity_div').show();
+                            }
+
+                            else if (currentRole == 4) {
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                if (data.vacations_balance)
+                                    dialog.find("#vacations_balance").val(data.vacations_balance);
+                                else
+                                    dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity').prop('checked', true);
+                                dialog.find('#required_productivity_div').show();
+                            }
+                            else if (currentRole == 5) {
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
+
+                                dialog.find('#vacations_balance').prop("required", true);
+                                dialog.find('#vacations_balance_div').show();
+                                if (data.vacations_balance)
+                                    dialog.find("#vacations_balance").val(data.vacations_balance);
+                                else
+                                    dialog.find("#vacations_balance").val(21);
+
+                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity').prop('checked', true);
+                                dialog.find('#required_productivity_div').show();
+                            }
+                            else {
+                                dialog.find('#branch_id').prop("required", false);
+                                dialog.find("#branch_id").val("@ViewBag.branchId");
+                                dialog.find("#branch_div").hide();
+
+                                dialog.find('#required_productivity').prop("required", false);
+                                dialog.find('#required_productivity').prop("disabled", true);
+                                dialog.find('#required_productivity').prop('checked', false);
+                                dialog.find('#required_productivity_div').hide();
+
+                                dialog.find('#vacations_balance').prop("required", false);
+                                dialog.find('#vacations_balance_div').hide();
+                                dialog.find('#vacations_balance').val("");
+
+                                dialog.find("#team_leader_id").val("");
+                                dialog.find("#team_leader_id").prop('required', false);
+                                dialog.find("#team_leader_div").hide();
                             }
                         });
 

@@ -142,6 +142,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Auth\can.cs" />
     <Compile Include="Auth\CustomAuthenticationFilter.cs" />
     <Compile Include="Auth\isA.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -287,6 +288,10 @@
     <Compile Include="Migrations\202202111443322_updates10.cs" />
     <Compile Include="Migrations\202202111443322_updates10.Designer.cs">
       <DependentUpon>202202111443322_updates10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202111616559_updates11.cs" />
+    <Compile Include="Migrations\202202111616559_updates11.Designer.cs">
+      <DependentUpon>202202111616559_updates11.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
@@ -2894,6 +2899,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202111443322_updates10.resx">
       <DependentUpon>202202111443322_updates10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202111616559_updates11.resx">
+      <DependentUpon>202202111616559_updates11.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

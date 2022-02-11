@@ -9,6 +9,7 @@ using HRMS.Auth;
 using System.Configuration;
 using System.Data.SqlClient;
 using HRMS.Helpers;
+using HRMS.Enum;
 
 namespace HRMS.Controllers
 {
@@ -19,7 +20,25 @@ namespace HRMS.Controllers
         // GET: Dashboard
         public ActionResult Index()
         {
-            return View();
+            User currentUser = Session["user"] as User;
+            DashboardViewModel dashboardViewModel = new DashboardViewModel();
+            
+            if (isA.Employee())
+            {
+                dashboardViewModel.Manager = db.Users.Where(u => u.id == currentUser.team_leader_id).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
+            }
+
+            if (isA.TeamLeader())
+            {
+                dashboardViewModel.Manager = db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.TechnicalManager).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
+            }
+
+            if (isA.TechnicalManager())
+            {
+                dashboardViewModel.Manager = db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.BranchAdmin).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
+            }
+
+            return View(dashboardViewModel);
         }
         [HttpGet]
         public JsonResult productivityByDate()

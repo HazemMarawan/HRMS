@@ -308,6 +308,7 @@
     <Compile Include="ViewModels\AreaViewModel.cs" />
     <Compile Include="ViewModels\BranchProjectViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
+    <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\IDTypeViewModel.cs" />
     <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\NationalityViewModel.cs" />

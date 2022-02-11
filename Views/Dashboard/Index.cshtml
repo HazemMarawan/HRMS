@@ -1,8 +1,30 @@
-﻿
+﻿@model HRMS.ViewModels.DashboardViewModel
 @{
     ViewBag.Title = "Index";
 }
-@if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader())
+@section css
+{
+    <link href="~/Content/AdminPanelAssets/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
+}
+@if ((HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager()) && Model.Manager != null)
+{ 
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+            <div class="widget widget-chart-three">
+                <div class="widget-heading">
+                    <div class="">
+                        <h5 class="">Manager</h5>
+                    </div>
+                </div>
+
+                <div class="widget-content">
+                    @Model.Manager.full_name
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
 {
     <div class="row">
         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
@@ -386,4 +408,4 @@
             });
     </script>
 
-}  
+}

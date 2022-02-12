@@ -146,19 +146,24 @@
                             "data": "status", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-                                console.log(oData.type)
                                 //employee
                                 if (oData.type == 3) {
                                     if (oData.status == 1)
-                                        html += "<span class='badge badge-primary'>Pending Approve</span>";
+                                        html += "<span class='badge badge-info'>Pending Approve</span>";
                                     else if (oData.status == 2)
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span>";
+                                    else if (oData.status == 6) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span>";
+                                    }
                                     else if (oData.status == 3) {
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span>";
                                     }
                                     else if (oData.status == 4) {
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
                                     }
@@ -170,8 +175,28 @@
                                 else if (oData.type == 4) { //team leader
                                     if (oData.status == 2)
                                         html += "<span class='badge badge-info'>Pending Approve</span>";
-                                    if (oData.status == 3) {
+                                    if (oData.status == 6) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                    } else if (oData.status == 3) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                    }
+                                    else if (oData.status == 4) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 5)
+                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + fixDate(oData.rejected_by_at) + "</span>";
+                                    else
+                                        html += "-";
+                                }
+                                else if (oData.type == 5) { //Technical Manager
+                                    console.log(oData.status)
+                                    if (oData.status == 6)
+                                        html += "<span class='badge badge-info'>Pending Approve</span>";
+                                    else if (oData.status == 3) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span>";
                                     }
                                     else if (oData.status == 4) {
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";

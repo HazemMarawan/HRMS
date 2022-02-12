@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index(int? branch_id)
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.SuperAdmin() || isA.TeamLeader() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id==null))))
+            if (!(isA.SuperAdmin() || isA.TeamLeader() || isA.TechnicalManager() || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id==null))))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -35,14 +35,22 @@ namespace HRMS.Controllers
                 // Getting all data
                 var permissionData = (from perReq in db.WorkPermissionRequests
                                       join user in db.Users on perReq.user_id equals user.id
+
                                       join team_leader_approve in db.Users on perReq.approved_by_team_leader equals team_leader_approve.id into tla
                                       from team_leader_approved in tla.DefaultIfEmpty()
+
+                                      join technical_manager_approve in db.Users on perReq.approved_by_technical_manager equals technical_manager_approve.id into tecm
+                                      from technical_manager_approved in tecm.DefaultIfEmpty()
+
                                       join branch_admin_approve in db.Users on perReq.approved_by_branch_admin equals branch_admin_approve.id into baa
                                       from branch_admin_approved in baa.DefaultIfEmpty()
+                                     
                                       join super_admin_approve in db.Users on perReq.approved_by_super_admin equals super_admin_approve.id into sua
                                       from super_admin_approved in sua.DefaultIfEmpty()
+
                                       join rejected in db.Users on perReq.rejected_by equals rejected.id into re
                                       from rejected_by in re.DefaultIfEmpty()
+
                                       select new WorkPermissionRequestViewModel
                                       {
                                           id = perReq.id,
@@ -58,6 +66,8 @@ namespace HRMS.Controllers
                                           approved_by_super_admin_at = perReq.approved_by_super_admin_at,
                                           approved_by_branch_admin = perReq.approved_by_branch_admin,
                                           approved_by_branch_admin_at = perReq.approved_by_branch_admin_at,
+                                          approved_by_technical_manager = perReq.approved_by_technical_manager,
+                                          approved_by_technical_manager_at = perReq.approved_by_technical_manager_at,
                                           approved_by_team_leader = perReq.approved_by_team_leader,
                                           approved_by_team_leader_at = perReq.approved_by_team_leader_at,
                                           rejected_by_at = perReq.rejected_by_at,
@@ -68,6 +78,7 @@ namespace HRMS.Controllers
                                           team_leader_id = user.team_leader_id,
                                           permission_count = db.WorkPermissionRequests.Where(wo => wo.year == perReq.year && wo.month == perReq.month && wo.status == (int)ApprovementStatus.ApprovedBySuperAdmin && wo.user_id == perReq.user_id).Count(),
                                           team_leader_name = team_leader_approved.full_name,
+                                          technical_manager_name = technical_manager_approved.full_name,
                                           branch_admin_name = branch_admin_approved.full_name,
                                           super_admin_name = super_admin_approved.full_name,
                                           rejected_by_name = rejected_by.full_name,
@@ -83,9 +94,13 @@ namespace HRMS.Controllers
                 {
                     permissionData = permissionData.Where(t => t.team_leader_id == currentUser.id && t.type == (int)UserRole.Employee && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.PendingApprove);
                 }
-                else if (isA.BranchAdmin())
+                else if (isA.TechnicalManager())
                 {
                     permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedByTeamLeader);
+                }
+                else if (isA.BranchAdmin())
+                {
+                    permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.TechnicalManager) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedByTechnicalManager);
                 } 
                 else if(isA.SuperAdmin())
                 {
@@ -130,7 +145,7 @@ namespace HRMS.Controllers
             }
             ViewBag.years = db.WorkPermissionRequests.Select(y => new { id = y.id, year = y.year }).GroupBy(w => w.year).ToList();
             ViewBag.months = db.WorkPermissionRequests.Select(y => new { id = y.id, month = y.month }).GroupBy(w => w.month).ToList();
-            if (isA.BranchAdmin() || isA.TeamLeader())
+            if (isA.BranchAdmin() || isA.TeamLeader() || isA.TechnicalManager())
             {
                 branch_id = currentUser.branch_id;
             }
@@ -156,19 +171,28 @@ namespace HRMS.Controllers
                 //accepted
                 if (status == 1)
                 {
-                    workPermissionRequest.status += 1;
+                    
                     if (isA.TeamLeader())
                     {
+                        workPermissionRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
                         workPermissionRequest.approved_by_team_leader = currentUser.id;
                         workPermissionRequest.approved_by_team_leader_at = DateTime.Now;
                     }
+                    else if (isA.TechnicalManager())
+                    {
+                        workPermissionRequest.status = (int)ApprovementStatus.ApprovedByTechnicalManager;
+                        workPermissionRequest.approved_by_technical_manager = currentUser.id;
+                        workPermissionRequest.approved_by_technical_manager_at = DateTime.Now;
+                    }
                     else if (isA.BranchAdmin())
                     {
+                        workPermissionRequest.status = (int)ApprovementStatus.ApprovedByBranchAdmin;
                         workPermissionRequest.approved_by_branch_admin = currentUser.id;
                         workPermissionRequest.approved_by_branch_admin_at = DateTime.Now;
                     }
                     else if(isA.SuperAdmin())
                     {
+                        workPermissionRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         workPermissionRequest.approved_by_super_admin = currentUser.id;
                         workPermissionRequest.approved_by_super_admin_at = DateTime.Now;
                     }

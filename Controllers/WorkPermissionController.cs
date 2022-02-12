@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index()
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -37,12 +37,19 @@ namespace HRMS.Controllers
                                       join user in db.Users on perReq.user_id equals user.id
                                       join team_leader_approve in db.Users on perReq.approved_by_team_leader equals team_leader_approve.id into tla
                                       from team_leader_approved in tla.DefaultIfEmpty()
+
+                                      join technical_manager_approve in db.Users on perReq.approved_by_technical_manager equals technical_manager_approve.id into tecm
+                                      from technical_manager_approved in tecm.DefaultIfEmpty()
+
                                       join branch_admin_approve in db.Users on perReq.approved_by_branch_admin equals branch_admin_approve.id into baa
                                       from branch_admin_approved in baa.DefaultIfEmpty()
+
                                       join super_admin_approve in db.Users on perReq.approved_by_super_admin equals super_admin_approve.id into sua
                                       from super_admin_approved in sua.DefaultIfEmpty()
+
                                       join rejected in db.Users on perReq.rejected_by equals rejected.id into re
                                       from rejected_by in re.DefaultIfEmpty()
+
                                       select new WorkPermissionRequestViewModel
                                       {
                                           id = perReq.id,
@@ -60,12 +67,15 @@ namespace HRMS.Controllers
                                           approved_by_branch_admin_at = perReq.approved_by_branch_admin_at,
                                           approved_by_team_leader = perReq.approved_by_team_leader,
                                           approved_by_team_leader_at = perReq.approved_by_team_leader_at,
+                                          approved_by_technical_manager = perReq.approved_by_technical_manager,
+                                          approved_by_technical_manager_at = perReq.approved_by_technical_manager_at,
                                           created_at = perReq.created_at,
                                           full_name = user.full_name,
                                           type = user.type,
                                           team_leader_id = user.team_leader_id,
                                           permission_count = db.WorkPermissionRequests.Where(wo => wo.year == perReq.year && wo.month == perReq.month && wo.status == (int)ApprovementStatus.ApprovedBySuperAdmin && wo.user_id == perReq.user_id).Count(),
                                           team_leader_name = team_leader_approved.full_name,
+                                          technical_manager_name = technical_manager_approved.full_name,
                                           branch_admin_name = branch_admin_approved.full_name,
                                           super_admin_name = super_admin_approved.full_name,
                                           rejected_by_name = rejected_by.full_name,
@@ -116,6 +126,10 @@ namespace HRMS.Controllers
                 else if (currentUser.type == (int?)UserRole.TeamLeader)
                 {
                     WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedByTeamLeader;
+                }
+                else if (currentUser.type == (int?)UserRole.TechnicalManager)
+                {
+                    WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedByTechnicalManager;
                 }
                 else if(currentUser.type == (int?)UserRole.Employee)
                 {

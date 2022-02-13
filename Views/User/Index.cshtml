@@ -280,7 +280,8 @@
                     "stateSave": false,
                     "lengthChange": false,
                     "dom": 'Bfrtip',
-
+                    "filter": true, // this is for disable filter (search box)  
+                    "orderMulti": false, // for disable multiple column at once  
                     "buttons": ['copy', 'excel', 'pdf', 'print'],
                     "pageLength":10,
                     "rowId": 'id',
@@ -290,13 +291,26 @@
                         "datatype": "json",
                         "dataSrc": "data"
                     },
+                   "columnDefs":
+                    [{
+                        "targets": [6],
+                        //"visible": false,
+                        "orderable": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [7],
+                        "searchable": false,
+                        "orderable": false
+                    }],
                     "columns": [
                         {
                             "data": "id",
+                            "name": "id",
                             "searchable": true
                         },
                         {
-                            "data": "full_name", "searchable": true,
+                            "data": "full_name", "name": "full_name", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "<span>" + oData.full_name + "</span>";
 
@@ -305,10 +319,11 @@
                         },
                         {
                             "data": "code",
+                            "name": "code",
                             "searchable": true
                         },
                         {
-                            "data": "phone", "searchable": true,
+                            "data": "phone", "name": "phone", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "<span> ";
                                 if (oData.phone) {
@@ -330,7 +345,7 @@
                         },
 
                         {
-                            "data": "gender", "searchable": true,
+                            "data": "gender", "name": "gender", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "<span> ";
                                 if (oData.gender) {
@@ -346,7 +361,7 @@
                             }
                         },
                         {
-                            "data": "type", "searchable": true,
+                            "data": "type", "name": "type", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.type == 1)

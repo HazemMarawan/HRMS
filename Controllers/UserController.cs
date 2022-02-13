@@ -36,6 +36,8 @@ namespace HRMS.Controllers
                 var search_type = Request.Form.GetValues("columns[4][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
+                var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+                var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
 
                 // Getting all data    
                 var userData = (from user in db.Users
@@ -146,8 +148,14 @@ namespace HRMS.Controllers
                     userData = userData.Where(s => s.type == search_type_int);
                 }
 
+                //Sorting    
+                if ((!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    userData = userData.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+
                 //total number of rows count     
-                var displayResult = userData.OrderByDescending(u => u.id).Skip(skip)
+                var displayResult = userData.Skip(skip)
                      .Take(pageSize).ToList();
                 var totalRecords = userData.Count();
 

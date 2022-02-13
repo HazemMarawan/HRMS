@@ -145,6 +145,7 @@
     <Compile Include="Auth\can.cs" />
     <Compile Include="Auth\CustomAuthenticationFilter.cs" />
     <Compile Include="Auth\isA.cs" />
+    <Compile Include="Auth\LinqExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BranchController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />

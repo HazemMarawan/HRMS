@@ -1,0 +1,408 @@
+﻿@{
+    ViewBag.Title = "Missiones";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="manage_Mission_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-6">
+                                <label>Date</label>
+                                <input required name="date" id="date" type="date" class="form-control radius-30" />
+                            </div>
+                            @*<div class="form-group col-md-6">
+                                <label>Duration</label>
+                                <select required name="minutes" id="minutes" type="datetime-local" class="form-control radius-30">
+                                    <option value="15">15 Minute</option>
+                                    <option value="30">30 Minute</option>
+                                    <option value="60">1 Hour</option>
+                                    <option value="90">1 Hour and 30 Minute</option>
+                                    <option value="120">2 Hours</option>
+                                </select>
+                            </div>*@
+                           
+                             <div class="form-group col-md-6">
+                                <label>Cost</label>
+                                <input type="number" required name="cost" step="0.1" id="cost" class="form-control radius-30">
+                            </div>
+                             <div class="form-group col-md-12">
+                                <label>Destination</label>
+                                <input type="text" required name="destination" id="destination" class="form-control radius-30">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Reason</label>
+                                <textarea required name="reason" id="reason" class="form-control radius-30"> </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    <div class="form-group col-4">
+        <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
+    </div>
+    <div class="form-group col-2">
+        <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
+    </div>
+    <div class="form-group col-2">
+        <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
+    </div>
+
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <a href="javascript:void(0)" id="add_Mission"><i class="fa fa-plus"></i> Request Mission</a>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="MissionTable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Cost</th>
+                        <th>Destination</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        @*<th>Active</th>*@
+                        <th></th>
+                    </tr>
+                </thead>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+       $(document).ready(function () {
+
+           var datatable = $('#MissionTable')
+               .DataTable({/* we added this from the other system to have same search and same pagination*/
+                   "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                       "<'table-responsive  'tr>" +
+                       "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                   "buttons": {
+                       buttons: [
+                           { extend: 'copy', className: 'btn btn-sm' },
+                           { extend: 'csv', className: 'btn btn-sm' },
+                           { extend: 'excel', className: 'btn btn-sm' },
+                           { extend: 'print', className: 'btn btn-sm' }
+                       ]
+                   },
+                   "oLanguage": {
+                       "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
+                       "sInfo": "Showing page _PAGE_ of _PAGES_",
+                       "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                       "sSearchPlaceholder": "Search...",
+                       "sLengthMenu": "Results :  _MENU_",
+                   },
+                    "processing": true,
+                    "serverSide": true,
+                    "scrollX": true,
+                    "stateSave": false,
+                    "lengthChange": false,
+                    "dom": 'Bfrtip',
+
+                    "buttons": ['copy', 'excel', 'pdf', 'print'],
+                    "pageLength":10,
+                    "rowId": 'id',
+                    "ajax": {
+                        "url": "@Url.Action("Index", "Mission")",
+                        "type": "POST",
+                        "datatype": "json",
+                        "dataSrc": "data"
+                    },
+                    "columns": [
+                        {
+                            "data": "id",
+                            "searchable": true
+                        },
+                        {
+                            "data": "date", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='action-column'>" + fixDate(oData.date) + "</span>");
+                            }
+                        },
+                        {
+                            "data": "cost", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='action-column'>" + oData.cost + "</span>");
+                            }
+                        },
+                        {
+                            "data": "destination", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='action-column'>" + oData.destination + "</span>");
+                            }
+                        },
+                        {
+                            "data": "reason", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='action-column'>" + oData.reason + "</span>");
+                            }
+                        },
+                        {
+                            "data": "status", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                //employee
+                                if (oData.type == 3) {
+                                    if (oData.status == 1)
+                                        html += "<span class='badge badge-info'>Pending Approve</span>";
+                                    else if (oData.status == 2)
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span>";
+                                    else if (oData.status == 6) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span>";
+                                    }
+                                    else if (oData.status == 3) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 4) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 5)
+                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + fixDate(oData.rejected_by_at) + "</span>";
+                                    else
+                                        html += "-";
+                                }
+                                else if (oData.type == 4) { //team leader
+                                    if (oData.status == 2)
+                                        html += "<span class='badge badge-info'>Pending Approve</span>";
+                                    if (oData.status == 6) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                    } else if (oData.status == 3) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                    }
+                                    else if (oData.status == 4) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 5)
+                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + fixDate(oData.rejected_by_at) + "</span>";
+                                    else
+                                        html += "-";
+                                }
+                                else if (oData.type == 5) { //Technical Manager
+                                    console.log(oData.status)
+                                    if (oData.status == 6)
+                                        html += "<span class='badge badge-info'>Pending Approve</span>";
+                                    else if (oData.status == 3) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 4) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 5)
+                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + fixDate(oData.rejected_by_at) + "</span>";
+                                    else
+                                        html += "-";
+                                }
+                                else if (oData.type == 2) { //branch admin
+                                    if (oData.status == 3)
+                                        html += "<span class='badge badge-info'>Pending Approve</span>";
+                                    else if (oData.status == 4) {
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
+                                    }
+                                    else if (oData.status == 5)
+                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + fixDate(oData.rejected_by_at) + "</span>";
+                                    else
+                                        html += "-";
+                                }
+                                else {
+                                    html += "-";
+                                }
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        //{
+                        //    "data": "active", "searchable": true,
+                        //    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                        //        var html = "";
+                        //        if (oData.active == 1)
+                        //            html += "<span class='badge badge-primary'>Active</span>";
+                        //        else
+                        //            html += "<span class='badge badge-danger'>Not Active</span>";
+                        //        $(nTd).html("<span class='action-column'>" + html + "</span>");
+                        //    }
+                        //},
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                //pending
+                                if (oData.status == 1)
+                                    html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                //not approved by super admin and rejected
+                                if (oData.status != 4 && oData.status != 5)
+                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                //html += "<a class='add_project' href='javascript:void(0)' title='Add Project'><i class='fa fa-plus'></i></a>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                    ]
+                 });
+
+            $('#search').on('click', function () {
+                datatable.search($("#text_search").val());
+                datatable.draw();
+            });
+
+            $('#text_search').on('keyup', function (e) {
+                if (e.keyCode == 13)
+                    $('#search_button').trigger('click');
+            });
+
+            $('#reset').on('click', function () {
+                $("#text_search").val("");
+
+                $('#search').trigger('click');
+
+            });
+
+           $("#add_Mission").click(function () {
+               var modal = $('#manage_Mission_modal').clone();
+                var action = '@Url.Action("saveMission", "Mission")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Request Mission');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+                    if (response.message == 'faild') {
+                        Swal.fire(
+                            'Sorry! Reach Limit Permitted.',
+                            'You have Only Two Missions per Month.',
+                            'error'
+                        );
+
+                    }else
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+
+
+                });
+            });
+
+            $(document).on("click", ".edit", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                console.log(data);
+                var modal = $('#manage_Mission_modal').clone();
+                var action = '@Url.Action("saveMission", "Mission")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Edit Requested Mission');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+                    console.log(fixDateTimeLocal(data.date));
+
+                        dialog.find('#id').val(data.id);
+                        dialog.find('#reason').text(data.reason);
+                        dialog.find('#destination').text(data.destination);
+                        dialog.find('#cost').text(data.cost);
+                        dialog.find('#date').val(fixDate(data.date));
+                        //dialog.find('#minutes option[value=' + data.minutes + ']').attr('selected', 'selected');
+
+                });
+
+            });
+
+           $(document).on("click", ".add_project", function () {
+                    var data = datatable.row($(this).closest('tr')).data();
+               var modal = $('#manage_Mission_project_modal').clone();
+                    var action = '@Url.Action("saveMissionProject", "Mission")';
+                    modal.find('form').attr('action', action);
+                    modal.find('#modal_title').text('Add Project');
+                    modal.execModal({
+                        progressBar: 'progress_bar',
+                        progressText: 'progress_text',
+                    }, function (response) {
+                            datatable.draw();
+
+                    }, function (response) {
+
+                    }, function (dialog) {
+                            var html = "<option value=''>Select Project</option>";
+                        $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getProjects", "Mission")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": data.id },
+                            datatype: "json",
+                            success: function (data) {
+                                datatable.draw();
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+                            dialog.find("#Mission_id").val(data.id);
+                    });
+
+                });
+
+            $(document).on("click", ".delete", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                warningBox("Are you sure you want to delete this Mission (<b>" + data.name +"</b>) ?", function () {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("deleteMission", "Mission")',
+                        contentType: "application/json; charset=utf-8",
+                        data: { "id": data.id },
+                        datatype: "json",
+                        success: function (data) {
+                            datatable.draw();
+                        },
+                        error: function () {
+                            alert("Dynamic content load failed.");
+                        }
+                    });
+                });
+            });
+
+        });
+
+    </script>
+}
+

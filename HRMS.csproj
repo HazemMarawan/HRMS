@@ -152,12 +152,14 @@
     <Compile Include="Controllers\IDTypeController.cs" />
     <Compile Include="Controllers\JobController.cs" />
     <Compile Include="Controllers\NationalityController.cs" />
+    <Compile Include="Controllers\MissionListController.cs" />
     <Compile Include="Controllers\PermissionListController.cs" />
     <Compile Include="Controllers\ProductivityController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ProjectTypeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VacationRequestController.cs" />
+    <Compile Include="Controllers\MissionController.cs" />
     <Compile Include="Controllers\WorkPermissionController.cs" />
     <Compile Include="Controllers\VacationTypeController.cs" />
     <Compile Include="Enum\StaticLists.cs" />
@@ -293,6 +295,10 @@
     <Compile Include="Migrations\202202111616559_updates11.Designer.cs">
       <DependentUpon>202202111616559_updates11.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202122354558_add_missions.cs" />
+    <Compile Include="Migrations\202202122354558_add_missions.Designer.cs">
+      <DependentUpon>202202122354558_add_missions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Branch.cs" />
@@ -303,6 +309,8 @@
     <Compile Include="Models\VacationRequest.cs" />
     <Compile Include="Models\VacationType.cs" />
     <Compile Include="Models\VacationYear.cs" />
+    <Compile Include="Models\MissionMonthYear.cs" />
+    <Compile Include="Models\MissionRequest.cs" />
     <Compile Include="Models\WorkPermissionRequest.cs" />
     <Compile Include="Models\WorkPermissionMonthYear.cs" />
     <Compile Include="ViewModels\AreaViewModel.cs" />
@@ -325,7 +333,9 @@
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\UserProjectViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
+    <Compile Include="ViewModels\MissionMonthYearViewModel.cs" />
     <Compile Include="ViewModels\WorkPermissionMonthYearViewModel.cs" />
+    <Compile Include="ViewModels\MissionRequestViewModel.cs" />
     <Compile Include="ViewModels\WorkPermissionRequestViewModel.cs" />
     <Compile Include="ViewModels\VacationRequestViewModel.cs" />
     <Compile Include="ViewModels\VacationTypeViewModel.cs" />
@@ -2789,6 +2799,8 @@
     <Content Include="Views\PermissionList\Index.cshtml" />
     <Content Include="Views\VacationRequest\History.cshtml" />
     <Content Include="Views\VacationRequest\Approval.cshtml" />
+    <Content Include="Views\Mission\Index.cshtml" />
+    <Content Include="Views\MissionList\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2903,6 +2915,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202111616559_updates11.resx">
       <DependentUpon>202202111616559_updates11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202122354558_add_missions.resx">
+      <DependentUpon>202202122354558_add_missions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -34,7 +34,8 @@ namespace HRMS
             Mapper.CreateMap<VacationRequestViewModel, VacationRequest>();
             Mapper.CreateMap<VacationYearViewModel, VacationYear>();
             Mapper.CreateMap<WorkPermissionRequestViewModel, WorkPermissionRequest>();
-            Mapper.CreateMap<WorkPermissionMonthYearViewModel, WorkPermissionMonthYear>();
+            Mapper.CreateMap<MissionMonthYearViewModel, MissionMonthYear>();
+            Mapper.CreateMap<MissionRequestViewModel, MissionRequest>();
 
 
         }

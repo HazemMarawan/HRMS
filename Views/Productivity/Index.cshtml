@@ -167,7 +167,8 @@
                     "stateSave": false,
                     "lengthChange": false,
                     "dom": 'Bfrtip',
-
+                    "filter": true, // this is for disable filter (search box)  
+                    "orderMulti": false, // for disable multiple column at once
                     "buttons": ['copy', 'excel', 'pdf', 'print'],
                     "pageLength": 10,
                     "rowId": 'id',
@@ -177,35 +178,53 @@
                         "datatype": "json",
                         "dataSrc": "data"
                     },
+                    "columnDefs":
+                    [
+                    //{
+                    //    "targets": [6],
+                    //    //"visible": false,
+                    //    "orderable": false,
+                    //    "searchable": false
+                    //},
+                    {
+                        "targets": [8],
+                        "searchable": false,
+                        "orderable": false
+                    }],
                     "columns": [
                         {
                             "data": "id",
+                            "name": "id",
                             "searchable": true
                         },
                         {
                             "data": "user_name",
+                            "name": "user_name",
                             "searchable": true
                         },
                         {
-                            "data": "working_date", "searchable": true,
+                            "data": "working_date", "name": "working_date", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 $(nTd).html("<span class='action-column'>" + fixDate(oData.working_date) + "</span>");
                             }
                         },
                         {
                             "data": "project_name",
+                            "name": "project_name",
                             "searchable": true
                         },
                         {
                             "data": "area_name",
+                            "name": "area_name",
                             "searchable": true
                         },
                         {
                             "data": "no_of_numbers",
+                            "name": "no_of_numbers",
                             "searchable": true
                         },
                         {
-                            "data": "id", "searchable": true,
+                            "data": "id", "name":"productivity_type", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.productivity_type) {
@@ -243,7 +262,7 @@
                             }
                         },
                         {
-                            "data": "status", "searchable": true,
+                            "data": "status", "name": "status", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.status == 1) {

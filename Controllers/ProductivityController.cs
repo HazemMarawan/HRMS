@@ -41,6 +41,8 @@ namespace HRMS.Controllers
                 var to_date = Request.Form.GetValues("columns[5][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
+                var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+                var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
 
                 // Getting all data    
                 var productivityData = (from user in db.Users
@@ -156,6 +158,7 @@ namespace HRMS.Controllers
                     }
                 }
 
+              
                 //var clonedProductivityData = productivityData.ToList();
                 int? Hours = 0;
                 int? Projects = 0;
@@ -167,9 +170,15 @@ namespace HRMS.Controllers
                 Projects = productivityData.Select(c => c.project_id).Distinct().ToList().Count();
                 Employees = productivityData.Select(c => c.user_id).Distinct().ToList().Count();
                 Cost = productivityData.Select(c => c.cost).ToList().Sum();
-             
+
+                //Sorting    
+                if ((!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDir)))
+                {
+                    productivityData = productivityData.OrderBy(sortColumn + " " + sortColumnDir);
+                }
+
                 //total number of rows count     
-                var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
+                var displayResult = productivityData.Skip(skip)
                      .Take(pageSize).ToList();
                 var totalRecords = productivityData.Count();
 

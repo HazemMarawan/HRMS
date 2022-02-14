@@ -61,6 +61,7 @@ namespace HRMS.Models
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
         public virtual ICollection<UserProject> UserProjects { get; set; }
+        public virtual ICollection<Asset> Assets { get; set; }
 
     }
 }

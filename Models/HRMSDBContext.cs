@@ -38,6 +38,7 @@ namespace HRMS.Models
          public virtual DbSet<WorkPermissionMonthYear> WorkPermissionMonthYears { get; set; }
          public virtual DbSet<MissionRequest> MissionRequests { get; set; }
          public virtual DbSet<MissionMonthYear> MissionMonthYears { get; set; }
+         public virtual DbSet<Asset> Assets { get; set; }
     }
 
     //public class MyEntity

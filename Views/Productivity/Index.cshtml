@@ -122,9 +122,7 @@
                         <th>#</th>
                         <th>Employee</th>
                         <th>Working Date</th>
-                        <th>Project</th>
-                        <th>Area</th>
-                        <th>Hours</th>
+                        <th>Location</th>
                         <th>Info</th>
                         <th>Status</th>
                         <th></th>
@@ -187,7 +185,7 @@
                     //    "searchable": false
                     //},
                     {
-                        "targets": [8],
+                        "targets": [6],
                         "searchable": false,
                         "orderable": false
                     }],
@@ -209,19 +207,15 @@
                             }
                         },
                         {
-                            "data": "project_name",
-                            "name": "project_name",
-                            "searchable": true
-                        },
-                        {
-                            "data": "area_name",
-                            "name": "area_name",
-                            "searchable": true
-                        },
-                        {
-                            "data": "no_of_numbers",
-                            "name": "no_of_numbers",
-                            "searchable": true
+                            "data": "project_name", "name": "project_name", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.project_name)
+                                    html += "<b>Project: </b>" + oData.project_name + "<br>";
+                                if (oData.area_name)
+                                    html += "<b>Area: </b>" + oData.area_name + "<br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
                         },
                         {
                             "data": "id", "name":"productivity_type", "searchable": true,
@@ -258,6 +252,8 @@
                                     html += "<b>MVUG: </b>" + oData.mvug + "<br>";
                                 if (oData.lvug)
                                     html += "<b>LVUG: </b>" + oData.lvug + "<br>";
+                                if (oData.no_of_numbers)
+                                    html += "<b>Hours: </b>" + oData.no_of_numbers + "<br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

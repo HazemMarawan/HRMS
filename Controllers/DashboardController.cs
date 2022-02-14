@@ -38,6 +38,20 @@ namespace HRMS.Controllers
                 dashboardViewModel.Manager = db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.BranchAdmin).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
             }
 
+            if(HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin())
+            {
+                dashboardViewModel.Vacations = db.VacationRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status != (int)ApprovementStatus.Rejected).Select(vr => vr.days).Sum();
+                dashboardViewModel.Vacations = dashboardViewModel.Vacations != null ? dashboardViewModel.Vacations : 0;
+                dashboardViewModel.VacationsBalance = currentUser.vacations_balance != null ? currentUser.vacations_balance : 21;
+
+                dashboardViewModel.Permissions = db.WorkPermissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status != (int)ApprovementStatus.Rejected).Count();
+                dashboardViewModel.Permissions = dashboardViewModel.Permissions != null ? dashboardViewModel.Permissions : 0;
+
+                dashboardViewModel.Missions = db.MissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status != (int)ApprovementStatus.Rejected).Count();
+                dashboardViewModel.Missions = dashboardViewModel.Missions != null ? dashboardViewModel.Missions : 0;
+
+            }
+
             return View(dashboardViewModel);
         }
         [HttpGet]

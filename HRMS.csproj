@@ -147,6 +147,7 @@
     <Compile Include="Auth\isA.cs" />
     <Compile Include="Auth\LinqExtensions.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AssetController.cs" />
     <Compile Include="Controllers\BranchController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
@@ -300,8 +301,17 @@
     <Compile Include="Migrations\202202122354558_add_missions.Designer.cs">
       <DependentUpon>202202122354558_add_missions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202141638459_updates12.cs" />
+    <Compile Include="Migrations\202202141638459_updates12.Designer.cs">
+      <DependentUpon>202202141638459_updates12.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202141700333_updates13.cs" />
+    <Compile Include="Migrations\202202141700333_updates13.Designer.cs">
+      <DependentUpon>202202141700333_updates13.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
+    <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\Branch.cs" />
     <Compile Include="Models\BranchProject.cs" />
     <Compile Include="Models\Department.cs" />
@@ -315,6 +325,7 @@
     <Compile Include="Models\WorkPermissionRequest.cs" />
     <Compile Include="Models\WorkPermissionMonthYear.cs" />
     <Compile Include="ViewModels\AreaViewModel.cs" />
+    <Compile Include="ViewModels\AssetViewModel.cs" />
     <Compile Include="ViewModels\BranchProjectViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
@@ -2802,6 +2813,7 @@
     <Content Include="Views\VacationRequest\Approval.cshtml" />
     <Content Include="Views\Mission\Index.cshtml" />
     <Content Include="Views\MissionList\Index.cshtml" />
+    <Content Include="Views\Asset\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2919,6 +2931,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202122354558_add_missions.resx">
       <DependentUpon>202202122354558_add_missions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202141638459_updates12.resx">
+      <DependentUpon>202202141638459_updates12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202141700333_updates13.resx">
+      <DependentUpon>202202141700333_updates13.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

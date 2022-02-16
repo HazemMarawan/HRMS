@@ -413,7 +413,7 @@ namespace HRMS.Controllers
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
                 // Getting all data    
-                var productitvityData = (from vacationRequest in db.VacationRequests
+                var vacationsRequestsData = (from vacationRequest in db.VacationRequests
                                          join vacationType in db.VacationTypes on vacationRequest.vacation_type_id equals vacationType.id
                                          join user in db.Users on vacationRequest.user_id equals user.id
                                          join superAd in db.Users on vacationRequest.approved_by_super_admin equals superAd.id into sa
@@ -454,39 +454,40 @@ namespace HRMS.Controllers
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    productitvityData = productitvityData.Where(m => m.vacation_name.ToLower().Contains(searchValue.ToLower()) || m.id.ToString().ToLower().Contains(searchValue.ToLower()));
+                    vacationsRequestsData = vacationsRequestsData.Where(m => m.vacation_name.ToLower().Contains(searchValue.ToLower()) || m.id.ToString().ToLower().Contains(searchValue.ToLower()));
                 }
 
                 if (isA.SuperAdmin())
                 {
-                    productitvityData = productitvityData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager || p.user_type == (int)UserRole.BranchAdmin));
+                    vacationsRequestsData = vacationsRequestsData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager || p.user_type == (int)UserRole.BranchAdmin));
                     if (branch_id != null)
                     {
-                        productitvityData = productitvityData.Where(p => p.branch_id == branch_id);
+                        vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == branch_id);
                     }
                 }
 
                 if (isA.BranchAdmin())
                 {
-                    productitvityData = productitvityData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTechnicalManager && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager));
+                    vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTechnicalManager && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager));
 
                 }
 
                 if (isA.TeamLeader())
                 {
-                    productitvityData = productitvityData.Where(p => p.team_leader_id == currentUser.id && p.status == (int)ApprovementStatus.PendingApprove && p.user_id != currentUser.id && p.user_type == (int)UserRole.Employee);
+                    vacationsRequestsData = vacationsRequestsData.Where(p => p.team_leader_id == currentUser.id && p.status == (int)ApprovementStatus.PendingApprove && p.user_id != currentUser.id && p.user_type == (int)UserRole.Employee);
 
                 }
 
                 if (isA.TechnicalManager())
                 {
-                    productitvityData = productitvityData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTeamLeader && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader));
+                    vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTeamLeader && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader));
 
                 }
+
                 //total number of rows count     
-                var displayResult = productitvityData.OrderByDescending(u => u.id).Skip(skip)
+                var displayResult = vacationsRequestsData.OrderByDescending(u => u.id).Skip(skip)
                      .Take(pageSize).ToList();
-                var totalRecords = productitvityData.Count();
+                var totalRecords = vacationsRequestsData.Count();
 
                 return Json(new
                 {

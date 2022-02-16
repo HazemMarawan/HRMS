@@ -523,7 +523,10 @@ namespace HRMS.Controllers
             approveUserProject.status = (int)ProductivityStatus.Approved;
             approveUserProject.approved_at = DateTime.Now;
             approveUserProject.approved_by = Session["id"].ToString().ToInt();
-            approveUserProject.cost = currentUser.last_hour_price * approveUserProject.no_of_numbers;
+            if(approveUserProject.productivity_type == 1)
+                approveUserProject.cost = currentUser.last_hour_price * approveUserProject.no_of_numbers;
+            else
+                approveUserProject.cost = currentUser.last_over_time_price * approveUserProject.no_of_numbers;
 
             db.SaveChanges();
 

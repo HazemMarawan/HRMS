@@ -303,14 +303,14 @@ namespace HRMS.Controllers
 
             if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin())
             {
-                dashboardViewModel.Vacations = db.VacationRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status != (int)ApprovementStatus.Rejected).Select(vr => vr.days).Sum();
+                dashboardViewModel.Vacations = db.VacationRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Select(vr => vr.days).Sum();
                 dashboardViewModel.Vacations = dashboardViewModel.Vacations != null ? dashboardViewModel.Vacations : 0;
                 dashboardViewModel.VacationsBalance = currentUser.vacations_balance != null ? currentUser.vacations_balance : 21;
 
-                dashboardViewModel.Permissions = db.WorkPermissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status != (int)ApprovementStatus.Rejected).Count();
+                dashboardViewModel.Permissions = db.WorkPermissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Count();
                 dashboardViewModel.Permissions = dashboardViewModel.Permissions != null ? dashboardViewModel.Permissions : 0;
 
-                dashboardViewModel.Missions = db.MissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status != (int)ApprovementStatus.Rejected).Count();
+                dashboardViewModel.Missions = db.MissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Count();
                 dashboardViewModel.Missions = dashboardViewModel.Missions != null ? dashboardViewModel.Missions : 0;
 
             }

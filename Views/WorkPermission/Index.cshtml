@@ -133,7 +133,10 @@
                         {
                             "data": "date", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + fixDate(oData.date) + "</span>");
+                                var html = '';
+                                if (oData.date)
+                                    html = fixDate(oData.date);
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
                         {

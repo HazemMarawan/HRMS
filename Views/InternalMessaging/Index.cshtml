@@ -1,0 +1,520 @@
+﻿@model HRMS.ViewModels.MailboxViewModel
+@{
+    ViewBag.Title = "Internal Messaging";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css{
+    <link rel="stylesheet" type="text/css" href="~/Content/AdminPanelAssets/plugins/editors/quill/quill.snow.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/AdminPanelAssets/assets/css/forms/theme-checkbox-radio.css">
+    <link href="~/Content/AdminPanelAssets/assets/css/apps/mailbox.css" rel="stylesheet" type="text/css" />
+
+    <script src="~/Content/AdminPanelAssets/plugins/sweetalerts/promise-polyfill.js"></script>
+    <link href="~/Content/AdminPanelAssets/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/AdminPanelAssets/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/AdminPanelAssets/plugins/notification/snackbar/snackbar.min.css" rel="stylesheet" type="text/css" />
+
+}
+
+<div class="modal fade" id="send_mail_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="" method="post" enctype='multipart/form-data'>
+                <div class="modal-body">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="modal"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+
+                    <div class="compose-box">
+                        <div class="compose-content">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="d-flex mb-4 mail-form">
+                                        <p>From @ViewBag.currentUserName</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="related_id" name="related_id">
+
+                            <div class="d-flex mb-4 mail-subject">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                <div class="w-100">
+                                    @Html.DropDownList("to_users", new SelectList(ViewBag.toUsers, "id", "full_name"), "Select Employee", new { @class = "selectize", @multiple = "multiple", @name = "to_users", @id = "to_users", @required = "required" })
+                                </div>
+                            </div>
+                            <div class="d-flex mb-4 mail-subject">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <div class="w-100">
+                                    <input type="text" id="subject" name="subject" placeholder="Subject" class="form-control">
+                                    <span class="validation-text"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex mb-4 mail-form">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <div class="w-100">
+                                    <textarea name="body" id="body" rows="6" cols="60"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroupFileAddon01">Attach Document</span>
+                                </div>
+                                <div class="custom-file">
+                                    <input type="file" onchange="loadFile(event)" multiple class="custom-file-input" id="attachments" name="attachments" aria-describedby="inputGroupFileAddon01">
+                                    <label class="custom-file-label" for="inputGroupFile01">Choose File</label>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal"> <i class="flaticon-delete-1"></i>Close</button>
+                    <button id="btn-send" type="submit" class="btn">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row layout-top-spacing">
+    <div class="col-xl-12 col-lg-12 col-md-12">
+
+        <div class="row">
+
+            <div class="col-xl-12  col-md-12">
+
+                <div class="mail-box-container">
+                    <div class="mail-overlay"></div>
+
+                    <div class="tab-title">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-12 text-center mail-btn-container">
+                                <a id="btn-send-mail" class="btn btn-block" href="javascript:void(0);"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-12 mail-categories-container">
+
+                                <div class="mail-sidebar-scroll">
+
+                                    <ul class="nav nav-pills d-block" id="pills-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link list-actions active" id="mailInbox"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg> <span class="nav-names">Inbox</span> <span class="mail-badge badge"></span></a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link list-actions" id="sentmail"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> <span class="nav-names">Sent</span></a>
+                                        </li>
+
+                                    </ul>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="mailbox-inbox" class="accordion mailbox-inbox">
+
+                        <div class="search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu mail-menu d-lg-none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                            <input type="text" class="form-control input-search" placeholder="Search">
+                        </div>
+
+                        <div class="action-center">
+                            <div class="">
+                                <div class="n-chk">
+                                    <label class="new-control new-checkbox checkbox-primary">
+                                        <input type="checkbox" class="new-control-input" id="inboxAll">
+                                        <span class="new-control-indicator"></span><span>Check All</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="message-box">
+
+                            <div class="message-box-scroll" id="ct">
+
+                                @foreach (var mail in Model.inboxMails)
+                                {
+                                    <div class="mail-item mailInbox">
+                                        <div class="animated animatedFadeInUp fadeInUp" id="@mail.id">
+                                            <div class="mb-0">
+                                                <div class="mail-item-heading collapsed" data-toggle="collapse" role="navigation" data-target="#mail_@mail.id" aria-expanded="false">
+                                                    <div class="mail-item-inner">
+
+                                                        <div class="d-flex">
+                                                            <div class="n-chk text-center">
+                                                                <label class="new-control new-checkbox checkbox-primary">
+                                                                    <input type="checkbox" class="new-control-input inbox-chkbox">
+                                                                    <span class="new-control-indicator"></span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="f-head">
+                                                                @if (!String.IsNullOrEmpty(mail.userImage))
+                                                                {
+                                                                    <img src="@mail.userImage" class="user-profile" alt="avatar">
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="~/images/userProfile.jpeg" class="user-profile" alt="avatar">
+
+                                                                }
+                                                            </div>
+                                                            <div class="f-body">
+                                                                <div class="meta-mail-time">
+                                                                    <p class="user-email" data-mailTo="niahillyer@mail.com">@mail.stringFromUser</p>
+                                                                </div>
+                                                                <div class="meta-title-tag">
+                                                                    <p class="mail-content-excerpt" data-mailDescription='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>
+                                                                        <span class="mail-title" data-mailTitle="@mail.subject">@mail.subject - </span>
+                                                                        @mail.body
+                                                                    </p>
+                                                                    <div class="tags">
+                                                                        <span class="g-dot-primary"></span>
+                                                                        <span class="g-dot-warning"></span>
+                                                                        <span class="g-dot-success"></span>
+                                                                        <span class="g-dot-danger"></span>
+                                                                    </div>
+                                                                    <p class="align-self-center">@mail.stringCreatedAt.Split(' ')[mail.stringCreatedAt.Split(' ').Length - 1]</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                @foreach (var mail in Model.sendMails)
+                                {
+                                    <div class="mail-item sentmail">
+                                        <div class="animated animatedFadeInUp fadeInUp" id="@mail.id">
+                                            <div class="mb-0">
+                                                <div class="mail-item-heading collapsed" data-toggle="collapse" role="navigation" data-target="#mail_@mail.id" aria-expanded="false">
+                                                    <div class="mail-item-inner">
+
+                                                        <div class="d-flex">
+                                                            <div class="n-chk text-center">
+                                                                <label class="new-control new-checkbox checkbox-primary">
+                                                                    <input type="checkbox" class="new-control-input inbox-chkbox">
+                                                                    <span class="new-control-indicator"></span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="f-head">
+                                                                @if (!String.IsNullOrEmpty(mail.userImage))
+                                                                {
+                                                                    <img src="@mail.userImage" class="user-profile" alt="avatar">
+                                                                }
+                                                                else
+                                                                {
+                                                                    <img src="~/images/userProfile.jpeg" class="user-profile" alt="avatar">
+
+                                                                }
+                                                            </div>
+                                                            <div class="f-body">
+                                                                <div class="meta-mail-time">
+                                                                    <p class="user-email" data-mailTo="niahillyer@mail.com">@mail.stringToUser</p>
+                                                                </div>
+                                                                <div class="meta-title-tag">
+                                                                    <p class="mail-content-excerpt" data-mailDescription='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>
+                                                                        <span class="mail-title" data-mailTitle="@mail.subject">@mail.subject - </span>
+                                                                        @mail.body
+                                                                    </p>
+                                                                    <div class="tags">
+                                                                        <span class="g-dot-primary"></span>
+                                                                        <span class="g-dot-warning"></span>
+                                                                        <span class="g-dot-success"></span>
+                                                                        <span class="g-dot-danger"></span>
+                                                                    </div>
+                                                                    <p class="align-self-center">@mail.stringCreatedAt.Split(' ')[mail.stringCreatedAt.Split(' ').Length - 1]</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="content-box">
+                            <div class="d-flex msg-close">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left close-message"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                                <h2 class="mail-title" data-selectedMailTitle=""></h2>
+                            </div>
+
+
+
+                            @foreach (var mail in Model.inboxMails)
+                            {
+                                <div id="mail_@mail.id" class="collapse" aria-labelledby="@mail.id" data-parent="#mailbox-inbox">
+                                    <div class="mail-content-container important" data-mailfrom="info@mail.com" data-mailto="niahillyer@mail.com" data-mailcc="">
+
+                                        <div class="d-flex justify-content-between mb-5">
+                                            <div class="d-flex user-info">
+                                                <div class="f-head">
+                                                    @if (!String.IsNullOrEmpty(mail.userImage))
+                                                    {
+                                                        <img src="@mail.userImage" class="user-profile" alt="avatar">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/userProfile.jpeg" class="user-profile" alt="avatar">
+
+                                                    }
+                                                </div>
+                                                <div class="f-body">
+                                                    <div class="meta-title-tag">
+                                                        <h4 class="mail-usr-name" data-mailtitle="@mail.stringFromUser">@mail.stringFromUser</h4>
+                                                    </div>
+                                                    <div class="meta-mail-time">
+                                                        <p class="user-email" data-mailto="niahillyer@mail.com">@mail.stringFromUser</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <p class="mail-content" data-mailTitle="@mail.subject">
+                                            @mail.body <br />
+                                            @if (mail.emailAttachments != null)
+                                            {
+                                                <b>Attachments: <br /></b>
+                                                int count = 1;
+                                                foreach (var attachment in mail.emailAttachments)
+                                                {
+                                                    <a href="@attachment.attachmentPath" target="_blank"># @count</a>
+                                                    if (count != mail.emailAttachments.Count())
+                                                    {
+                                                        <span> | </span>
+                                                    }
+                                                    count++;
+                                                }
+                                            }
+
+                                        </p>
+                                        <a data-id="@mail.id" data-mail-from-user="@mail.from_user" class="reply_to_mail" href="javascript:void(0)"><i class="fa fa-reply"></i></a>
+                                    </div>
+                                </div>
+                            }
+
+                            @foreach (var mail in Model.sendMails)
+                            {
+                                <div id="mail_@mail.id" class="collapse" aria-labelledby="@mail.id" data-parent="#mailbox-inbox">
+                                    <div class="mail-content-container sentmail" data-mailfrom="info@mail.com" data-mailto="niahillyer@mail.com" data-mailcc="">
+
+                                        <div class="d-flex justify-content-between mb-5">
+                                            <div class="d-flex user-info">
+                                                <div class="f-head">
+                                                    @if (!String.IsNullOrEmpty(mail.userImage))
+                                                    {
+                                                        <img src="@mail.userImage" class="user-profile" alt="avatar">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/images/userProfile.jpeg" class="user-profile" alt="avatar">
+
+                                                    }
+                                                </div>
+                                                <div class="f-body">
+                                                    <div class="meta-title-tag">
+                                                        <h4 class="mail-usr-name" data-mailtitle="@mail.stringFromUser">@mail.stringFromUser</h4>
+                                                    </div>
+                                                    <div class="meta-mail-time">
+                                                        <p class="user-email" data-mailto="niahillyer@mail.com">@mail.stringToUser</p>
+                                                        <p class="meta-time align-self-center">@mail.stringCreatedAt</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <p class="mail-content" data-mailTitle="@mail.subject" data-maildescription='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>
+                                            @mail.body <br />
+                                            @if (mail.emailAttachments != null)
+                                            {
+                                                <b>Attachments: <br /></b>
+                                                int count = 1;
+                                                foreach (var attachment in mail.emailAttachments)
+                                                {
+                                                    <a href="@attachment.attachmentPath" target="_blank">Attachment @count</a>
+                                                    if (count != mail.emailAttachments.Count())
+                                                    {
+                                                        <span> , </span>
+                                                    }
+                                                    count++;
+                                                }
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="composeMailModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="modal"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                <div class="compose-box">
+                                    <div class="compose-content">
+                                        <form>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="d-flex mb-4 mail-form">
+                                                        <p>From:</p>
+                                                        <select class="" id="m-form">
+                                                            <option value="info@mail.com">Info &lt;info@mail.com&gt;</option>
+                                                            <option value="shaun@mail.com">Shaun Park &lt;shaun@mail.com&gt;</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="d-flex mb-4 mail-to">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                                        <div class="">
+                                                            <input type="email" id="m-to" placeholder="To" class="form-control">
+                                                            <span class="validation-text"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="d-flex mb-4 mail-cc">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg>
+                                                        <div>
+                                                            <input type="text" id="m-cc" placeholder="Cc" class="form-control">
+                                                            <span class="validation-text"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex mb-4 mail-subject">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                                <div class="w-100">
+                                                    <input type="text" id="m-subject" placeholder="Subject" class="form-control">
+                                                    <span class="validation-text"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex">
+                                                <input type="file" class="form-control-file" id="mail_File_attachment" multiple="multiple">
+                                            </div>
+
+                                            <div id="editor-container">
+
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="btn-save" class="btn float-left"> Save</button>
+                                <button id="btn-reply-save" class="btn float-left"> Save Reply</button>
+                                <button id="btn-fwd-save" class="btn float-left"> Save Fwd</button>
+
+                                <button class="btn" data-dismiss="modal"> <i class="flaticon-delete-1"></i> Discard</button>
+
+                                <button id="btn-reply" class="btn"> Reply</button>
+                                <button id="btn-fwd" class="btn"> Forward</button>
+                                <button id="btn-send" class="btn"> Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Content/AdminPanelAssets/assets/js/ie11fix/fn.fix-padStart.js"></script>
+    <script src="~/Content/AdminPanelAssets/plugins/editors/quill/quill.js"></script>
+    <script src="~/Content/AdminPanelAssets/plugins/sweetalerts/sweetalert2.min.js"></script>
+    <script src="~/Content/AdminPanelAssets/plugins/notification/snackbar/snackbar.min.js"></script>
+    <script src="~/Content/AdminPanelAssets/assets/js/apps/custom-mailbox.js"></script>
+    <script>
+       $(document).ready(function () {
+
+
+           $("#btn-send-mail").click(function () {
+               var modal = $('#send_mail_modal').clone();
+                var action = '@Url.Action("sendMail", "InternalMessaging")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Send Mail');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        location.reload();
+                }, function (response) {
+
+                }, function (dialog) {
+                        dialog.find('#to_users').selectize({
+                            plugins: ['remove_button'],
+                        });
+                });
+           });
+
+           $(document).on("click", ".reply_to_mail", function () {
+               var email_id = $(this).attr('data-id');
+               var email_from = $(this).attr('data-mail-from-user');
+               var modal = $('#send_mail_modal').clone();
+                var action = '@Url.Action("sendMail", "InternalMessaging")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Send Mail');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+                        location.reload();
+                }, function (response) {
+
+                }, function (dialog) {
+                        var ids = [];
+                        var $select = dialog.find('#to_users').selectize({
+                            plugins: ['remove_button'],
+                        });
+
+                        $select[0].selectize.clear();
+                        var selectize = $select[0].selectize;
+                        ids.push(email_from);
+
+                        selectize.setValue(ids);
+                        dialog.find('#to_users')[0].selectize.lock();
+
+                        dialog.find('#related_id').val(email_id);
+                });
+           });
+
+
+        });
+
+    </script>
+}
+

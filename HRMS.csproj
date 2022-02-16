@@ -152,6 +152,7 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\IDTypeController.cs" />
+    <Compile Include="Controllers\InternalMessagingController.cs" />
     <Compile Include="Controllers\JobController.cs" />
     <Compile Include="Controllers\NationalityController.cs" />
     <Compile Include="Controllers\MissionListController.cs" />
@@ -309,12 +310,19 @@
     <Compile Include="Migrations\202202141700333_updates13.Designer.cs">
       <DependentUpon>202202141700333_updates13.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202162009566_updates14.cs" />
+    <Compile Include="Migrations\202202162009566_updates14.Designer.cs">
+      <DependentUpon>202202162009566_updates14.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
     <Compile Include="Models\Branch.cs" />
     <Compile Include="Models\BranchProject.cs" />
     <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Email.cs" />
+    <Compile Include="Models\EmailAttachment.cs" />
+    <Compile Include="Models\EmailUser.cs" />
     <Compile Include="Models\IDType.cs" />
     <Compile Include="Models\Job.cs" />
     <Compile Include="Models\VacationRequest.cs" />
@@ -329,8 +337,11 @@
     <Compile Include="ViewModels\BranchProjectViewModel.cs" />
     <Compile Include="ViewModels\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\EmailAttachmentViewModel.cs" />
+    <Compile Include="ViewModels\EmailViewModel.cs" />
     <Compile Include="ViewModels\IDTypeViewModel.cs" />
     <Compile Include="ViewModels\JobViewModel.cs" />
+    <Compile Include="ViewModels\MailboxViewModel.cs" />
     <Compile Include="ViewModels\NationalityViewModel.cs" />
     <Compile Include="Models\UserProject.cs" />
     <Compile Include="Models\HRMSDBContext.cs" />
@@ -2814,9 +2825,11 @@
     <Content Include="Views\Mission\Index.cshtml" />
     <Content Include="Views\MissionList\Index.cshtml" />
     <Content Include="Views\Asset\Index.cshtml" />
+    <Content Include="Views\InternalMessaging\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Uploads\Email\Attachments\" />
     <Folder Include="Uploads\Profile\" />
   </ItemGroup>
   <ItemGroup>
@@ -2937,6 +2950,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202141700333_updates13.resx">
       <DependentUpon>202202141700333_updates13.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202162009566_updates14.resx">
+      <DependentUpon>202202162009566_updates14.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -37,6 +37,7 @@ namespace HRMS
             Mapper.CreateMap<MissionMonthYearViewModel, MissionMonthYear>();
             Mapper.CreateMap<MissionRequestViewModel, MissionRequest>();
             Mapper.CreateMap<AssetViewModel, Asset>();
+            Mapper.CreateMap<EmailViewModel, Email>();
 
 
         }

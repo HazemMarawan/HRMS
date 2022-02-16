@@ -39,6 +39,9 @@ namespace HRMS.Models
          public virtual DbSet<MissionRequest> MissionRequests { get; set; }
          public virtual DbSet<MissionMonthYear> MissionMonthYears { get; set; }
          public virtual DbSet<Asset> Assets { get; set; }
+         public virtual DbSet<Email> Emails { get; set; }
+         public virtual DbSet<EmailAttachment> EmailAttachments { get; set; }
+         public virtual DbSet<EmailUser> EmailUsers { get; set; }
     }
 
     //public class MyEntity

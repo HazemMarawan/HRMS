@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HRMS.Models
 {
@@ -11,6 +12,7 @@ namespace HRMS.Models
         [Key]
         public int id { get; set; }
         public string subject { get; set; }
+        [AllowHtml]
         public string body { get; set; }
         public int? from_user { get; set; }
         public List<int> to_users { get; set; }

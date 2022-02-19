@@ -1,4 +1,5 @@
 ﻿@model HRMS.ViewModels.MailboxViewModel
+@using System.Net;
 @{
     ViewBag.Title = "Internal Messaging";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,9 +18,9 @@
 }
 
 <div class="modal fade" id="send_mail_modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
-            <form action="" method="post" enctype='multipart/form-data'>
+            <form action="@Url.Action("sendMail", "InternalMessaging")" method="post" enctype='multipart/form-data'>
                 <div class="modal-body">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="modal"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
 
@@ -54,6 +55,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                 <div class="w-100">
                                     <textarea name="body" id="body" rows="6" cols="60"></textarea>
+                                    @*@Html.TextAreaFor(model => model.body, new { @id = "FullDescription", @class = "form-control", @rows = "200" }) @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })*@
                                 </div>
                             </div>
 
@@ -72,8 +74,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn" data-dismiss="modal"> <i class="flaticon-delete-1"></i>Close</button>
-                    <button id="btn-send" type="submit" class="btn">Send</button>
+                    <button class="btn" data-dismiss="modal" id="close"> <i class="flaticon-delete-1"></i>Close</button>
+                    <button type="submit" id="save" class="btn">Send</button>
                 </div>
             </form>
         </div>
@@ -170,8 +172,9 @@
                                                                 </div>
                                                                 <div class="meta-title-tag">
                                                                     <p class="mail-content-excerpt" data-mailDescription='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>
-                                                                        <span class="mail-title" data-mailTitle="@mail.subject">@mail.subject - </span>
-                                                                        @mail.body
+                                                                        <span class="mail-title" data-mailTitle="@mail.subject">@mail.subject</span>
+                                                                        @*@Html.Raw(HttpUtility.HtmlDecode(mail.body))*@
+
                                                                     </p>
                                                                     <div class="tags">
                                                                         <span class="g-dot-primary"></span>
@@ -222,8 +225,9 @@
                                                                 </div>
                                                                 <div class="meta-title-tag">
                                                                     <p class="mail-content-excerpt" data-mailDescription='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>
-                                                                        <span class="mail-title" data-mailTitle="@mail.subject">@mail.subject - </span>
-                                                                        @mail.body
+                                                                        <span class="mail-title" data-mailTitle="@mail.subject">@mail.subject</span>
+                                                                        @*@Html.Raw(HttpUtility.HtmlDecode(mail.body))*@
+
                                                                     </p>
                                                                     <div class="tags">
                                                                         <span class="g-dot-primary"></span>
@@ -284,7 +288,7 @@
                                         </div>
 
                                         <p class="mail-content" data-mailTitle="@mail.subject">
-                                            @mail.body <br />
+                                            @Html.Raw(HttpUtility.HtmlDecode(mail.body)) <br />
                                             @if (mail.emailAttachments != null)
                                             {
                                                 <b>Attachments: <br /></b>
@@ -338,7 +342,7 @@
                                         </div>
 
                                         <p class="mail-content" data-mailTitle="@mail.subject" data-maildescription='{"ops":[{"insert":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi pulvinar feugiat consequat. Duis lacus nibh, sagittis id varius vel, aliquet non augue. Vivamus sem ante, ultrices at ex a, rhoncus ullamcorper tellus. Nunc iaculis eu ligula ac consequat. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vestibulum mattis urna neque, eget posuere lorem tempus non. Suspendisse ac turpis dictum, convallis est ut, posuere sem. Etiam imperdiet aliquam risus, eu commodo urna vestibulum at. Suspendisse malesuada lorem eu sodales aliquam.\n"}]}'>
-                                            @mail.body <br />
+                                            @Html.Raw(HttpUtility.HtmlDecode(mail.body)) <br />
                                             @if (mail.emailAttachments != null)
                                             {
                                                 <b>Attachments: <br /></b>
@@ -450,6 +454,7 @@
 
     </div>
 </div>
+
 @section scripts
 {
     <script src="~/Content/AdminPanelAssets/assets/js/ie11fix/fn.fix-padStart.js"></script>
@@ -457,15 +462,25 @@
     <script src="~/Content/AdminPanelAssets/plugins/sweetalerts/sweetalert2.min.js"></script>
     <script src="~/Content/AdminPanelAssets/plugins/notification/snackbar/snackbar.min.js"></script>
     <script src="~/Content/AdminPanelAssets/assets/js/apps/custom-mailbox.js"></script>
+    <script src="~/Scripts/ckeditorO/ckeditor.js"></script>
+    <script src="~/Scripts/ckeditorO/adapters/jquery.js"></script>
     <script>
        $(document).ready(function () {
+           CKEDITOR.replace('body');
 
-
+           //CKEDITOR.replace('body', { "extraPlugins": 'imagebrowser'});
+           $('#to_users').selectize({
+               plugins: ['remove_button'],
+           });
            $("#btn-send-mail").click(function () {
-               var modal = $('#send_mail_modal').clone();
+               $('#send_mail_modal').modal('show');
+
+               @*var modal = $('#send_mail_modal').clone();
                 var action = '@Url.Action("sendMail", "InternalMessaging")';
                 modal.find('form').attr('action', action);
-                modal.find('#modal_title').text('Send Mail');
+               modal.find('#modal_title').text('Send Mail');
+               //CKEDITOR.replace("body");
+
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -478,8 +493,13 @@
                         dialog.find('#to_users').selectize({
                             plugins: ['remove_button'],
                         });
-                });
+
+                    //CKEDITOR.replace(dialog.find("#body").attr('id')    )
+
+                });*@
            });
+
+
 
            $(document).on("click", ".reply_to_mail", function () {
                var email_id = $(this).attr('data-id');
@@ -510,6 +530,10 @@
 
                         dialog.find('#related_id').val(email_id);
                 });
+           });
+
+           $(document).on("click", "#save", function () {
+               $('#send_mail_modal').modal('hide');
            });
 
 

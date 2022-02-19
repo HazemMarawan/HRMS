@@ -75,7 +75,8 @@ namespace HRMS.Controllers
         }
 
         [HttpPost]
-        public JsonResult sendMail(EmailViewModel emailVM)
+        [ValidateInput(false)]
+        public ActionResult sendMail(EmailViewModel emailVM)
         {
             User currentUser = Session["user"] as User;
             Email email = AutoMapper.Mapper.Map<EmailViewModel, Email>(emailVM);
@@ -132,7 +133,7 @@ namespace HRMS.Controllers
                 }
             }
 
-            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+            return Redirect("/InternalMessaging/Index");
 
         }
     }

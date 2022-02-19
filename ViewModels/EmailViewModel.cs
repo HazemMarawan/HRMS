@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace HRMS.ViewModels
 {
@@ -9,6 +10,7 @@ namespace HRMS.ViewModels
     {
         public int id { get; set; }
         public string subject { get; set; }
+        [AllowHtml]
         public string body { get; set; }
         public int? from_user { get; set; }
         public int? to_user { get; set; }

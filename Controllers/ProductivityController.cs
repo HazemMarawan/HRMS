@@ -603,7 +603,8 @@ namespace HRMS.Controllers
                                         cost = userProject.cost,
                                         team_leader_id = user.team_leader_id,
                                         area_id = userProject.area_id,
-                                        area_name = area.name
+                                        area_name = area.name,
+                                        type = user.type
                                     });
 
 

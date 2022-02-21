@@ -169,7 +169,25 @@
     </form>
 </div>
 
+<div class="page-header">
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @if ((ViewBag.branchId != null && HRMS.Auth.isA.SuperAdmin()) || HRMS.Auth.isA.BranchAdmin())
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Show","Branch")">Branches</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Details","Branch",new { id = ViewBag.branchId})">@ViewBag.branchName</a></li>
+                <li class="breadcrumb-item active" aria-current="page" style="font-weight:bold;">Employees</li>
 
+            }
+            else if (ViewBag.branchId == null && (HRMS.Auth.isA.SuperAdmin()))
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
+                <li class="breadcrumb-item active" aria-current="page" style="font-weight:bold;">Users</li>
+            }
+
+        </ol>
+    </nav>
+</div>
 <div class="row">
     <div class="form-group col-4">
         @Html.DropDownList("search_id_type", new SelectList(ViewBag.IDTypes, "id", "name"), "Select ID Type", new { @class = "form-control", @name = "search_id_type", @style = "width:100%", @id = "search_id_type" })

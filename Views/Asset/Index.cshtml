@@ -48,7 +48,23 @@
     </form>
 </div>
 
+<div class="page-header">
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @if ((ViewBag.branch_id != null && HRMS.Auth.isA.SuperAdmin()) || HRMS.Auth.isA.BranchAdmin())
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Show","Branch")">Branches</a></li>
+                <li class="breadcrumb-item"><a href="@Url.Action("Details","Branch",new { id = ViewBag.branch_id})">@ViewBag.branch_name</a></li>
+            }
+            else if (ViewBag.branch_id == null && HRMS.Auth.isA.SuperAdmin())
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
+            }
+            <li class="breadcrumb-item active" aria-current="page" style="font-weight:bold;">Assets</li>
 
+        </ol>
+    </nav>
+</div>
 <div class="row">
     <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">

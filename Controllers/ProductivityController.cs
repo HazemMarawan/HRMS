@@ -291,7 +291,7 @@ namespace HRMS.Controllers
                     if (Convert.ToDateTime(search_date) != DateTime.MinValue)
                     {
                         DateTime date = Convert.ToDateTime(search_date);
-                        List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.created_at).Year == date.Year && ((DateTime)us.created_at).Month == date.Month && ((DateTime)us.created_at).Day == date.Day).Select(us => us.user_id).ToList();
+                        List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year == date.Year && ((DateTime)us.working_date).Month == date.Month && ((DateTime)us.working_date).Day == date.Day).Select(us => us.user_id).ToList();
                         productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
                     }
                 }
@@ -551,6 +551,8 @@ namespace HRMS.Controllers
 
 
             ExcelPackage Ep = new ExcelPackage();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
             ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Productivity Report");
 
             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
@@ -740,6 +742,7 @@ namespace HRMS.Controllers
 
 
             ExcelPackage Ep = new ExcelPackage();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Missing Productivity Report");
 
             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
@@ -808,7 +811,7 @@ namespace HRMS.Controllers
                 if (Convert.ToDateTime(userProjectViewModel.from_date) != DateTime.MinValue)
                 {
                     DateTime date = Convert.ToDateTime(userProjectViewModel.from_date);
-                    List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.created_at).Year == date.Year && ((DateTime)us.created_at).Month == date.Month && ((DateTime)us.created_at).Day == date.Day).Select(us => us.user_id).ToList();
+                    List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year == date.Year && ((DateTime)us.working_date).Month == date.Month && ((DateTime)us.working_date).Day == date.Day).Select(us => us.user_id).ToList();
                     productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
                 }
             }

@@ -2,7 +2,21 @@
 @{
     ViewBag.Title = "Productivity";
 }
-
+<div class="page-header">
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Show","Branch")">Branches</a></li>
+            }
+            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
+            }
+            <li class="breadcrumb-item active" aria-current="page" style="font-weight:bold;">Productivity</li>
+        </ol>
+    </nav>
+</div>
 <form action="@Url.Action("GenerateProductivityReport","Productivity")" method="post" id="GenerateProductivityReportForm">
     <div class="row">
         <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
@@ -78,65 +92,67 @@
         }
     </style>
 }
-<div class="row text-center mb-2">
-    <div class="col-3" style="border-radius: 25px;">
-        <div class="counter">
-            <h3 id="hours_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Hours</p>
-        </div>
-    </div>
-    <div class="col-3" style="border-radius: 25px;">
-        <div class="counter">
-            <h3 id="projects_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Projects</p>
-        </div>
-    </div>
-    <div class="col-3" style="border-radius: 25px;">
-        <div class="counter">
-            <h3 id="employees_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Employees</p>
-        </div>
-    </div>
-    @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
-    {
+
+
+    <div class="row text-center mb-2">
         <div class="col-3" style="border-radius: 25px;">
             <div class="counter">
-                <h3 id="cost_counter">0</h3>
-                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Cost</p>
+                <h3 id="hours_counter">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Hours</p>
             </div>
         </div>
-    }
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="projects_counter">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Projects</p>
+            </div>
+        </div>
+        <div class="col-3" style="border-radius: 25px;">
+            <div class="counter">
+                <h3 id="employees_counter">0</h3>
+                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Employees</p>
+            </div>
+        </div>
+        @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+        {
+            <div class="col-3" style="border-radius: 25px;">
+                <div class="counter">
+                    <h3 id="cost_counter">0</h3>
+                    <p style="font-weight:bold;"><i class="fa fa-plus"></i> Cost</p>
+                </div>
+            </div>
+        }
 
-</div>
-<div class="card">
-    <div class="card-header">
-        @ViewBag.branchName <span>Productivity</span>
-        <span style="float:right;font-weight:bold;text-decoration:underline;"><a href="javascript:void(0);" id="generate_productivity_report"><i class="far fa-file-excel"></i> Generate Report</a></span>
     </div>
-    <div class="card-body">
+    <div class="card">
+        <div class="card-header">
+            @ViewBag.branchName <span>Productivity</span>
+            <span style="float:right;font-weight:bold;text-decoration:underline;"><a href="javascript:void(0);" id="generate_productivity_report"><i class="far fa-file-excel"></i> Generate Report</a></span>
+        </div>
+        <div class="card-body">
 
-        <div class="table-responsive">
-            <table id="productivityTable" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Employee</th>
-                        <th>Working Date</th>
-                        <th>Location</th>
-                        <th>Info</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
+            <div class="table-responsive">
+                <table id="productivityTable" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee</th>
+                            <th>Working Date</th>
+                            <th>Location</th>
+                            <th>Info</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
 
-            </table>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-@section scripts
+    @section scripts
 {
-    <script>
+        <script>
         $(document).ready(function () {
 
             var datatable = $('#productivityTable')
@@ -165,7 +181,7 @@
                     "stateSave": false,
                     "lengthChange": false,
                     "dom": 'Bfrtip',
-                    "filter": true, // this is for disable filter (search box)  
+                    "filter": true, // this is for disable filter (search box)
                     "orderMulti": false, // for disable multiple column at once
                     "buttons": ['copy', 'excel', 'pdf', 'print'],
                     "pageLength": 10,
@@ -406,7 +422,7 @@
 
         });
 
-    </script>
-}
+        </script>
+    }
 
 

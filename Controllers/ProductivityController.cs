@@ -459,6 +459,7 @@ namespace HRMS.Controllers
             if (userProjectViewModel.id == 0)
             {
                 UserProject userProject = AutoMapper.Mapper.Map<UserProjectViewModel, UserProject>(userProjectViewModel);
+                userProject.part_id = toEnglishNumber(userProjectViewModel.part_id);
                 userProject.user_id = currentUser.id;
                 userProject.created_at = DateTime.Now;
                 userProject.created_by = Session["id"].ToString().ToInt();
@@ -876,5 +877,23 @@ namespace HRMS.Controllers
             Response.BinaryWrite(Ep.GetAsByteArray());
             Response.End();
         }
+        private string toEnglishNumber(string input)
+        {
+            string EnglishNumbers = "";
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                if (Char.IsDigit(input[i]))
+                {
+                    EnglishNumbers += char.GetNumericValue(input, i);
+                }
+                else
+                {
+                    EnglishNumbers += input[i].ToString();
+                }
+            }
+            return EnglishNumbers;
+        }
+
     }
 }

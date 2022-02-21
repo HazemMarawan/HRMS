@@ -179,6 +179,7 @@ namespace HRMS.Controllers
         public ActionResult Details(int id)
         {
             ViewBag.branch_id = id;
+            ViewBag.branch_name = db.Branches.Find(id).name;
             return View();
         }
     }

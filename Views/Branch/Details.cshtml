@@ -5,6 +5,16 @@
 @section css{
     <link href="~/Content/AdminPanelAssets/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
 }
+<div class="page-header">
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+           
+            <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
+            <li class="breadcrumb-item active" aria-current="page" style="font-weight:bold;">@ViewBag.branch_name</li>
+
+        </ol>
+    </nav>
+</div>
 <div class="row">
     <div class="card component-card_1">
         <a href="@Url.Action("Index","User",new { branch_id = ViewBag.branch_id})">

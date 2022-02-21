@@ -579,7 +579,6 @@ namespace HRMS.Controllers
                                     join userProject in db.UserProjects on user.id equals userProject.user_id
                                     join pro in db.Projects on userProject.project_id equals pro.id into pr
                                     from project in pr.DefaultIfEmpty()
-                                    join branchProject in db.BranchProjects on project.id equals branchProject.project_id
                                     join are in db.Areas on userProject.area_id equals are.id into ar
                                     from area in ar.DefaultIfEmpty()
                                     select new UserProjectViewModel
@@ -675,7 +674,7 @@ namespace HRMS.Controllers
                 }
             }
 
-            List<UserProjectViewModel> productivityResult = productivityData.ToList();
+            List<UserProjectViewModel> productivityResult = productivityData.OrderByDescending(s=>s.working_date).ToList();
 
             int row = 2;
             foreach (var item in productivityResult)

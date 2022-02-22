@@ -373,7 +373,7 @@
                         dialog.find('#mvug').val(data.mvug);
                         dialog.find('#lvug').val(data.lvug);
                         dialog.find('#note').text(data.note);
-
+                        var area_id = data.area_id;
                             var project_id = data.project_id;
                             dialog.find("#area_id").empty();
                             var html = `<option value=''>Select Area</option>`;
@@ -387,7 +387,7 @@
                                     if (data.areas.length != 0) {
 
                                         data.areas.forEach(function (value) {
-                                        if(parseInt(data.area_id) == parseInt(value.id))
+                                            if (parseInt(area_id) == parseInt(value.id))
                                             html += `<option selected value='${value.id}'>${value.name}</option>`;
                                         else
                                             html += `<option value='${value.id}'>${value.name}</option>`;

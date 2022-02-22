@@ -550,7 +550,6 @@ namespace HRMS.Controllers
         {
             User currentUser = Session["user"] as User;
 
-
             ExcelPackage Ep = new ExcelPackage();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
@@ -739,7 +738,6 @@ namespace HRMS.Controllers
         public void GenerateMissingProductivityReport(UserProjectViewModel userProjectViewModel)
         {
             User currentUser = Session["user"] as User;
-
 
             ExcelPackage Ep = new ExcelPackage();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;

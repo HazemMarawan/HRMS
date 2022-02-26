@@ -42,6 +42,7 @@ namespace HRMS.Models
          public virtual DbSet<Email> Emails { get; set; }
          public virtual DbSet<EmailAttachment> EmailAttachments { get; set; }
          public virtual DbSet<EmailUser> EmailUsers { get; set; }
+         public virtual DbSet<Target> Targets { get; set; }
     }
 
     //public class MyEntity

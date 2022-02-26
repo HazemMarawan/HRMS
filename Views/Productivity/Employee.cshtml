@@ -89,6 +89,34 @@
 </div>
 
 
+<div class="modal fade" id="manage_info_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <textarea id="note" name="note" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <div class="row">
     <div class="form-group col-4">
         <input class="form-control" type="date" id="from_date" name="from_date">
@@ -120,8 +148,7 @@
                     <tr>
                         <th>#</th>
                         <th>Working Date</th>
-                        <th>Project</th>
-                        <th>Area</th>
+                        <th>Location</th>
                         <th>Hours</th>
                         <th>Info</th>
                         <th>Status</th>
@@ -187,12 +214,15 @@
                             }
                         },
                         {
-                            "data": "project_name",
-                            "searchable": true
-                        },
-                        {
-                            "data": "area_name",
-                            "searchable": true
+                            "data": "project_name", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = '';
+                                if (oData.project_name)
+                                    html += "<b>Project: </b>" + oData.project_name + "<br>";
+                                if (oData.area_name)
+                                    html += "<b>Area: </b>" + oData.area_name + "<br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
                         },
                         {
                             "data": "no_of_numbers",
@@ -226,14 +256,33 @@
 
                                 if (oData.equipment_quantity)
                                     html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
-                                if (oData.mvoh)
-                                    html += "<b>MVOH: </b>" + oData.mvoh + "<br>";
-                                if (oData.lvoh)
-                                    html += "<b>LVOH: </b>" + oData.lvoh + "<br>";
-                                if (oData.mvug)
-                                    html += "<b>MVUG: </b>" + oData.mvug + "<br>";
-                                if (oData.lvug)
-                                    html += "<b>LVUG: </b>" + oData.lvug + "<br>";
+                                if (oData.mvoh) {
+                                    if (oData.mvoh >= oData.mvoh_target)
+                                        html += "<span class='badge badge-success'><b>MVOH: </b>" + oData.mvoh + "</span><br>";
+                                    else
+                                        html += "<span class='badge badge-danger'><b>MVOH: </b>" + oData.mvoh + "</span><br>";
+                                }
+
+                                if (oData.lvoh) {
+                                    if (oData.lvoh >= oData.lvoh_target)
+                                        html += "<span class='badge badge-success'><b>LVOH: </b>" + oData.lvoh + "</span><br>";
+                                    else
+                                        html += "<span class='badge badge-danger'><b>LVOH: </b>" + oData.lvoh + "</span><br>";
+                                }
+
+                                if (oData.mvug) {
+                                    if (oData.mvug >= oData.mvug_target)
+                                        html += "<span class='badge badge-success'><b>MVUG: </b>" + oData.mvug + "</span><br>";
+                                    else
+                                        html += "<span class='badge badge-danger'><b>MVUG: </b>" + oData.mvug + "</span><br>";
+                                }
+
+                                if (oData.lvug) {
+                                    if (oData.lvug >= oData.lvug_target)
+                                        html += "<span class='badge badge-success'><b>LVUG: </b>" + oData.lvug + "</span><br>";
+                                    else
+                                        html += "<span class='badge badge-danger'><b>LVUG: </b>" + oData.lvug + "</span><br>";
+                                }
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -266,7 +315,9 @@
                                 var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
                                 if (oData.status == 1 || isTechnicalManager == 'True') {
                                     html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
-                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                    html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;";
+                                    html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";
+
                                 }
                                 else
                                     html = "-";
@@ -429,6 +480,27 @@
                 });
 
             });
+
+            $(document).on("click", ".info", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                console.log(data);
+                var modal = $('#manage_info_modal').clone();
+                modal.find('#modal_title').text('Task Description');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+                        datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+
+                        dialog.find('#note').text(data.note);
+                });
+
+            });
+
 
             $(document).on("click", ".delete", function () {
                 var data = datatable.row($(this).closest('tr')).data();

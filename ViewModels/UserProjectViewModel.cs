@@ -28,6 +28,10 @@ namespace HRMS.ViewModels
         public double? lvoh { get; set; }
         public double? mvug { get; set; }
         public double? lvug { get; set; }
+        public double? mvoh_target { get; set; }
+        public double? lvoh_target { get; set; }
+        public double? mvug_target { get; set; }
+        public double? lvug_target { get; set; }
         public double? cost { get; set; }
         public string note { get; set; }
         public int? status { get; set; }

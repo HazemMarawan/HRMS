@@ -38,6 +38,7 @@ namespace HRMS
             Mapper.CreateMap<MissionRequestViewModel, MissionRequest>();
             Mapper.CreateMap<AssetViewModel, Asset>();
             Mapper.CreateMap<EmailViewModel, Email>();
+            Mapper.CreateMap<TargetViewModel, Target>();
 
 
         }

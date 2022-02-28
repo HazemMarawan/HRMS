@@ -66,19 +66,27 @@
             <table id="vacationYearTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Year</th>
-                        <th>Regular</th>
-                        <th>Casual</th>
-                        <th>Medical</th>
-                        <th>Married</th>
-                        <th>WFH</th>
-                        <th>Death</th>
-                        <th>Balance</th>
-                        <th></th>
+                        <th colspan="5" style="text-align:center;">
+                            Affect Balance
+                        </th>
+                        <th colspan="5" style="text-align:center;">
+                            Not Affect Balance
+                        </th>
+                    </tr>
+                    <tr>
+                        <th width="10%">Year</th>
+                        <th width="10%">Regular</th>
+                        <th width="10%">Casual</th>
+                        <th width="10%">Balance</th>
+                        <th width="10%">Medical</th>
+                        <th width="10%">Married</th>
+                        <th width="10%">WFH</th>
+                        <th width="10%">Death</th>
+                        <th width="10%">Pending</th>
+                        <th width="5%"></th>
                     </tr>
                 </thead>
-
+               
             </table>
         </div>
     </div>
@@ -127,10 +135,6 @@
                     },
                     "columns": [
                         {
-                            "data": "id",
-                            "searchable": true
-                        },
-                        {
                             "data": "year",
                             "searchable": true
                         },
@@ -141,6 +145,31 @@
                         {
                             "data": "arda_vacation_counter",
                             "searchable": true
+                        },
+                        {
+                            "data": "vacation_balance", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                if (oData.vacation_balance)
+                                    html += "<b>Total: </b>" + oData.vacation_balance + "<br>";
+                                else
+                                    html += "<b>Total: </b>21<br>";
+
+                                if (oData.pending)
+                                    html += "<b>Pending: </b>" + oData.pending + "<br>";
+                                else
+                                    html += "<b>Pending: </b>0<br>";
+
+                                if (oData.actual_remaining)
+                                    html += "<b>Remaining: </b>" + oData.actual_remaining + "<br>";
+                                else
+                                    html += "<b>Remaining: </b>" + oData.vacation_balance + "<br>";
+
+
+
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
                         },
                         {
                             "data": "medical_vacation_counter",
@@ -162,23 +191,11 @@
                             "data": "vacation_balance", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-                               
-                                if (oData.vacation_balance)
-                                    html += "<b>Total: </b>" + oData.vacation_balance + "<br>";
-                                else
-                                    html += "<b>Total: </b>21<br>";
 
-                                if (oData.pending)
-                                    html += "<b>Pending: </b>" + oData.pending + "<br>";
+                                if (oData.pending_not_affect)
+                                    html += oData.pending_not_affect;
                                 else
-                                    html += "<b>Pending: </b>0<br>";
-
-                                if (oData.actual_remaining)
-                                    html += "<b>Remaining: </b>" + oData.actual_remaining + "<br>";
-                                else
-                                    html += "<b>Remaining: </b>" + oData.vacation_balance + "<br>";
-
-                                
+                                    html += "0";
 
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }

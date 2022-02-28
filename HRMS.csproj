@@ -323,6 +323,22 @@
     <Compile Include="Migrations\202202261551222_updates16.Designer.cs">
       <DependentUpon>202202261551222_updates16.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202281551128_updates17.cs" />
+    <Compile Include="Migrations\202202281551128_updates17.Designer.cs">
+      <DependentUpon>202202281551128_updates17.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202281605386_updates18.cs" />
+    <Compile Include="Migrations\202202281605386_updates18.Designer.cs">
+      <DependentUpon>202202281605386_updates18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202281620271_updates19.cs" />
+    <Compile Include="Migrations\202202281620271_updates19.Designer.cs">
+      <DependentUpon>202202281620271_updates19.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202202281621478_updates20.cs" />
+    <Compile Include="Migrations\202202281621478_updates20.Designer.cs">
+      <DependentUpon>202202281621478_updates20.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -3372,6 +3388,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202261551222_updates16.resx">
       <DependentUpon>202202261551222_updates16.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202281551128_updates17.resx">
+      <DependentUpon>202202281551128_updates17.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202281605386_updates18.resx">
+      <DependentUpon>202202281605386_updates18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202281620271_updates19.resx">
+      <DependentUpon>202202281620271_updates19.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202281621478_updates20.resx">
+      <DependentUpon>202202281621478_updates20.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

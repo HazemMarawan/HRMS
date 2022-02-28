@@ -14,6 +14,7 @@ namespace HRMS.ViewModels
         public int? remaining { get; set; }
         public int? actual_remaining { get; set; }
         public int? pending { get; set; }
+        public int? pending_not_affect { get; set; }
         public int? a3tyady_vacation_counter { get; set; }
         public int? arda_vacation_counter { get; set; }
         public int? medical_vacation_counter { get; set; }

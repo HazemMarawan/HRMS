@@ -14,7 +14,10 @@ namespace HRMS.Models
         public int? value { get; set; }
         public int? must_inform_before_duration { get; set; }
         public int? inform_before_duration { get; set; }
+        public int? inform_before_duration_min_range { get; set; }
         public int? inform_before_duration_measurement { get; set; }
+        public int? inform_before_duration_2 { get; set; }
+        public int? inform_before_duration_measurement_2 { get; set; }
         public int? need_approve { get; set; }
         public int? closed_at_specific_time { get; set; }
         public TimeSpan? closed_at { get; set; }

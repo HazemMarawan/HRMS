@@ -31,7 +31,7 @@
     {
         <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="row widget-statistic">
-                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 layout-spacing">
                     <div class="widget widget-one_hybrid widget-followers">
                         <div class="widget-heading">
                             <div class="w-title">
@@ -39,14 +39,29 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fa fa-bus"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                 </div>
                                 <div class="">
-                                    <p class="w-value" id="vacationCounter">-</p>
-                                    <h5 class="">Vacations</h5>
+                                    <p class="w-value" id="regularCounter">-</p>
+                                    <p style="font-weight:bold;font-size:11px;">Regular</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 layout-spacing">
+                    <div class="widget widget-one_hybrid widget-followers">
+                        <div class="widget-heading">
+                            <div class="w-title">
+                                <div class="w-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fa fa-bus"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                </div>
+                                <div class="">
+                                    <p class="w-value" id="casualCounter">-</p>
+                                    <p style="font-weight:bold;font-size:11px;">Casual</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 layout-spacing">
                     <div class="widget widget-one_hybrid widget-referral">
                         <div class="widget-heading">
                             <div class="w-title">
@@ -55,13 +70,13 @@
                                 </div>
                                 <div class="">
                                     <p class="w-value" id="permissionsCounter">-</p>
-                                    <h5 class="">Permissions</h5>
+                                    <p style="font-weight:bold;font-size:11px;">Permissions</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 layout-spacing">
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12 layout-spacing">
                     <div class="widget widget-one_hybrid widget-engagement">
                         <div class="widget-heading">
                             <div class="w-title">
@@ -70,7 +85,7 @@
                                 </div>
                                 <div class="">
                                     <p class="w-value" id="missionsCounter">-</p>
-                                    <h5 class="">Missions</h5>
+                                    <p style="font-weight:bold;font-size:11px;">Missions</p>
                                 </div>
                             </div>
                         </div>
@@ -224,7 +239,8 @@
                     $("#managerName").text(data.dashboardData.Manager.full_name);
                 }
                 
-                $("#vacationCounter").text(data.dashboardData.Vacations + " of " + data.dashboardData.VacationsBalance);
+                $("#regularCounter").text(data.dashboardData.RegularVacations + " of " + data.dashboardData.RegularVacationsBalance);
+                $("#casualCounter").text(data.dashboardData.CasualVacations + " of " + data.dashboardData.CasualVacationsBalance);
                 
                 $("#permissionsCounter").text(data.dashboardData.Permissions);
                 

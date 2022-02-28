@@ -38,6 +38,9 @@ namespace HRMS.Controllers
                                             must_inform_before_duration = vacationType.must_inform_before_duration,
                                             inform_before_duration = vacationType.inform_before_duration,
                                             inform_before_duration_measurement = vacationType.inform_before_duration_measurement,
+                                            inform_before_duration_min_range = vacationType.inform_before_duration_min_range,
+                                            inform_before_duration_2 = vacationType.inform_before_duration_2,
+                                            inform_before_duration_measurement_2 = vacationType.inform_before_duration_measurement_2,
                                             need_approve = vacationType.need_approve,
                                             closed_at_specific_time = vacationType.closed_at_specific_time,
                                             closed_at = vacationType.closed_at,
@@ -106,11 +109,17 @@ namespace HRMS.Controllers
                 {
                     oldVacationType.inform_before_duration = null;
                     oldVacationType.inform_before_duration_measurement = null;
+                    oldVacationType.inform_before_duration_min_range = null;
+                    oldVacationType.inform_before_duration_2 = null;
+                    oldVacationType.inform_before_duration_measurement_2 = null;
                 }
                 else
                 {
                     oldVacationType.inform_before_duration = vacationTypeViewModel.inform_before_duration;
                     oldVacationType.inform_before_duration_measurement = vacationTypeViewModel.inform_before_duration_measurement;
+                    oldVacationType.inform_before_duration_min_range = vacationTypeViewModel.inform_before_duration_min_range;
+                    oldVacationType.inform_before_duration_2 = vacationTypeViewModel.inform_before_duration_2;
+                    oldVacationType.inform_before_duration_measurement_2 = vacationTypeViewModel.inform_before_duration_measurement_2;
                 }
                 oldVacationType.need_approve = vacationTypeViewModel.need_approve;
                 oldVacationType.closed_at_specific_time = vacationTypeViewModel.closed_at_specific_time;

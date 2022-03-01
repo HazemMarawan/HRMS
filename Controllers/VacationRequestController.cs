@@ -54,6 +54,18 @@ namespace HRMS.Controllers
                 vacationYear.vacation_balance = db.Users.Find(currentUser.id).vacations_balance;
                 db.SaveChanges();
             }
+        
+            //DateTime myDate = DateTime.ParseExact(currentUser.hiring_date, "dd/MM/yyyy",
+            //                               System.Globalization.CultureInfo.InvariantCulture);
+            ViewBag.canRequest = 0;//hiring date is null
+            if (currentUser.hiring_date != null)
+            {
+                ViewBag.canRequest = 1;//in 6 month training
+                if (Convert.ToDateTime(((DateTime)currentUser.hiring_date).AddMonths(6).ToShortDateString()) < Convert.ToDateTime(DateTime.Now.ToShortDateString()))
+                {
+                    ViewBag.canRequest = 2;//can apply on vacation
+                }
+            }
 
             if (Request.IsAjaxRequest())
             {

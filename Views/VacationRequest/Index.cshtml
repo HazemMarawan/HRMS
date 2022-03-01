@@ -58,7 +58,19 @@
 
 <div class="card">
     <div class="card-header">
-        <a href="javascript:void(0)" id="add_vacation_request"><i class="fa fa-plus"></i> Vacation Request</a>
+        @if (ViewBag.canRequest == 2)
+        {
+            <a href="javascript:void(0)" id="add_vacation_request"><i class="fa fa-plus"></i> Vacation Request</a>
+
+        }
+        else if (ViewBag.canRequest == 1)
+        {
+            <p> You Can Not Apply on Vacation Before 6 Months</p>
+        }
+        else
+        {
+            <p> Please Ask HR to Complete Your Informations</p>
+        }
     </div>
     <div class="card-body">
 

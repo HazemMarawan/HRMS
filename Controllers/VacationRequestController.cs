@@ -87,8 +87,76 @@ namespace HRMS.Controllers
                                              user_id = vacationYear.user_id,
                                              vacation_balance = vacationYear.vacation_balance,
                                              remaining = vacationYear.remaining,
-                                             actual_remaining = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() != null ? vacationYear.vacation_balance - db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() : vacationYear.vacation_balance,
-                                             pending = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() != null ? db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum() : 0,
+                                             actual_remaining = (from vacationType in db.VacationTypes
+                                                                 join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                                 select new VacationRequestViewModel
+                                                                 {
+                                                                     value = vacationType.value,
+                                                                     active = vacationRequest.active,
+                                                                     status = vacationRequest.status,
+                                                                     year = vacationRequest.year,
+                                                                     user_id = vacationRequest.user_id,
+                                                                     days = vacationRequest.days
+                                                                 }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && (vr.value == 1 || vr.value ==2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt=>vt.days) != null?vacationYear.vacation_balance -
+                                                                 (from vacationType in db.VacationTypes
+                                                                  join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                                  select new VacationRequestViewModel
+                                                                  {
+                                                                      value = vacationType.value,
+                                                                      active = vacationRequest.active,
+                                                                      status = vacationRequest.status,
+                                                                      year = vacationRequest.year,
+                                                                      user_id = vacationRequest.user_id,
+                                                                      days = vacationRequest.days
+                                                                  }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days):vacationYear.vacation_balance,
+                                             pending = (from vacationType in db.VacationTypes
+                                                        join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                        select new VacationRequestViewModel
+                                                        {
+                                                            value = vacationType.value,
+                                                            active = vacationRequest.active,
+                                                            status = vacationRequest.status,
+                                                            year = vacationRequest.year,
+                                                            user_id = vacationRequest.user_id,
+                                                            days = vacationRequest.days
+                                                        }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) != null ? (from vacationType in db.VacationTypes
+                                                                                                                                                                                                                                                                                                     join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                                                                                                                                                                                                                                                                                                                                 select new VacationRequestViewModel
+                                                                                                                                                                                                                                                                                                                                                                 {
+                                                                                                                                                                                                                                                                                                                                                                     value = vacationType.value,
+                                                                                                                                                                                                                                                                                                                                                                     active = vacationRequest.active,
+                                                                                                                                                                                                                                                                                                                                                                     status = vacationRequest.status,
+                                                                                                                                                                                                                                                                                                                                                                     year = vacationRequest.year,
+                                                                                                                                                                                                                                                                                                                                                                     user_id = vacationRequest.user_id,
+                                                                                                                                                                                                                                                                                                                                                                     days = vacationRequest.days
+                                                                                                                                                                                                                                                                                                                                                                 }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days): 0,
+                                             pending_not_affect = (from vacationType in db.VacationTypes
+                                                        join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                        select new
+                                                        {
+                                                            vacationType.value,
+                                                            vacationRequest.active,
+                                                            vacationRequest.status,
+                                                            vacationRequest.year,
+                                                            vacationRequest.user_id,
+                                                            vacationRequest.days
+                                                        }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && !(vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) != null ? (from vacationType in db.VacationTypes
+                                                                                                                                                                                                                                                                                                                                                                 join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                                                                                                                                                                                                                                                                                                                                  select new VacationRequestViewModel
+                                                                                                                                                                                                                                                                                                                                                                  {
+                                                                                                                                                                                                                                                                                                                                                                      value = vacationType.value,
+                                                                                                                                                                                                                                                                                                                                                                      active = vacationRequest.active,
+                                                                                                                                                                                                                                                                                                                                                                      status = vacationRequest.status,
+                                                                                                                                                                                                                                                                                                                                                                      year = vacationRequest.year,
+                                                                                                                                                                                                                                                                                                                                                                      user_id = vacationRequest.user_id,
+                                                                                                                                                                                                                                                                                                                                                                      days = vacationRequest.days
+                                                                                                                                                                                                                                                                                                                                                                  }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && !(vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) : 0,
                                              a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter,
                                              arda_vacation_counter = vacationYear.arda_vacation_counter,
                                              medical_vacation_counter = vacationYear.medical_vacation_counter,
@@ -136,8 +204,11 @@ namespace HRMS.Controllers
                 id = vt.id,
                 name = vt.name,
                 must_inform_before_duration = vt.must_inform_before_duration,
+                inform_before_duration_min_range = vt.inform_before_duration_min_range,
                 inform_before_duration = vt.inform_before_duration,
                 inform_before_duration_measurement = vt.inform_before_duration_measurement,
+                inform_before_duration_2 = vt.inform_before_duration_2,
+                inform_before_duration_measurement_2 = vt.inform_before_duration_measurement_2,
                 need_approve = vt.need_approve,
                 closed_at_specific_time = vt.closed_at_specific_time,
                 closed_at = vt.closed_at,
@@ -146,14 +217,29 @@ namespace HRMS.Controllers
                 active = vt.active,
                 created_at = vt.created_at
             }).FirstOrDefault();
+
             if (Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_to).ToShortDateString()) >= Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()))
             {
                 double? currentVacationDays = (int?)Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_to).ToShortDateString()).Date.Subtract(Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString())).TotalDays + 1;
+
                 VacationYearViewModel userVacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && vy.year == DateTime.Now.Year).Select(vy => new VacationYearViewModel { vacation_balance = vy.vacation_balance, remaining = vy.remaining }).FirstOrDefault();
-                int? totalVacations = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
+
+                int? totalVacations = (from vacationType in db.VacationTypes
+                                       join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                       select new VacationRequestViewModel
+                                       {
+                                           value = vacationType.value,
+                                           active = vacationRequest.active,
+                                           status = vacationRequest.status,
+                                           year = vacationRequest.year,
+                                           user_id = vacationRequest.user_id,
+                                           days = vacationRequest.days
+                                       }).Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && (vr.value == 1 || vr.value == 2) && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
                 totalVacations = totalVacations == null ? 0 : totalVacations;
+
                 int? actualRemaining = userVacationYear.vacation_balance - totalVacations;
-                if (currentVacationDays <= actualRemaining)
+
+                if (currentVacationDays <= actualRemaining || !(selectedVacation.value == 1 || selectedVacation.value == 2))
                 {
 
                     if (vacationRequestViewModel.id == 0)
@@ -161,24 +247,56 @@ namespace HRMS.Controllers
 
                         if (selectedVacation.must_inform_before_duration == 1)
                         {
-                            if (selectedVacation.inform_before_duration_measurement == 1)
+                            if (currentVacationDays <= selectedVacation.inform_before_duration_min_range)
                             {
-                                //int Days = ((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).Days + 1;
-                                double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
-                                if (Days < (int)selectedVacation.inform_before_duration)
+                                if (selectedVacation.inform_before_duration_measurement == 1)
                                 {
-                                    requestStatus = false;
-                                    errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Days Before<br>";
+                                    double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
+
+                                    if (Days < selectedVacation.inform_before_duration)
+                                    {
+                                        requestStatus = false;
+                                        errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Days Before<br>";
+                                    }
+                                }
+                                else
+                                {
+                                    double Hours = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalHours;
+                                    if (Hours < (int)selectedVacation.inform_before_duration)
+                                    {
+                                        requestStatus = false;
+                                        errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Hours Before<br>";
+                                    }
                                 }
                             }
-                            else
+                            else 
                             {
-                                //double Hours = (((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).TotalHours);
-                                double Hours = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalHours;
-                                if (Hours < (int)selectedVacation.inform_before_duration)
+                                if(selectedVacation.inform_before_duration_2 != null && selectedVacation.inform_before_duration_measurement_2 != null)
+                                {
+                                    if (selectedVacation.inform_before_duration_measurement_2 == 1)
+                                    {
+                                        double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
+
+                                        if (Days < selectedVacation.inform_before_duration_2)
+                                        {
+                                            requestStatus = false;
+                                            errorReport += "Must Inform " + selectedVacation.inform_before_duration_2.ToString() + "Days Before<br>";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        double Hours = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalHours;
+                                        if (Hours < (int)selectedVacation.inform_before_duration_2)
+                                        {
+                                            requestStatus = false;
+                                            errorReport += "Must Inform " + selectedVacation.inform_before_duration_2.ToString() + "Hours Before<br>";
+                                        }
+                                    }
+                                }
+                                else
                                 {
                                     requestStatus = false;
-                                    errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Hours Before<br>";
+                                    errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + (selectedVacation.inform_before_duration_measurement == 1?"Days":"Hours")+ " Before<br>";
                                 }
                             }
                         }
@@ -242,31 +360,64 @@ namespace HRMS.Controllers
                     {
                         if (selectedVacation.must_inform_before_duration == 1)
                         {
-                            if (selectedVacation.inform_before_duration_measurement == 1)
+                            if (currentVacationDays <= selectedVacation.inform_before_duration_min_range)
                             {
-                                //int Days = ((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).Days + 1;
-                                double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
-                                if (Days < (int)selectedVacation.inform_before_duration)
+                                if (selectedVacation.inform_before_duration_measurement == 1)
                                 {
-                                    requestStatus = false;
-                                    errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Days Before<br>";
+                                    double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
+
+                                    if (Days < selectedVacation.inform_before_duration)
+                                    {
+                                        requestStatus = false;
+                                        errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Days Before<br>";
+                                    }
+                                }
+                                else
+                                {
+                                    double Hours = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalHours;
+                                    if (Hours < (int)selectedVacation.inform_before_duration)
+                                    {
+                                        requestStatus = false;
+                                        errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Hours Before<br>";
+                                    }
                                 }
                             }
                             else
                             {
-                                //double Hours = (((DateTime)vacationRequestViewModel.vacation_from - DateTime.Now).TotalHours);
-                                double Hours = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalHours;
-                                if (Hours < (int)selectedVacation.inform_before_duration)
+                                if (selectedVacation.inform_before_duration_2 != null && selectedVacation.inform_before_duration_measurement_2 != null)
+                                {
+                                    if (selectedVacation.inform_before_duration_measurement_2 == 1)
+                                    {
+                                        double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
+
+                                        if (Days < selectedVacation.inform_before_duration_2)
+                                        {
+                                            requestStatus = false;
+                                            errorReport += "Must Inform " + selectedVacation.inform_before_duration_2.ToString() + "Days Before<br>";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        double Hours = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalHours;
+                                        if (Hours < (int)selectedVacation.inform_before_duration_2)
+                                        {
+                                            requestStatus = false;
+                                            errorReport += "Must Inform " + selectedVacation.inform_before_duration_2.ToString() + "Hours Before<br>";
+                                        }
+                                    }
+                                }
+                                else
                                 {
                                     requestStatus = false;
-                                    errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + "Hours Before<br>";
+                                    errorReport += "Must Inform " + selectedVacation.inform_before_duration.ToString() + (selectedVacation.inform_before_duration_measurement == 1 ? "Days" : "Hours") + " Before<br>";
                                 }
                             }
                         }
 
+
                         if (selectedVacation.max_days != null)
                         {
-                            int? selectedVacationCounter = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.vacation_type_id == selectedVacation.id && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
+                            int? selectedVacationCounter = db.VacationRequests.Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.vacation_type_id == selectedVacation.id && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
                             selectedVacationCounter = selectedVacationCounter == null ? 0 : selectedVacationCounter;
                             int? selectedVacationRemaining = selectedVacation.max_days - selectedVacationCounter;
                             if (currentVacationDays > selectedVacationRemaining)
@@ -323,7 +474,7 @@ namespace HRMS.Controllers
                 }
                 else
                 {
-                    return Json(new { message = "Max: " + userVacationYear.vacation_balance + "<br> Remaining: " + actualRemaining, success = false }, JsonRequestBehavior.AllowGet);
+                    return Json(new { message = "Annual: " + userVacationYear.vacation_balance + "<br> Remaining: " + actualRemaining, success = false }, JsonRequestBehavior.AllowGet);
                 }
             }
             else

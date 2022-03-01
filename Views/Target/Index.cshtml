@@ -1,9 +1,9 @@
 ﻿@{
-    ViewBag.Title = "Vacation Requests";
+    ViewBag.Title = "Project Types";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="modal fade" id="manage_vacation_request_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="manage_target_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
         <div class="modal-dialog">
             <div class="modal-content">
@@ -17,19 +17,29 @@
                     <div class="form-body">
                         <div class="form-row">
                             <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-6">
+                                <label>MVOH</label>
+                                <input name="mvoh" id="mvoh" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>LVOH</label>
+                                <input name="lvoh" id="lvoh" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>MVUG</label>
+                                <input name="mvug" id="mvug" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>LVUG</label>
+                                <input name="lvug" id="lvug" type="number" step=".01" class="form-control radius-30" />
+                            </div>
                             <div class="form-group col-md-12">
-                                <label>Vacation Type</label>
-                                @Html.DropDownList("vacation_type_id", new SelectList(ViewBag.VacationTypes, "id", "name"), "Select Vacation Type", new { @class = "form-control", @name = "vacation_type_id", @style = "width:100%", @id = "vacation_type_id", @required = "required" })
+                                <label>Status</label>
+                                <select class="form-control" name="active" id="active">
+                                    <option value="1">Active</option>
+                                    <option value="2">Inactive</option>
+                                </select>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label>From</label>
-                                <input required name="vacation_from" id="vacation_from" type="date" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>To</label>
-                                <input required name="vacation_to" id="vacation_to" type="date" class="form-control radius-30" />
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -57,48 +67,33 @@
 </div>
 
 <div class="card">
-    <div class="card-header">
-        @if (ViewBag.canRequest == 2)
+    <div class="card-header" id="productivity_target_card_header">
+        @if (ViewBag.showAddTarget == 0)
         {
-            <a href="javascript:void(0)" id="add_vacation_request"><i class="fa fa-plus"></i> Vacation Request</a>
-
-        }
-        else if (ViewBag.canRequest == 1)
-        {
-            <p> You Can Not Apply on Vacation Before 6 Months</p>
+            <a href="javascript:void(0)" id="add_target"><i class="fa fa-plus"></i> Add Target</a>
         }
         else
         {
-            <p> Please Ask HR to Complete Your Informations</p>
+        <span>Productivty Targets</span>
         }
     </div>
     <div class="card-body">
 
         <div class="table-responsive">
-            <table id="vacationYearTable" class="table table-striped table-bordered" style="width:100%">
+            <table id="targetTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
-                        <th colspan="5" style="text-align:center;">
-                            Affect Balance
-                        </th>
-                        <th colspan="5" style="text-align:center;">
-                            Not Affect Balance
-                        </th>
-                    </tr>
-                    <tr>
-                        <th width="10%">Year</th>
-                        <th width="10%">Regular</th>
-                        <th width="10%">Casual</th>
-                        <th width="10%">Balance</th>
-                        <th width="10%">Medical</th>
-                        <th width="10%">Married</th>
-                        <th width="10%">WFH</th>
-                        <th width="10%">Death</th>
-                        <th width="10%">Pending</th>
-                        <th width="5%"></th>
+                        <th>#</th>
+                        <th>MVOH</th>
+                        <th>LVOH</th>
+                        <th>MVUG</th>
+                        <th>LVUG</th>
+                        <th>Active</th>
+                        <th>Date</th>
+                        <th></th>
                     </tr>
                 </thead>
-               
+
             </table>
         </div>
     </div>
@@ -109,7 +104,7 @@
     <script>
        $(document).ready(function () {
 
-           var datatable = $('#vacationYearTable')
+           var datatable = $('#targetTable')
                .DataTable({/* we added this from the other system to have same search and same pagination*/
                    "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                        "<'table-responsive  'tr>" +
@@ -140,76 +135,47 @@
                     "pageLength":10,
                     "rowId": 'id',
                     "ajax": {
-                        "url": "@Url.Action("Index", "VacationRequest")",
+                        "url": "@Url.Action("Index", "Target")",
                         "type": "POST",
                         "datatype": "json",
                         "dataSrc": "data"
                     },
                     "columns": [
                         {
-                            "data": "year",
+                            "data": "id",
                             "searchable": true
                         },
                         {
-                            "data": "a3tyady_vacation_counter",
+                            "data": "mvoh",
                             "searchable": true
                         },
                         {
-                            "data": "arda_vacation_counter",
+                            "data": "lvoh",
                             "searchable": true
                         },
                         {
-                            "data": "vacation_balance", "searchable": true,
+                            "data": "mvug",
+                            "searchable": true
+                        },
+                        {
+                            "data": "lvug",
+                            "searchable": true
+                        },
+                        {
+                            "data": "active", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-
-                                if (oData.vacation_balance)
-                                    html += "<b>Total: </b>" + oData.vacation_balance + "<br>";
+                                if (oData.active == 1)
+                                    html += "<span class='badge badge-primary'>Active</span>";
                                 else
-                                    html += "<b>Total: </b>21<br>";
-
-                                if (oData.pending)
-                                    html += "<b>Pending: </b>" + oData.pending + "<br>";
-                                else
-                                    html += "<b>Pending: </b>0<br>";
-
-                                if (oData.actual_remaining)
-                                    html += "<b>Remaining: </b>" + oData.actual_remaining + "<br>";
-                                else
-                                    html += "<b>Remaining: </b>" + oData.vacation_balance + "<br>";
-
-
-
+                                    html += "<span class='badge badge-danger'>Active</span>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
                         {
-                            "data": "medical_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "married_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "work_from_home_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "death_vacation_counter",
-                            "searchable": true
-                        },
-                        {
-                            "data": "vacation_balance", "searchable": true,
+                            "data": "active", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                var html = "";
-
-                                if (oData.pending_not_affect)
-                                    html += oData.pending_not_affect;
-                                else
-                                    html += "0";
-
-                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                                $(nTd).html("<span class='action-column'>" + fixDate(oData.created_at) + "</span>");
                             }
                         },
                         {
@@ -217,7 +183,8 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<a href='/VacationRequest/History?year=" + oData.year +"' title='History'><i class='fas fa-eye'></i></a>";
+                                html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
+                                //html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -241,31 +208,20 @@
 
             });
 
-           $("#add_vacation_request").click(function () {
-               var modal = $('#manage_vacation_request_modal').clone();
-                var action = '@Url.Action("saveVacationRequest", "VacationRequest")';
-                modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Vacation Request');
+           $("#add_target").click(function () {
+               var modal = $('#manage_target_modal').clone();
+               var action = '@Url.Action("saveTarget", "Target")';
+               modal.find('form').attr('action', action);
+               modal.find('#modal_title').text('Add Target');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
                 }, function (response) {
 
-                        if (response.success == false) {
-                            Swal.fire(
-                                'Sorry!',
-                                response.message,
-                                'error'
-                            );
-                        }
-                        else {
-                            Swal.fire(
-                                'Done!',
-                                "Enjoy your Vacation",
-                                'success'
-                            );
-                            datatable.draw();
-                        }
+                        datatable.draw();
+                        $("#productivity_target_card_header").empty();
+                        $("#productivity_target_card_header").append(`<span>Productivty Targets</span>`);
+
 
                 }, function (response) {
 
@@ -278,10 +234,10 @@
             $(document).on("click", ".edit", function () {
                 var data = datatable.row($(this).closest('tr')).data();
                 console.log(data);
-                var modal = $('#manage_vacation_request_modal').clone();
-                var action = '@Url.Action("saveVacationRequest", "VacationRequest")';
+                var modal = $('#manage_target_modal').clone();
+                var action = '@Url.Action("saveTarget", "Target")';
                 modal.find('form').attr('action', action);
-                modal.find('#modal_title').text('Edit Vacation Request');
+                modal.find('#modal_title').text('Edit Target');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -293,31 +249,36 @@
                 }, function (dialog) {
 
                         dialog.find('#id').val(data.id);
-                        dialog.find('#name').val(data.name);
+                        dialog.find('#mvoh').val(data.mvoh);
+                        dialog.find('#lvoh').val(data.lvoh);
+                        dialog.find('#mvug').val(data.mvug);
+                        dialog.find('#lvug').val(data.lvug);
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
 
                 });
 
             });
 
-            $(document).on("click", ".delete", function () {
+            @*$(document).on("click", ".delete", function () {
                 var data = datatable.row($(this).closest('tr')).data();
-                warningBox("Are you sure you want to delete this Request?", function () {
+                warningBox("Are you sure you want to delete this Target ?", function () {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("deleteProjectType", "ProjectType")',
+                        url: '@Url.Action("deleteTarget", "Target")',
                         contentType: "application/json; charset=utf-8",
                         data: { "id": data.id },
                         datatype: "json",
                         success: function (data) {
                             datatable.draw();
+                            $("#productivity_target_card_header").empty();
+                            $("#productivity_target_card_header").append(`<a href="javascript:void(0)" id="add_target"><i class="fa fa-plus"></i> Add Target</a>`);
                         },
                         error: function () {
                             alert("Dynamic content load failed.");
                         }
                     });
                 });
-            });
+            });*@
 
         });
 

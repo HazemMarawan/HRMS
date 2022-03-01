@@ -25,8 +25,12 @@
                                 <label>Must Inform Before Duration</label>
                                 <input name="must_inform_before_duration" id="must_inform_before_duration" value="1" type="checkbox" class="radius-30" />
                             </div>
+                            <div class="form-group col-md-12" style="display:none;" id="inform_before_duration_min_range_div">
+                                <label>Min Range</label>
+                                <input name="inform_before_duration_min_range" id="inform_before_duration_min_range" type="number" min="1" class="form-control radius-30" />
+                            </div>
                             <div class="form-group col-md-6" style="display:none;" id="inform_before_duration_measurement_div">
-                                <label>Measurement</label>
+                                <label>Measurement 1</label>
                                 <select name="inform_before_duration_measurement" id="inform_before_duration_measurement" class="form-control">
                                     <option value="">Select Measurement</option>
                                     <option value="1">Days</option>
@@ -34,8 +38,21 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6" style="display:none;" id="inform_before_duration_div">
-                                <label>Duration</label>
+                                <label>Duration 1</label>
                                 <input name="inform_before_duration" id="inform_before_duration" type="number" min="1" class="form-control radius-30" />
+                            </div>
+
+                            <div class="form-group col-md-6" style="display:none;" id="inform_before_duration_measurement_2_div">
+                                <label>Measurement 2</label>
+                                <select name="inform_before_duration_measurement_2" id="inform_before_duration_measurement_2" class="form-control">
+                                    <option value="">Select Measurement</option>
+                                    <option value="1">Days</option>
+                                    <option value="2">Hours</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6" style="display:none;" id="inform_before_duration_2_div">
+                                <label>Duration 2</label>
+                                <input name="inform_before_duration_2" id="inform_before_duration_2" type="number" min="1" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Need Approve</label>
@@ -169,13 +186,26 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.must_inform_before_duration == 1) {
-                                    html += "<b>Need to Be Informed: </b>" + oData.inform_before_duration;
-                                    if (oData.inform_before_duration_measurement == 1)
-                                        html += " Days Before";
-                                    else
-                                        html += " Hours Before";
 
-                                    html += "<br>";
+                                    if (oData.inform_before_duration_2) {
+                                        html += "<b><= " + oData.inform_before_duration_min_range+" Days Need to Be Informed: </b>" + oData.inform_before_duration;
+                                        if (oData.inform_before_duration_measurement == 1)
+                                            html += " Days Before";
+                                        else
+                                            html += " Hours Before";
+
+                                        html += "<br>";
+                                    }
+
+                                    if (oData.inform_before_duration_2) {
+                                        html += "<b>&nbsp; > " + oData.inform_before_duration_min_range+" Days Need to Be Informed: </b>" + oData.inform_before_duration_2;
+                                        if (oData.inform_before_duration_measurement_2 == 1)
+                                            html += " Days Before";
+                                        else
+                                            html += " Hours Before";
+
+                                        html += "<br>";
+                                    }
                                 }
 
                                 if (oData.need_approve == 1) {
@@ -247,6 +277,46 @@
 
             });
 
+           function dialogEvents(dialog) {
+               dialog.find("#must_inform_before_duration").click(function () {
+                   if (dialog.find("#must_inform_before_duration").is(":checked")) {
+
+                       dialog.find("#inform_before_duration_div").show();
+                       dialog.find("#inform_before_duration_measurement_div").show();
+                       dialog.find("#inform_before_duration_min_range_div").show();
+
+                       dialog.find("#inform_before_duration_min_range").prop('required', true);
+                       dialog.find("#inform_before_duration_measurement").prop('required', true);
+                       dialog.find("#inform_before_duration").prop('required', true);
+
+                       dialog.find("#inform_before_duration_2_div").show();
+                       dialog.find("#inform_before_duration_measurement_2_div").show();
+                   }
+                   else {
+                       dialog.find("#inform_before_duration_div").hide();
+                       dialog.find("#inform_before_duration_measurement_div").hide();
+                       dialog.find("#inform_before_duration_min_range_div").hide();
+
+                       dialog.find("#inform_before_duration_min_range").prop('required', false);
+                       dialog.find("#inform_before_duration_measurement").prop('required', false);
+                       dialog.find("#inform_before_duration").prop('required', false);
+
+                       dialog.find("#inform_before_duration_2_div").hide();
+                       dialog.find("#inform_before_duration_measurement_2_div").hide();
+                   }
+               });
+
+               dialog.find("#closed_at_specific_time").click(function () {
+                   if (dialog.find("#closed_at_specific_time").is(":checked")) {
+                       dialog.find("#closed_at_div").show();
+                   }
+                   else {
+                       dialog.find("#closed_at_div").hide();
+                       //dialog.find("#closed_at").val("");
+                   }
+               });
+           }
+
            $("#add_vacation_type").click(function () {
                var modal = $('#manage_vacation_type_modal').clone();
                 var action = '@Url.Action("saveVacationType", "VacationType")';
@@ -263,28 +333,8 @@
 
                 }, function (dialog) {
 
-                        dialog.find("#must_inform_before_duration").click(function(){
-                            if (dialog.find("#must_inform_before_duration").is(":checked")) {
-                                dialog.find("#inform_before_duration_div").show();
-                                dialog.find("#inform_before_duration_measurement_div").show();
-                            }
-                            else {
-                                dialog.find("#inform_before_duration_div").hide();
-                                dialog.find("#inform_before_duration_measurement_div").hide();
-                                //dialog.find("#inform_before_duration").val("");
-                                //dialog.find("#inform_before_duration_measurement").val("");
-                            }
-                        });
-
-                        dialog.find("#closed_at_specific_time").click(function () {
-                            if (dialog.find("#closed_at_specific_time").is(":checked")) {
-                                dialog.find("#closed_at_div").show();
-                            }
-                            else {
-                                dialog.find("#closed_at_div").hide();
-                                //dialog.find("#closed_at").val("");
-                            }
-                        });
+                        dialogEvents(dialog);
+                        
                 });
             });
 
@@ -308,24 +358,34 @@
                         dialog.find('#id').val(data.id);
                         dialog.find('#name').val(data.name);
                         dialog.find('#inform_before_duration').val(data.inform_before_duration);
+                        dialog.find('#inform_before_duration_2').val(data.inform_before_duration_2);
+                        dialog.find('#inform_before_duration_min_range').val(data.inform_before_duration_min_range);
                         dialog.find('#inform_before_duration_measurement').val(data.inform_before_duration_measurement);
+                        dialog.find('#inform_before_duration_measurement_2').val(data.inform_before_duration_measurement_2);
                         dialog.find('#closed_at').val(data.closed_at);
                         dialog.find('#max_days').val(data.max_days);
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
 
                         if (data.must_inform_before_duration == 1) {
                             dialog.find("#must_inform_before_duration").prop('checked', true);
+                            
                             dialog.find("#inform_before_duration_div").show();
                             dialog.find("#inform_before_duration_measurement_div").show();
+                            dialog.find("#inform_before_duration_min_range_div").show();
+
+                            dialog.find("#inform_before_duration_2_div").show();
+                            dialog.find("#inform_before_duration_measurement_2_div").show();
                         }
+
                         if (data.closed_at_specific_time == 1) {
                             dialog.find("#closed_at_specific_time").prop('checked', true);
                             dialog.find("#closed_at_div").show();
-                            console.log(data.closed_at);
+
                             if (data.closed_at) {
                                 dialog.find("#closed_at").val(fixTime(data.closed_at));
                             }
                         }
+
                         if (data.include_official_vacation == 1) {
                             dialog.find("#include_official_vacation").prop('checked', true);
                         }
@@ -333,28 +393,8 @@
                         if (data.need_approve == 1) {
                             dialog.find("#need_approve").prop('checked', true);
                         }
-                        dialog.find("#must_inform_before_duration").click(function () {
-                            if (dialog.find("#must_inform_before_duration").is(":checked")) {
-                                dialog.find("#inform_before_duration_div").show();
-                                dialog.find("#inform_before_duration_measurement_div").show();
-                            }
-                            else {
-                                dialog.find("#inform_before_duration_div").hide();
-                                dialog.find("#inform_before_duration_measurement_div").hide();
-                                //dialog.find("#inform_before_duration").val("");
-                                //dialog.find("#inform_before_duration_measurement").val("");
-                            }
-                        });
 
-                        dialog.find("#closed_at_specific_time").click(function () {
-                            if (dialog.find("#closed_at_specific_time").is(":checked")) {
-                                dialog.find("#closed_at_div").show();
-                            }
-                            else {
-                                dialog.find("#closed_at_div").hide();
-                                //dialog.find("#closed_at").val("");
-                            }
-                        });
+                        dialogEvents(dialog);
 
                 });
 

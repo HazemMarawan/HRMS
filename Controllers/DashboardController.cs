@@ -283,7 +283,15 @@ namespace HRMS.Controllers
 
         public JsonResult getDashboardData()
         {
-            User currentUser = Session["user"] as User;
+            int userId = Session["id"].ToString().ToInt();
+            UserViewModel currentUser = db.Users.Where(u => u.id == userId).Select(u => new UserViewModel
+            {
+                id = u.id,
+                team_leader_id = u.team_leader_id,
+                branch_id = u.branch_id,
+                vacations_balance = u.vacations_balance
+            }).FirstOrDefault();
+
             DashboardViewModel dashboardViewModel = new DashboardViewModel();
 
             if (isA.Employee())
@@ -303,9 +311,60 @@ namespace HRMS.Controllers
 
             if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin())
             {
-                dashboardViewModel.Vacations = db.VacationRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Select(vr => vr.days).Sum();
-                dashboardViewModel.Vacations = dashboardViewModel.Vacations != null ? dashboardViewModel.Vacations : 0;
-                dashboardViewModel.VacationsBalance = currentUser.vacations_balance != null ? currentUser.vacations_balance : 21;
+                VacationTypeViewModel casualVacationType = db.VacationTypes.Where(vt => vt.value == 2).Select(vt => new VacationTypeViewModel
+                {
+                    max_days = vt.max_days
+
+                }).FirstOrDefault();
+
+                dashboardViewModel.RegularVacations = (from vacationType in db.VacationTypes
+                                                       join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                       select new VacationRequestViewModel
+                                                       {
+                                                           value = vacationType.value,
+                                                           active = vacationRequest.active,
+                                                           status = vacationRequest.status,
+                                                           year = vacationRequest.year,
+                                                           user_id = vacationRequest.user_id,
+                                                           days = vacationRequest.days
+                                                       }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin && vr.value == 1 && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days);
+                dashboardViewModel.RegularVacations = dashboardViewModel.RegularVacations != null ? dashboardViewModel.RegularVacations : 0;
+
+
+                dashboardViewModel.CasualVacations = (from vacationType in db.VacationTypes
+                                                       join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
+                                                       select new VacationRequestViewModel
+                                                       {
+                                                           value = vacationType.value,
+                                                           active = vacationRequest.active,
+                                                           status = vacationRequest.status,
+                                                           year = vacationRequest.year,
+                                                           user_id = vacationRequest.user_id,
+                                                           days = vacationRequest.days
+                                                       }
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin && vr.value == 2 && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days);
+                dashboardViewModel.CasualVacations = dashboardViewModel.CasualVacations != null ? dashboardViewModel.CasualVacations : 0;
+
+
+                if (casualVacationType.max_days != null)
+                {
+                    dashboardViewModel.CasualVacationsBalance = casualVacationType.max_days;
+                }
+                else
+                {
+                    dashboardViewModel.CasualVacationsBalance = 6;
+                }
+
+                if (currentUser.vacations_balance != null)
+                {
+                    dashboardViewModel.RegularVacationsBalance = currentUser.vacations_balance - dashboardViewModel.CasualVacationsBalance;
+                }
+                else
+                {
+                    dashboardViewModel.RegularVacationsBalance = 21 - dashboardViewModel.CasualVacationsBalance;
+                }
+
 
                 dashboardViewModel.Permissions = db.WorkPermissionRequests.Where(vr => vr.year == DateTime.Now.Year && vr.user_id == currentUser.id && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Count();
                 dashboardViewModel.Permissions = dashboardViewModel.Permissions != null ? dashboardViewModel.Permissions : 0;

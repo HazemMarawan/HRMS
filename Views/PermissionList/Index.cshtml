@@ -46,6 +46,7 @@
         </div>
     </form>
 </div>
+
 <div class="page-header">
     <nav class="breadcrumb-one" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -404,10 +405,10 @@
             });
 
            $("#add_PermissionList").click(function () {
-               var modal = $('#manage_PermissionList_modal').clone();
+                var modal = $('#manage_PermissionList_modal').clone();
                 var action = '@Url.Action("savePermissionList", "PermissionList")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Request Permission');
+                modal.find('#modal_title').text('Request Permission');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',

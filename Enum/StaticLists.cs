@@ -37,6 +37,7 @@ namespace HRMS.Enum
         PendingApprove = 1,
         Approved = 2,
         Rejected = 3,
+        Returned = 4,
     }
 
     public enum ApprovementStatus

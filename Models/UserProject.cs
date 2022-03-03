@@ -36,12 +36,17 @@ namespace HRMS.Models
         public double? lvug_target { get; set; }
         public double? cost { get; set; }
         public string note { get; set; }
+        public string returned_by_note { get; set; }
+        public string rejected_by_note { get; set; }
+        public string accepted_by_note { get; set; }
         public int? status { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }
         public int? deleted_by { get; set; }
         public int? approved_by { get; set; }
         public int? rejected_by { get; set; }
+        public int? returned_by { get; set; }
+        public DateTime? returned_at { get; set; }
         public DateTime? rejected_at { get; set; }
         public DateTime? approved_at { get; set; }
         public DateTime? created_at { get; set; }

@@ -302,6 +302,10 @@
                                 else if (oData.status == 2) {
                                     html = `<span class="badge badge-success">Approved</span>`;
                                 }
+                                else if (oData.status == 4) {
+                                    html = `<span class="badge badge-warning">Returned by ${oData.returned_by_name} At ${fixDate(oData.returned_at)}<br/>
+                                             Reason: ${oData.rejected_by_note}</span>`;
+                                }
                                 else {
                                     html = `<span class="badge badge-danger">Rejected</span>`;
                                 }

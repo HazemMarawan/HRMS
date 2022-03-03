@@ -51,6 +51,8 @@ namespace HRMS.Controllers
                                         from project in pr.DefaultIfEmpty()
                                         join are in db.Areas on userProject.area_id equals are.id into ar
                                         from area in ar.DefaultIfEmpty()
+                                        join ret in db.Users on userProject.returned_by equals ret.id into r
+                                        from returned in r.DefaultIfEmpty()
                                         select new UserProjectViewModel
                                         {
                                             id = userProject.id,
@@ -79,7 +81,10 @@ namespace HRMS.Controllers
                                             cost = userProject.cost,
                                             team_leader_id = user.team_leader_id,
                                             area_id = userProject.area_id,
-                                            area_name = area.name
+                                            area_name = area.name,
+                                            returned_by_name = returned.full_name,
+                                            returned_at = userProject.returned_at,
+                                            rejected_by_note = userProject.returned_by_note
                                         });
 
                
@@ -401,6 +406,8 @@ namespace HRMS.Controllers
                                        from project in pr.DefaultIfEmpty()
                                        join are in db.Areas on userProject.area_id equals are.id into ar
                                        from area in ar.DefaultIfEmpty()
+                                       join ret in db.Users on userProject.returned_by equals ret.id into r
+                                       from returned in r.DefaultIfEmpty()
                                        select new UserProjectViewModel
                                        {
                                            id = userProject.id,
@@ -424,7 +431,10 @@ namespace HRMS.Controllers
                                            note = userProject.note,
                                            status = userProject.status,
                                            area_id = userProject.area_id,
-                                           area_name = area.name
+                                           area_name = area.name,
+                                           returned_by_name = returned.full_name,
+                                           returned_at = userProject.returned_at,
+                                           rejected_by_note = userProject.returned_by_note
                                        }).Where(p => p.user_id == currentUser.id) ;
 
                 //Search    
@@ -588,7 +598,21 @@ namespace HRMS.Controllers
 
             db.SaveChanges();
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+        } 
+        
+        [HttpPost]
+        public JsonResult returnTask(int id, string note)
+        {
+            UserProject approveUserProject = db.UserProjects.Find(id);
+            approveUserProject.status = (int)ProductivityStatus.Returned;
+            approveUserProject.returned_by_note = note;
+            approveUserProject.returned_at = DateTime.Now;
+            approveUserProject.returned_by = Session["id"].ToString().ToInt();
+
+            db.SaveChanges();
+            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public void GenerateProductivityReport(UserProjectViewModel userProjectViewModel)
         {

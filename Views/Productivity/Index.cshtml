@@ -2,6 +2,38 @@
 @{
     ViewBag.Title = "Productivity";
 }
+
+<div class="modal fade" id="manage_return_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-12">
+                                <label>Reason</label>
+                                <textarea required name="note" id="note" class="form-control radius-30"> </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <div class="page-header">
     <nav class="breadcrumb-one" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -362,6 +394,10 @@
                                 else if (oData.status == 2) {
                                     html = `<span class="badge badge-success">Approved</span>`;
                                 }
+                                else if (oData.status == 4) {
+                                    html = `<span class="badge badge-warning">Returned by ${oData.returned_by_name} At ${fixDate(oData.returned_at)}<br/>
+                                             Reason: ${oData.rejected_by_note}</span>`;
+                                }
                                 else {
                                     html = `<span class="badge badge-danger">Rejected</span>`;
                                 }
@@ -376,7 +412,8 @@
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
                                 if (oData.status == 1 && ((isTeamLeader == 'True' && oData.type == 3) || (isTechnicalManager == 'True' && oData.type == 4))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
-                                    html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>";
+                                    html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
+                                    html += "<a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp; | ";
                                 }
                                 html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";
 
@@ -468,6 +505,27 @@
                 });
             });
 
+            $(document).on("click", ".return", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                var modal = $('#manage_return_modal').clone();
+                var action = '@Url.Action("returnTask", "Productivity")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Are you sure you want to Return this task?');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                    datatable.draw();
+
+                }, function (response) {
+
+                }, function (dialog) {
+                    dialog.find('#id').val(data.id)
+
+                });
+            });
+
             $(document).on("click", ".info", function () {
                 var data = datatable.row($(this).closest('tr')).data();
                 console.log(data);
@@ -491,30 +549,30 @@
             $(document).on("change", "#search_project_id", function () {
                 var project_id = $(this).val();
 
-                            $("#search_area_id").empty();
-                            var html = `<option value=''>Select Area</option>`;
-                            $.ajax({
-                            type: "GET",
-                            url: '@Url.Action("getAreaByProjectId", "Project")',
-                            contentType: "application/json; charset=utf-8",
-                            data: { "id": project_id },
-                            datatype: "json",
-                                success: function (data) {
-                                    if (data.areas.length != 0) {
+                $("#search_area_id").empty();
+                var html = `<option value=''>Select Area</option>`;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("getAreaByProjectId", "Project")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": project_id },
+                    datatype: "json",
+                        success: function (data) {
+                            if (data.areas.length != 0) {
 
-                                    data.areas.forEach(function (value) {
-                                        html += `<option value='${value.id}'>${value.name}</option>`;
-                                    });
+                            data.areas.forEach(function (value) {
+                                html += `<option value='${value.id}'>${value.name}</option>`;
+                            });
 
-                                    }
-                                    $("#search_area_id").append(html);
-                            },
-                            error: function () {
-                                alert("Dynamic content load failed.");
                             }
-                        });
+                            $("#search_area_id").append(html);
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
 
-                        });
+             });
 
             $("#generate_productivity_report").click(function () {
 

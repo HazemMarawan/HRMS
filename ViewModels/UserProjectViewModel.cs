@@ -42,10 +42,13 @@ namespace HRMS.ViewModels
         public int? deleted_by { get; set; }
         public DateTime? rejected_at { get; set; }
         public DateTime? approved_at { get; set; }
+        public DateTime? returned_at { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
         public DateTime? from_date { get; set; }
         public DateTime? to_date { get; set; }
+        public string returned_by_name { get; set; }
+        public string rejected_by_note { get; set; }
     }
 }

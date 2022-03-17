@@ -11,5 +11,9 @@ namespace HRMS.Helpers
         {
             return Convert.ToInt32(str);
         }
+        public static double ToDouble(this string str)
+        {
+            return Convert.ToDouble(str);
+        }
     }
 }

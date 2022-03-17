@@ -48,6 +48,9 @@
     <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.16.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>packages\DocumentFormat.OpenXml.2.16.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -132,6 +135,7 @@
       <Private>True</Private>
       <HintPath>packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -160,6 +164,7 @@
     <Compile Include="Controllers\ProductivityController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\ProjectTypeController.cs" />
+    <Compile Include="Controllers\SalaryBatchController.cs" />
     <Compile Include="Controllers\TargetController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VacationRequestController.cs" />
@@ -343,6 +348,10 @@
     <Compile Include="Migrations\202203030947158_update_productivity.Designer.cs">
       <DependentUpon>202203030947158_update_productivity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203172256135_updates21.cs" />
+    <Compile Include="Migrations\202203172256135_updates21.Designer.cs">
+      <DependentUpon>202203172256135_updates21.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -354,6 +363,8 @@
     <Compile Include="Models\EmailUser.cs" />
     <Compile Include="Models\IDType.cs" />
     <Compile Include="Models\Job.cs" />
+    <Compile Include="Models\SalaryBatch.cs" />
+    <Compile Include="Models\SalaryBatchDetail.cs" />
     <Compile Include="Models\Target.cs" />
     <Compile Include="Models\VacationRequest.cs" />
     <Compile Include="Models\VacationType.cs" />
@@ -384,6 +395,8 @@
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
     <Compile Include="ViewModels\ProjectTypeViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
+    <Compile Include="ViewModels\SalaryBatchDetailViewModel.cs" />
+    <Compile Include="ViewModels\SalaryBatchViewModel.cs" />
     <Compile Include="ViewModels\TargetViewModel.cs" />
     <Compile Include="ViewModels\UserProjectViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
@@ -3259,6 +3272,8 @@
     <Content Include="Views\Asset\Index.cshtml" />
     <Content Include="Views\InternalMessaging\Index.cshtml" />
     <Content Include="Views\Target\Index.cshtml" />
+    <Content Include="Views\SalaryBatch\Details.cshtml" />
+    <Content Include="Views\SalaryBatch\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -3407,6 +3422,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203030947158_update_productivity.resx">
       <DependentUpon>202203030947158_update_productivity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203172256135_updates21.resx">
+      <DependentUpon>202203172256135_updates21.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

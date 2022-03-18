@@ -192,6 +192,115 @@ namespace HRMS.Controllers
             return View();
         }
 
+        public ActionResult Employee()
+        {
+            User currentUser = Session["user"] as User;
+            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin()))
+                return RedirectToAction("Index", "Dashboard");
+
+            if (Request.IsAjaxRequest())
+            {
+                var draw = Request.Form.GetValues("draw").FirstOrDefault();
+                var start = Request.Form.GetValues("start").FirstOrDefault();
+                var length = Request.Form.GetValues("length").FirstOrDefault();
+                var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                // Getting all data    
+                var salaryBatches = (from salary_batch in db.SalaryBatches
+                                     join salary_batch_detail in db.SalaryBatchDetails on salary_batch.id equals salary_batch_detail.salary_batch_id
+                                     join user in db.Users on salary_batch_detail.user_id equals user.id
+                                     select new SalaryBatchDetailViewModel
+                                     {
+                                         id = salary_batch_detail.id,
+                                         salary_batch_id = salary_batch_detail.salary_batch_id,
+                                         salary_batch_notes = salary_batch.notes,
+                                         user_id = salary_batch_detail.user_id,
+                                         full_name = user.full_name,
+                                         bank_code = salary_batch_detail.bank_code,
+                                         salary = salary_batch_detail.salary,
+                                         insurance_deductions = salary_batch_detail.insurance_deductions,
+                                         tax_deductions = salary_batch_detail.tax_deductions,
+                                         absense_days = salary_batch_detail.absense_days,
+                                         absense_deductions = salary_batch_detail.absense_deductions,
+                                         gm_amount = salary_batch_detail.gm_amount,
+                                         reserved_amount = salary_batch_detail.reserved_amount,
+                                         addtional_hours = salary_batch_detail.addtional_hours,
+                                         addtional_hours_amount = salary_batch_detail.addtional_hours_amount,
+                                         total_kilos = salary_batch_detail.total_kilos,
+                                         total_salary = salary_batch_detail.total_salary,
+                                         notes = salary_batch_detail.notes,
+                                         active = salary_batch_detail.active,
+
+                                     }).Where(n => n.active == (int)RowStatus.ACTIVE && n.user_id == currentUser.id);
+
+                //Search    
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    salaryBatches = salaryBatches.Where(m =>
+                        m.full_name.ToString().ToLower().Contains(searchValue.ToLower())
+                    || m.bank_code.ToString().ToLower().Contains(searchValue.ToLower()));
+                }
+
+                //total number of rows count     
+                var displayResult = salaryBatches.OrderByDescending(u => u.id).Skip(skip)
+                     .Take(pageSize).ToList();
+                var totalRecords = salaryBatches.Count();
+
+                return Json(new
+                {
+                    draw = draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = totalRecords,
+                    data = displayResult
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+
+            return View();
+        }
+
+        public ActionResult Payslip(int id)
+        {
+            User currentUser = Session["user"] as User;
+            int? user_batch_id = db.SalaryBatchDetails.Where(sb => sb.id == id).FirstOrDefault().user_id;
+            
+            if (!((isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin()) && currentUser.id == user_batch_id))
+                return RedirectToAction("Index", "Dashboard");
+
+            SalaryBatchDetailViewModel salaryBatche = (from salary_batch in db.SalaryBatches
+                                 join salary_batch_detail in db.SalaryBatchDetails on salary_batch.id equals salary_batch_detail.salary_batch_id
+                                 join user in db.Users on salary_batch_detail.user_id equals user.id
+                                 select new SalaryBatchDetailViewModel
+                                 {
+                                     id = salary_batch_detail.id,
+                                     salary_batch_id = salary_batch_detail.salary_batch_id,
+                                     salary_batch_notes = salary_batch.notes,
+                                     user_id = salary_batch_detail.user_id,
+                                     full_name = user.full_name,
+                                     bank_code = salary_batch_detail.bank_code,
+                                     salary = salary_batch_detail.salary,
+                                     insurance_deductions = salary_batch_detail.insurance_deductions,
+                                     tax_deductions = salary_batch_detail.tax_deductions,
+                                     absense_days = salary_batch_detail.absense_days,
+                                     absense_deductions = salary_batch_detail.absense_deductions,
+                                     gm_amount = salary_batch_detail.gm_amount,
+                                     reserved_amount = salary_batch_detail.reserved_amount,
+                                     addtional_hours = salary_batch_detail.addtional_hours,
+                                     addtional_hours_amount = salary_batch_detail.addtional_hours_amount,
+                                     total_kilos = salary_batch_detail.total_kilos,
+                                     total_salary = salary_batch_detail.total_salary,
+                                     notes = salary_batch_detail.notes,
+                                     active = salary_batch_detail.active,
+                                     created_at = salary_batch_detail.created_at
+                                 }).Where(n => n.active == (int)RowStatus.ACTIVE && n.id == id).FirstOrDefault();
+            salaryBatche.full_name = currentUser.full_name;
+
+            return View(salaryBatche);
+        }
+
 
         public void ExportSalarySheet()
         {

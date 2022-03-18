@@ -10,6 +10,8 @@ namespace HRMS.ViewModels
         public int id { get; set; }
         public int? salary_batch_id { get; set; }
         public string salary_batch_notes { get; set; }
+        public int? month { get; set; }
+        public int? year { get; set; }
         public int? user_id { get; set; }
         public string full_name { get; set; }
         public string bank_code { get; set; }

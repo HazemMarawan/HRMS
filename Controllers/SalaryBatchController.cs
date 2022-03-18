@@ -278,6 +278,8 @@ namespace HRMS.Controllers
                                      id = salary_batch_detail.id,
                                      salary_batch_id = salary_batch_detail.salary_batch_id,
                                      salary_batch_notes = salary_batch.notes,
+                                     month = salary_batch.month,
+                                     year = salary_batch.year,
                                      user_id = salary_batch_detail.user_id,
                                      full_name = user.full_name,
                                      bank_code = salary_batch_detail.bank_code,
@@ -298,7 +300,12 @@ namespace HRMS.Controllers
                                  }).Where(n => n.active == (int)RowStatus.ACTIVE && n.id == id).FirstOrDefault();
             salaryBatche.full_name = currentUser.full_name;
 
-            return View(salaryBatche);
+            var report = new Rotativa.ViewAsPdf("Payslip", salaryBatche);
+            report.PageSize = Rotativa.Options.Size.A5;
+            report.PageOrientation = Rotativa.Options.Orientation.Portrait;
+            report.FileName = salaryBatche.full_name+"_"+salaryBatche.month.ToString()+"_"+ salaryBatche.year.ToString()+".pdf";
+
+            return report;
         }
 
 

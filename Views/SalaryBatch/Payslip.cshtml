@@ -111,81 +111,131 @@
 <body>
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
-            <tr class="top">
-                <td colspan="2">
-                    <table>
-                        <tr>
-                            <td>
-                                <b>Pay slip</b>
-                            </td>
-
-                            <td>
-                                @Model.created_at.ToString().Split(' ')[0]<br />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+            
+            <tr class="">
+                <td colspan="2"><center><b>Payslip</b></center></td>
             </tr>
-
-            <tr class="information">
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                <b>@Model.full_name</b><br />
-                                @Model.salary_batch_notes<br />
-                            </td>
-                        </tr>
-                    </table>
-                </td>
+            <tr class="details">
+                <td>@Model.full_name</td>
+                <td>@Model.notes</td>
             </tr>
-
             <tr class="heading">
                 <td colspan="2"><center>Earnings</center></td>
             </tr>
             <tr class="details">
                 <td>Salary</td>
-                <td>@Model.salary</td>
+				@if(Model.salary != null)
+                {
+					<td>@Model.salary</td>
+                }
+                else
+                {
+					<td>-</td>
+                }
+
             </tr>
             <tr class="details">
                 <td>Reserved Amount</td>
-                <td>@Model.reserved_amount</td>
+                @if (Model.reserved_amount != null)
+                {
+                    <td>@Model.reserved_amount</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="details">
                 <td>Additional Hours</td>
-                <td>@Model.addtional_hours</td>
+                @if (Model.addtional_hours != null)
+                {
+                    <td>@Model.addtional_hours</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="details">
                 <td>Additional Hours Amount</td>
-                <td>@Model.addtional_hours_amount</td>
+                @if (Model.addtional_hours_amount != null)
+                {
+                    <td>@Model.addtional_hours_amount</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="details">
                 <td>Total Kilos</td>
-                <td>@Model.total_kilos</td>
+                @if (Model.total_kilos != null)
+                {
+                    <td>@Model.total_kilos</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="heading">
                 <td colspan="2"><center>Deductions</center></td>
             </tr>
             <tr class="details">
                 <td>Insurance Deductions</td>
-                <td>@Model.insurance_deductions</td>
+                @if (Model.insurance_deductions != null)
+                {
+                    <td>@Model.insurance_deductions</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="details">
                 <td>Tax Deductions</td>
-                <td>@Model.tax_deductions</td>
+                @if (Model.tax_deductions != null)
+                {
+                    <td>@Model.tax_deductions</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="details">
                 <td>Absense Days</td>
-                <td>@Model.absense_days</td>
+                @if (Model.absense_days != null)
+                {
+                    <td>@Model.absense_days</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="details">
                 <td>Absense Deductions</td>
-                <td>@Model.absense_deductions</td>
+                @if (Model.absense_deductions != null)
+                {
+                    <td>@Model.absense_deductions</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
             <tr class="total">
                 <td></td>
 
-                <td>Total: @Model.total_salary</td>
+                @if (Model.total_salary != null)
+                {
+                    <td>Total: @Model.total_salary</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             </tr>
         </table>
     </div>

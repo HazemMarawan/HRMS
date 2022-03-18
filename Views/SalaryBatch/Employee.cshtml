@@ -39,7 +39,7 @@
                         <th>Info</th>
                         <th>Notes</th>
                         <th>Active</th>
-                        @*<th></th>*@
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -158,15 +158,15 @@
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
-                        //{
-                        //    "data": "id", "searchable": true,
-                        //    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                        //        var html = "";
+                        {
+                            "data": "id", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
 
-                        //        html += "<a class='view' href='/SalaryBatch/Details?id="+oData.id+"' title='Details'><i class='fa fa-eye'></i></a>";
-                        //        $(nTd).html("<span class='action-column'>" + html + "</span>");
-                        //    }
-                        //},
+                                html += "<a class='view' href='/SalaryBatch/Payslip?id=" + oData.id +"' title='Payslip'><i class='fas fa-download'></i></a>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
                     ]
                  });
 

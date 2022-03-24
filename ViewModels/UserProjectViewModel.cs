@@ -18,11 +18,14 @@ namespace HRMS.ViewModels
         public string area_name { get; set; }
         public int? branch_id { get; set; }
         public string branch_name { get; set; }
+        public string part_name { get; set; }
+        public int? part_id_fk { get; set; }
         public DateTime? working_date { get; set; }
         public int? no_of_numbers { get; set; }
         public int? productivity_type { get; set; }
         public int? productivity_work_place { get; set; }
         public string part_id { get; set; }
+        public double? substation { get; set; }
         public double? equipment_quantity { get; set; }
         public double? mvoh { get; set; }
         public double? lvoh { get; set; }

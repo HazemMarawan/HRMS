@@ -163,6 +163,7 @@
     <Compile Include="Controllers\JobController.cs" />
     <Compile Include="Controllers\NationalityController.cs" />
     <Compile Include="Controllers\MissionListController.cs" />
+    <Compile Include="Controllers\PartController.cs" />
     <Compile Include="Controllers\PermissionListController.cs" />
     <Compile Include="Controllers\ProductivityController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
@@ -355,6 +356,22 @@
     <Compile Include="Migrations\202203172256135_updates21.Designer.cs">
       <DependentUpon>202203172256135_updates21.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203241534087_updateParts.cs" />
+    <Compile Include="Migrations\202203241534087_updateParts.Designer.cs">
+      <DependentUpon>202203241534087_updateParts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203241542190_updateParts1.cs" />
+    <Compile Include="Migrations\202203241542190_updateParts1.Designer.cs">
+      <DependentUpon>202203241542190_updateParts1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203241613184_updateSubstation.cs" />
+    <Compile Include="Migrations\202203241613184_updateSubstation.Designer.cs">
+      <DependentUpon>202203241613184_updateSubstation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203241615431_updateSubstation1.cs" />
+    <Compile Include="Migrations\202203241615431_updateSubstation1.Designer.cs">
+      <DependentUpon>202203241615431_updateSubstation1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -366,6 +383,7 @@
     <Compile Include="Models\EmailUser.cs" />
     <Compile Include="Models\IDType.cs" />
     <Compile Include="Models\Job.cs" />
+    <Compile Include="Models\Part.cs" />
     <Compile Include="Models\SalaryBatch.cs" />
     <Compile Include="Models\SalaryBatchDetail.cs" />
     <Compile Include="Models\Target.cs" />
@@ -396,6 +414,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\DepartmentViewModel.cs" />
+    <Compile Include="ViewModels\PartViewModel.cs" />
     <Compile Include="ViewModels\ProjectTypeViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\SalaryBatchDetailViewModel.cs" />
@@ -3284,6 +3303,7 @@
     <Content Include="Views\SalaryBatch\Index.cshtml" />
     <Content Include="Views\SalaryBatch\Employee.cshtml" />
     <Content Include="Views\SalaryBatch\Payslip.cshtml" />
+    <Content Include="Views\Part\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -3436,6 +3456,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203172256135_updates21.resx">
       <DependentUpon>202203172256135_updates21.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203241534087_updateParts.resx">
+      <DependentUpon>202203241534087_updateParts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203241542190_updateParts1.resx">
+      <DependentUpon>202203241542190_updateParts1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203241613184_updateSubstation.resx">
+      <DependentUpon>202203241613184_updateSubstation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203241615431_updateSubstation1.resx">
+      <DependentUpon>202203241615431_updateSubstation1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

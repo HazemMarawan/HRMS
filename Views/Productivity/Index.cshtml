@@ -155,61 +155,67 @@
 }
 
 <div class="row text-center mb-2">
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="hours_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Hours</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Hours</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="projects_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Projects</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Projects</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="employees_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Employees</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Employees</p>
         </div>
     </div>
     @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
     {
-        <div class="col-3" style="border-radius: 25px;">
+        <div class="col-2" style="border-radius: 25px;">
             <div class="counter">
                 <h3 id="cost_counter">0</h3>
-                <p style="font-weight:bold;"><i class="fa fa-plus"></i> Cost</p>
+                <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Cost</p>
             </div>
         </div>
     }
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="mvoh_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> MVOH</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> MVOH</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="lvoh_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> LVOH</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> LVOH</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="mvug_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> MVUG</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> MVUG</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="lvug_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> LVUG</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> LVUG</p>
         </div>
     </div>
-    <div class="col-3" style="border-radius: 25px;">
+    <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="equipment_quantity_counter">0</h3>
-            <p style="font-weight:bold;"><i class="fa fa-plus"></i> Equipment Quantity</p>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Equipment Quantity</p>
+        </div>
+    </div>
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="substation_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Sub Station</p>
         </div>
     </div>
 </div>
@@ -228,7 +234,6 @@
                     <tr>
                         <th>#</th>
                         <th>Employee</th>
-                        <th>Working Date</th>
                         <th>Location</th>
                         <th>Info</th>
                         <th>Status</th>
@@ -269,7 +274,7 @@
                     "processing": true,
                     "serverSide": true,
                     "scrollX": true,
-                    "stateSave": false,
+                    "stateSave": true,
                     "lengthChange": false,
                     "dom": 'Bfrtip',
                     "filter": true, // this is for disable filter (search box)
@@ -291,11 +296,12 @@
                     //    "orderable": false,
                     //    "searchable": false
                     //},
-                    {
-                        "targets": [6],
-                        "searchable": false,
-                        "orderable": false
-                    }],
+                    //{
+                    //    "targets": [6],
+                    //    "searchable": false,
+                    //    "orderable": false
+                            //}
+                        ],
                     "columns": [
                         {
                             "data": "id",
@@ -306,12 +312,6 @@
                             "data": "user_name",
                             "name": "user_name",
                             "searchable": true
-                        },
-                        {
-                            "data": "working_date", "name": "working_date", "searchable": true,
-                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + fixDate(oData.working_date) + "</span>");
-                            }
                         },
                         {
                             "data": "project_name", "name": "project_name", "searchable": true,
@@ -348,9 +348,18 @@
 
                                 if (oData.part_id)
                                     html += "<b>Part ID: </b>" + oData.part_id + "<br>";
+                                else if (oData.part_id_fk)
+                                    html += "<b>Part ID: </b>" + oData.part_name + "<br>";
 
                                 if (oData.equipment_quantity)
                                     html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
+                                if (oData.working_date)
+                                    html = "<b>Working Date</b>: " + fixDate(oData.working_date) + "<br>";
+
+                                if (oData.substation) 
+                                    html += "<b>Sub Station: </b>" + oData.substation + "<br>";
+                                if (oData.no_of_numbers)
+                                    html += "<b>Hours: </b>" + oData.no_of_numbers + "<br>";
                                 if (oData.mvoh) {
                                     if (oData.mvoh >= oData.mvoh_target)
                                         html += "<span class='badge badge-success'><b>MVOH: </b>" + oData.mvoh + "</span><br>";
@@ -379,8 +388,7 @@
                                         html += "<span class='badge badge-danger'><b>LVUG: </b>" + oData.lvug + "</span><br>";
                                 }
 
-                                if (oData.no_of_numbers)
-                                    html += "<b>Hours: </b>" + oData.no_of_numbers + "<br>";
+                        
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -395,8 +403,15 @@
                                     html = `<span class="badge badge-success">Approved</span>`;
                                 }
                                 else if (oData.status == 4) {
-                                    html = `<span class="badge badge-warning">Returned by ${oData.returned_by_name} At ${fixDate(oData.returned_at)}<br/>
-                                             Reason: ${oData.rejected_by_note}</span>`;
+                                    html = '<span class="badge badge-warning">Returned'; 
+                                    if (oData.returned_by_name)
+                                        html += 'By: ' + oData.returned_by_name;
+                                    if (oData.returned_at)
+                                        html += `At ${ fixDate(oData.returned_at)} <br />`;
+                                    if (oData.rejected_by_note)
+                                        html += `Reason: ${oData.rejected_by_note}`;
+
+                                    html += '</span>';
                                 }
                                 else {
                                     html = `<span class="badge badge-danger">Rejected</span>`;
@@ -435,6 +450,7 @@
                 $("#mvug_counter").text(json.MVUG.toFixed(2));
                 $("#lvug_counter").text(json.LVUG.toFixed(2));
                 $("#equipment_quantity_counter").text(json.EquipmentQuantity.toFixed(2));
+                $("#substation_counter").text(json.Substation.toFixed(2));
             });
 
             $('#search').on('click', function () {
@@ -477,7 +493,7 @@
                         data: { "id": data.id },
                         datatype: "json",
                         success: function (data) {
-                            datatable.draw();
+                            datatable.row(this).remove().draw(false);
                         },
                         error: function () {
                             alert("Dynamic content load failed.");
@@ -496,7 +512,7 @@
                         data: { "id": data.id },
                         datatype: "json",
                         success: function (data) {
-                            datatable.draw();
+                            datatable.row(this).remove().draw(false);
                         },
                         error: function () {
                             alert("Dynamic content load failed.");
@@ -516,7 +532,7 @@
                     progressText: 'progress_text',
                 }, function (response) {
 
-                    datatable.draw();
+                        datatable.row(this).remove().draw(false);
 
                 }, function (response) {
 
@@ -535,7 +551,7 @@
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
                 }, function (response) {
-                    datatable.draw();
+                        datatable.row(this).remove().draw(false);
 
                 }, function (response) {
 

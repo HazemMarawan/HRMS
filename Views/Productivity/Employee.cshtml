@@ -48,9 +48,13 @@
                                     <option selected value="2">Office</option>
                                 </select>
                             </div>
+                            @*<div class="form-group col-md-4">
+            <label>Part ID</label>
+            <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+        </div>*@
                             <div class="form-group col-md-4">
                                 <label>Part ID</label>
-                                <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+                                @Html.DropDownList("part_id_fk", new SelectList(ViewBag.Parts, "id", "part"), "Select Part", new { @class = "form-control", @name = "part_id_fk", @style = "width:100%", @id = "part_id_fk", @required = "@required" })
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Equipment Quantity</label>
@@ -71,6 +75,10 @@
                             <div class="form-group col-md-4">
                                 <label>LVUG</label>
                                 <input name="lvug" id="lvug" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Sub Station</label>
+                                <input name="substation" id="substation" type="number" step=".01" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Task Description</label>
@@ -149,7 +157,6 @@
                         <th>#</th>
                         <th>Working Date</th>
                         <th>Location</th>
-                        <th>Hours</th>
                         <th>Info</th>
                         <th>Status</th>
                         <th></th>
@@ -225,10 +232,6 @@
                             }
                         },
                         {
-                            "data": "no_of_numbers",
-                            "searchable": true
-                        },
-                        {
                             "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
@@ -252,10 +255,21 @@
                                 }
 
                                 if (oData.part_id)
-                                    html += "<b>Part ID: </b>" + oData.part_id+"<br>";
+                                    html += "<b>Part ID: </b>" + oData.part_id + "<br>";
+                                else if (oData.part_id_fk)
+                                    html += "<b>Part ID: </b>" + oData.part_name + "<br>";
 
                                 if (oData.equipment_quantity)
                                     html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
+
+                                if (oData.substation) {
+                                    html += "<b>Sub Station: </b>" + oData.substation + "<br>";
+                                }
+
+                                if (oData.no_of_numbers) {
+                                    html += "<b>Hours: </b>" + oData.no_of_numbers + "<br>";
+                                }
+
                                 if (oData.mvoh) {
                                     if (oData.mvoh >= oData.mvoh_target)
                                         html += "<span class='badge badge-success'><b>MVOH: </b>" + oData.mvoh + "</span><br>";
@@ -283,6 +297,8 @@
                                     else
                                         html += "<span class='badge badge-danger'><b>LVUG: </b>" + oData.lvug + "</span><br>";
                                 }
+
+                              
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -419,12 +435,14 @@
                         dialog.find('#project_id option[value=' + data.project_id + ']').attr('selected', 'selected');
                         dialog.find('#productivity_type option[value=' + data.productivity_type + ']').attr('selected', 'selected');
                         dialog.find('#productivity_work_place option[value=' + data.productivity_work_place + ']').attr('selected', 'selected');
-                        dialog.find('#part_id').val(data.part_id);
+                        dialog.find('#part_id_fk option[value=' + data.part_id_fk + ']').attr('selected', 'selected');
+                        //dialog.find('#part_id').val(data.part_id);
                         dialog.find('#equipment_quantity').val(data.equipment_quantity);
                         dialog.find('#mvoh').val(data.mvoh);
                         dialog.find('#lvoh').val(data.lvoh);
                         dialog.find('#mvug').val(data.mvug);
                         dialog.find('#lvug').val(data.lvug);
+                        dialog.find('#substation').val(data.substation);
                         dialog.find('#note').text(data.note);
                         var area_id = data.area_id;
                             var project_id = data.project_id;

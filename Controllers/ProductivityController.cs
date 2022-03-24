@@ -53,6 +53,8 @@ namespace HRMS.Controllers
                                         from area in ar.DefaultIfEmpty()
                                         join ret in db.Users on userProject.returned_by equals ret.id into r
                                         from returned in r.DefaultIfEmpty()
+                                        join par in db.Parts on userProject.part_id_fk equals par.id into pa
+                                        from part in pa.DefaultIfEmpty()
                                         select new UserProjectViewModel
                                         {
                                             id = userProject.id,
@@ -67,6 +69,8 @@ namespace HRMS.Controllers
                                             productivity_type = userProject.productivity_type,
                                             productivity_work_place = userProject.productivity_work_place,
                                             part_id = userProject.part_id,
+                                            part_id_fk = userProject.part_id_fk,
+                                            part_name = part.part,
                                             equipment_quantity = userProject.equipment_quantity,
                                             mvoh = userProject.mvoh,
                                             lvoh = userProject.lvoh,
@@ -76,6 +80,7 @@ namespace HRMS.Controllers
                                             lvoh_target = userProject.lvoh_target,
                                             mvug_target = userProject.mvug_target,
                                             lvug_target = userProject.lvug_target,
+                                            substation = userProject.substation,
                                             note = userProject.note,
                                             status = userProject.status,
                                             cost = userProject.cost,
@@ -176,6 +181,7 @@ namespace HRMS.Controllers
                 double? MVUG = 0;
                 double? LVUG = 0;
                 double? EquipmentQuantity = 0;
+                double? Substation = 0;
 
                 Hours = productivityData.Select(c => c.no_of_numbers).ToList().Sum();
                 Projects = productivityData.Select(c => c.project_id).Distinct().ToList().Count();
@@ -187,6 +193,7 @@ namespace HRMS.Controllers
                 MVUG = productivityData.Select(c => c.mvug).ToList().Sum();
                 LVUG = productivityData.Select(c => c.lvug).ToList().Sum();
                 EquipmentQuantity = productivityData.Select(c => c.equipment_quantity).ToList().Sum();
+                Substation = productivityData.Select(c => c.substation).ToList().Sum();
                 //Sorting    
                 if ((!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDir)))
                 {
@@ -212,7 +219,8 @@ namespace HRMS.Controllers
                     LVOH = LVOH,
                     MVUG = MVUG,
                     LVUG = LVUG,
-                    EquipmentQuantity = EquipmentQuantity
+                    EquipmentQuantity = EquipmentQuantity,
+                    Substation = Substation
 
                 }, JsonRequestBehavior.AllowGet);
 
@@ -408,6 +416,8 @@ namespace HRMS.Controllers
                                        from area in ar.DefaultIfEmpty()
                                        join ret in db.Users on userProject.returned_by equals ret.id into r
                                        from returned in r.DefaultIfEmpty()
+                                       join par in db.Parts on userProject.part_id_fk equals par.id into pa
+                                       from part in pa.DefaultIfEmpty()
                                        select new UserProjectViewModel
                                        {
                                            id = userProject.id,
@@ -419,6 +429,8 @@ namespace HRMS.Controllers
                                            productivity_type = userProject.productivity_type,
                                            productivity_work_place = userProject.productivity_work_place,
                                            part_id = userProject.part_id,
+                                           part_id_fk = userProject.part_id_fk,
+                                           part_name = part.part,
                                            equipment_quantity = userProject.equipment_quantity,
                                            mvoh = userProject.mvoh,
                                            lvoh = userProject.lvoh,
@@ -428,6 +440,7 @@ namespace HRMS.Controllers
                                            lvoh_target = userProject.lvoh_target,
                                            mvug_target = userProject.mvug_target,
                                            lvug_target = userProject.lvug_target,
+                                           substation = userProject.substation,
                                            note = userProject.note,
                                            status = userProject.status,
                                            area_id = userProject.area_id,
@@ -481,6 +494,7 @@ namespace HRMS.Controllers
             }
             List<int?> branchProjects = db.BranchProjects.Where(b => b.branch_id == currentUser.branch_id).Select(b => b.project_id).ToList();
             ViewBag.Projects = db.Projects.Where(p => branchProjects.Contains(p.id));
+            ViewBag.Parts = db.Parts.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.part }).ToList();
             return View();
         }
 
@@ -542,6 +556,7 @@ namespace HRMS.Controllers
                 oldUserProject.lvoh = userProjectViewModel.lvoh;
                 oldUserProject.mvug = userProjectViewModel.mvug;
                 oldUserProject.lvug = userProjectViewModel.lvug;
+                oldUserProject.substation = userProjectViewModel.substation;
                 oldUserProject.note = userProjectViewModel.note;
 
                 oldUserProject.updated_by = Session["id"].ToString().ToInt();
@@ -627,24 +642,25 @@ namespace HRMS.Controllers
             System.Drawing.Color redColor = System.Drawing.ColorTranslator.FromHtml("#FF0000");
             System.Drawing.Color warningColor = System.Drawing.ColorTranslator.FromHtml("#FFA000");
             System.Drawing.Color greenColor = System.Drawing.ColorTranslator.FromHtml("#00FF00");
-            Sheet.Cells["A1:M1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:M1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:N1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:N1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:M1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:N1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "Employee Name";
             Sheet.Cells["B1"].Value = "Working Date";
             Sheet.Cells["C1"].Value = "Project";
             Sheet.Cells["D1"].Value = "Area";
             Sheet.Cells["E1"].Value = "Hours";
-            Sheet.Cells["F1"].Value = "Productivity Type";
-            Sheet.Cells["G1"].Value = "Part ID";
-            Sheet.Cells["H1"].Value = "Equipment Quantity";
-            Sheet.Cells["I1"].Value = "MVOH";
-            Sheet.Cells["J1"].Value = "LVOH";
-            Sheet.Cells["K1"].Value = "MVUG";
-            Sheet.Cells["L1"].Value = "LVUG";
-            Sheet.Cells["M1"].Value = "Status";
+            Sheet.Cells["F1"].Value = "Sub Station";
+            Sheet.Cells["G1"].Value = "Productivity Type";
+            Sheet.Cells["H1"].Value = "Part ID";
+            Sheet.Cells["I1"].Value = "Equipment Quantity";
+            Sheet.Cells["J1"].Value = "MVOH";
+            Sheet.Cells["K1"].Value = "LVOH";
+            Sheet.Cells["L1"].Value = "MVUG";
+            Sheet.Cells["M1"].Value = "LVUG";
+            Sheet.Cells["N1"].Value = "Status";
 
             var productivityData = (from user in db.Users
                                     join userProject in db.UserProjects on user.id equals userProject.user_id
@@ -652,6 +668,8 @@ namespace HRMS.Controllers
                                     from project in pr.DefaultIfEmpty()
                                     join are in db.Areas on userProject.area_id equals are.id into ar
                                     from area in ar.DefaultIfEmpty()
+                                    join par in db.Parts on userProject.part_id_fk equals par.id into pa
+                                    from part in pa.DefaultIfEmpty()
                                     select new UserProjectViewModel
                                     {
                                         id = userProject.id,
@@ -665,6 +683,9 @@ namespace HRMS.Controllers
                                         productivity_type = userProject.productivity_type,
                                         productivity_work_place = userProject.productivity_work_place,
                                         part_id = userProject.part_id,
+                                        part_id_fk = userProject.part_id_fk,
+                                        part_name = part.part,
+                                        substation =userProject.substation,
                                         equipment_quantity = userProject.equipment_quantity,
                                         mvoh = userProject.mvoh,
                                         lvoh = userProject.lvoh,
@@ -760,88 +781,89 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("C{0}", row)].Value = item.project_name;
                 Sheet.Cells[string.Format("D{0}", row)].Value = item.area_name;
                 Sheet.Cells[string.Format("E{0}", row)].Value = item.no_of_numbers;
-                Sheet.Cells[string.Format("F{0}", row)].Value = item.productivity_type == 1?"Normal": "OverTime";
-                Sheet.Cells[string.Format("G{0}", row)].Value = item.part_id;
-                Sheet.Cells[string.Format("H{0}", row)].Value = item.equipment_quantity;
+                Sheet.Cells[string.Format("F{0}", row)].Value = item.substation;
+                Sheet.Cells[string.Format("G{0}", row)].Value = item.productivity_type == 1?"Normal": "OverTime";
+                Sheet.Cells[string.Format("H{0}", row)].Value = item.part_id;
+                Sheet.Cells[string.Format("I{0}", row)].Value = item.equipment_quantity;
 
                 if (item.mvoh == null || item.mvoh == 0)
-                {
-                    Sheet.Cells[string.Format("I{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    Sheet.Cells[string.Format("I{0}", row)].Style.Fill.BackgroundColor.SetColor(warningColor);
-                    Sheet.Cells[string.Format("I{0}", row)].Value = "-";
-                }
-                else if(item.mvoh_target == null || (item.mvoh_target != null && item.mvoh >= item.mvoh_target))
-                {
-                    Sheet.Cells[string.Format("I{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    Sheet.Cells[string.Format("I{0}", row)].Style.Fill.BackgroundColor.SetColor(greenColor);
-                    Sheet.Cells[string.Format("I{0}", row)].Value = item.mvoh;
-                }
-                else
-                {
-                    Sheet.Cells[string.Format("I{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    Sheet.Cells[string.Format("I{0}", row)].Style.Fill.BackgroundColor.SetColor(redColor);
-                    Sheet.Cells[string.Format("I{0}", row)].Value = item.mvoh;
-                }
-
-                if (item.lvoh == null || item.lvoh == 0)
                 {
                     Sheet.Cells[string.Format("J{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("J{0}", row)].Style.Fill.BackgroundColor.SetColor(warningColor);
                     Sheet.Cells[string.Format("J{0}", row)].Value = "-";
                 }
-                else if (item.lvoh_target == null || (item.lvoh_target != null && item.lvoh >= item.lvoh_target))
+                else if(item.mvoh_target == null || (item.mvoh_target != null && item.mvoh >= item.mvoh_target))
                 {
                     Sheet.Cells[string.Format("J{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("J{0}", row)].Style.Fill.BackgroundColor.SetColor(greenColor);
-                    Sheet.Cells[string.Format("J{0}", row)].Value = item.lvoh;
+                    Sheet.Cells[string.Format("J{0}", row)].Value = item.mvoh;
                 }
                 else
                 {
                     Sheet.Cells[string.Format("J{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("J{0}", row)].Style.Fill.BackgroundColor.SetColor(redColor);
-                    Sheet.Cells[string.Format("J{0}", row)].Value = item.lvoh;
+                    Sheet.Cells[string.Format("J{0}", row)].Value = item.mvoh;
                 }
 
-                if (item.mvug == null || item.mvug == 0)
+                if (item.lvoh == null || item.lvoh == 0)
                 {
                     Sheet.Cells[string.Format("K{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("K{0}", row)].Style.Fill.BackgroundColor.SetColor(warningColor);
                     Sheet.Cells[string.Format("K{0}", row)].Value = "-";
                 }
-                else if (item.mvug_target == null || (item.mvug_target != null && item.mvug >= item.mvug_target))
+                else if (item.lvoh_target == null || (item.lvoh_target != null && item.lvoh >= item.lvoh_target))
                 {
                     Sheet.Cells[string.Format("K{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("K{0}", row)].Style.Fill.BackgroundColor.SetColor(greenColor);
-                    Sheet.Cells[string.Format("K{0}", row)].Value = item.mvug;
+                    Sheet.Cells[string.Format("K{0}", row)].Value = item.lvoh;
                 }
                 else
                 {
                     Sheet.Cells[string.Format("K{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("K{0}", row)].Style.Fill.BackgroundColor.SetColor(redColor);
-                    Sheet.Cells[string.Format("K{0}", row)].Value = item.mvug;
+                    Sheet.Cells[string.Format("K{0}", row)].Value = item.lvoh;
                 }
 
-
-                if (item.lvug == null || item.lvug == 0)
+                if (item.mvug == null || item.mvug == 0)
                 {
                     Sheet.Cells[string.Format("L{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("L{0}", row)].Style.Fill.BackgroundColor.SetColor(warningColor);
                     Sheet.Cells[string.Format("L{0}", row)].Value = "-";
                 }
-                else if (item.lvug_target == null || (item.lvug_target != null && item.lvug >= item.lvug_target))
+                else if (item.mvug_target == null || (item.mvug_target != null && item.mvug >= item.mvug_target))
                 {
                     Sheet.Cells[string.Format("L{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("L{0}", row)].Style.Fill.BackgroundColor.SetColor(greenColor);
-                    Sheet.Cells[string.Format("L{0}", row)].Value = item.lvug;
+                    Sheet.Cells[string.Format("L{0}", row)].Value = item.mvug;
                 }
                 else
                 {
                     Sheet.Cells[string.Format("L{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
                     Sheet.Cells[string.Format("L{0}", row)].Style.Fill.BackgroundColor.SetColor(redColor);
-                    Sheet.Cells[string.Format("L{0}", row)].Value = item.lvug;
+                    Sheet.Cells[string.Format("L{0}", row)].Value = item.mvug;
                 }
 
-                Sheet.Cells[string.Format("M{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
+
+                if (item.lvug == null || item.lvug == 0)
+                {
+                    Sheet.Cells[string.Format("M{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    Sheet.Cells[string.Format("M{0}", row)].Style.Fill.BackgroundColor.SetColor(warningColor);
+                    Sheet.Cells[string.Format("M{0}", row)].Value = "-";
+                }
+                else if (item.lvug_target == null || (item.lvug_target != null && item.lvug >= item.lvug_target))
+                {
+                    Sheet.Cells[string.Format("M{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    Sheet.Cells[string.Format("M{0}", row)].Style.Fill.BackgroundColor.SetColor(greenColor);
+                    Sheet.Cells[string.Format("M{0}", row)].Value = item.lvug;
+                }
+                else
+                {
+                    Sheet.Cells[string.Format("M{0}", row)].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    Sheet.Cells[string.Format("M{0}", row)].Style.Fill.BackgroundColor.SetColor(redColor);
+                    Sheet.Cells[string.Format("M{0}", row)].Value = item.lvug;
+                }
+
+                Sheet.Cells[string.Format("N{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
                 
 
                 row++;
@@ -882,6 +904,10 @@ namespace HRMS.Controllers
             row++;
             Sheet.Cells[string.Format("A{0}", row)].Value = "LVUG";
             Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.lvug).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Sub Station";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.substation).Sum();
 
             Sheet.Cells["A:AZ"].AutoFitColumns();
             Response.Clear();

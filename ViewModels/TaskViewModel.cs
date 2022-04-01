@@ -5,16 +5,10 @@ using System.Web;
 
 namespace HRMS.ViewModels
 {
-    public class AreaViewModel
+    public class TaskViewModel
     {
         public int id { get; set; }
         public string name { get; set; }
-        public int? project_id { get; set; }
-        public string project_name { get; set; }
-        public double? mvoh { get; set; }
-        public double? lvoh { get; set; }
-        public double? mvug { get; set; }
-        public double? lvug { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

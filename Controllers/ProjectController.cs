@@ -143,48 +143,7 @@ namespace HRMS.Controllers
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
-
-        [HttpGet]
-        public JsonResult deleteArea(int id)
-        {
-            Area deleteArea = db.Areas.Find(id);
-            deleteArea.active = (int)RowStatus.INACTIVE;
-            deleteArea.deleted_at = DateTime.Now;
-            deleteArea.deleted_by = Session["id"].ToString().ToInt();
-
-            db.SaveChanges();
-
-            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public JsonResult saveArea(AreaViewModel areaViewModel)
-        {
-            User user = Session["user"] as User;
-
-            if (areaViewModel.id == 0)
-            {
-                Area area = AutoMapper.Mapper.Map<AreaViewModel, Area>(areaViewModel);
-
-                area.created_at = DateTime.Now;
-                area.created_by = user.id;
-
-                db.Areas.Add(area);
-            }
-            else
-            {
-                Area area = db.Areas.Find(areaViewModel.id);
-                area.name = areaViewModel.name;
-                area.active = areaViewModel.active;
-                area.updated_at = DateTime.Now;
-                area.updated_by = user.id;
-                
-            }
-
-            db.SaveChanges();
-            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
-        }
-
+        
         [HttpGet]
         public JsonResult getAreaByProjectId(int id)
         {

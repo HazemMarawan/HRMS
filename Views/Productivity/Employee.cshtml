@@ -57,6 +57,10 @@
                                 @Html.DropDownList("part_id_fk", new SelectList(ViewBag.Parts, "id", "part"), "Select Part", new { @class = "form-control", @name = "part_id_fk", @style = "width:100%", @id = "part_id_fk", @required = "@required" })
                             </div>
                             <div class="form-group col-md-4">
+                                <label>Task</label>
+                                @Html.DropDownList("task_id", new SelectList(ViewBag.Tasks, "id", "name"), "Select Task", new { @class = "form-control", @name = "task_id", @style = "width:100%", @id = "task_id", @required = "@required" })
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>Equipment Quantity</label>
                                 <input name="equipment_quantity" id="equipment_quantity" step=".01" type="number" class="form-control radius-30" />
                             </div>
@@ -259,6 +263,8 @@
                                 else if (oData.part_id_fk)
                                     html += "<b>Part ID: </b>" + oData.part_name + "<br>";
 
+                                if (oData.task_id)
+                                    html += "<b>Task: </b>" + oData.task_name + "<br>";
                                 if (oData.equipment_quantity)
                                     html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
 
@@ -436,6 +442,7 @@
                         dialog.find('#productivity_type option[value=' + data.productivity_type + ']').attr('selected', 'selected');
                         dialog.find('#productivity_work_place option[value=' + data.productivity_work_place + ']').attr('selected', 'selected');
                         dialog.find('#part_id_fk option[value=' + data.part_id_fk + ']').attr('selected', 'selected');
+                        dialog.find('#task_id option[value=' + data.task_id + ']').attr('selected', 'selected');
                         //dialog.find('#part_id').val(data.part_id);
                         dialog.find('#equipment_quantity').val(data.equipment_quantity);
                         dialog.find('#mvoh').val(data.mvoh);

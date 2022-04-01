@@ -23,6 +23,9 @@ namespace HRMS.Models
         [ForeignKey("Part")]
         public int? part_id_fk { get; set; }
         public Part Part { get; set; }
+        [ForeignKey("Task")]
+        public int? task_id { get; set; }
+        public Task Task { get; set; }
         public DateTime? working_date { get; set; }
         public int? no_of_numbers { get; set; }
         public int? productivity_type { get; set; }

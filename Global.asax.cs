@@ -40,6 +40,7 @@ namespace HRMS
             Mapper.CreateMap<EmailViewModel, Email>();
             Mapper.CreateMap<TargetViewModel, Target>();
             Mapper.CreateMap<PartViewModel, Part>();
+            Mapper.CreateMap<TaskViewModel, Task>();
 
 
         }

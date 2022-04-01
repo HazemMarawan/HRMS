@@ -20,6 +20,8 @@ namespace HRMS.ViewModels
         public string branch_name { get; set; }
         public string part_name { get; set; }
         public int? part_id_fk { get; set; }
+        public int? task_id { get; set; }
+        public string task_name { get; set; }
         public DateTime? working_date { get; set; }
         public int? no_of_numbers { get; set; }
         public int? productivity_type { get; set; }

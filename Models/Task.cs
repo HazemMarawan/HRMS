@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace HRMS.ViewModels
+namespace HRMS.Models
 {
-    public class AreaViewModel
+    public class Task
     {
+        [Key]
         public int id { get; set; }
         public string name { get; set; }
-        public int? project_id { get; set; }
-        public string project_name { get; set; }
-        public double? mvoh { get; set; }
-        public double? lvoh { get; set; }
-        public double? mvug { get; set; }
-        public double? lvug { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }
@@ -22,5 +18,6 @@ namespace HRMS.ViewModels
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
+        public virtual ICollection<UserProject> UserProjects { get; set; }
     }
 }

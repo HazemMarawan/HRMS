@@ -418,6 +418,8 @@ namespace HRMS.Controllers
                                        from returned in r.DefaultIfEmpty()
                                        join par in db.Parts on userProject.part_id_fk equals par.id into pa
                                        from part in pa.DefaultIfEmpty()
+                                       join tas in db.Tasks on userProject.task_id equals tas.id into ts
+                                       from task in ts.DefaultIfEmpty()
                                        select new UserProjectViewModel
                                        {
                                            id = userProject.id,
@@ -431,6 +433,8 @@ namespace HRMS.Controllers
                                            part_id = userProject.part_id,
                                            part_id_fk = userProject.part_id_fk,
                                            part_name = part.part,
+                                           task_id = task.id,
+                                           task_name = task.name,
                                            equipment_quantity = userProject.equipment_quantity,
                                            mvoh = userProject.mvoh,
                                            lvoh = userProject.lvoh,
@@ -495,6 +499,7 @@ namespace HRMS.Controllers
             List<int?> branchProjects = db.BranchProjects.Where(b => b.branch_id == currentUser.branch_id).Select(b => b.project_id).ToList();
             ViewBag.Projects = db.Projects.Where(p => branchProjects.Contains(p.id));
             ViewBag.Parts = db.Parts.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.part }).ToList();
+            ViewBag.Tasks = db.Tasks.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             return View();
         }
 
@@ -551,6 +556,7 @@ namespace HRMS.Controllers
                 oldUserProject.productivity_type = userProjectViewModel.productivity_type;
                 oldUserProject.productivity_work_place = userProjectViewModel.productivity_work_place;
                 oldUserProject.part_id = userProjectViewModel.part_id;
+                oldUserProject.task_id = userProjectViewModel.task_id;
                 oldUserProject.equipment_quantity = userProjectViewModel.equipment_quantity;
                 oldUserProject.mvoh = userProjectViewModel.mvoh;
                 oldUserProject.lvoh = userProjectViewModel.lvoh;

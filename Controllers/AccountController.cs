@@ -5,12 +5,12 @@ using System.Web;
 using System.Web.Mvc;
 using HRMS.ViewModels;
 using HRMS.Models;
-using HRMS.Enum;
+using HRMS.Enums;
 using HRMS.Auth;
 
 namespace HRMS.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         HRMSDBContext db = new HRMSDBContext();
         // GET: Account

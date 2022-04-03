@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -11,6 +12,9 @@ namespace HRMS.Models
         [Key]
         public int id { get; set; }
         public string part { get; set; }
+        [ForeignKey("Area")]
+        public int? area_id { get; set; }
+        public Area Area { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

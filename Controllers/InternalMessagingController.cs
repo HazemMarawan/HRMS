@@ -7,13 +7,13 @@ using HRMS.Models;
 using HRMS.ViewModels;
 using HRMS.Auth;
 using HRMS.Helpers;
-using HRMS.Enum;
+using HRMS.Enums;
 using System.IO;
 
 namespace HRMS.Controllers
 {
     [CustomAuthenticationFilter]
-    public class InternalMessagingController : Controller
+    public class InternalMessagingController : BaseController
     {
         // GET: InternalMessaging
         HRMSDBContext db = new HRMSDBContext();

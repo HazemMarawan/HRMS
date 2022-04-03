@@ -9,6 +9,9 @@ namespace HRMS.ViewModels
     {
         public int id { get; set; }
         public string part { get; set; }
+        public int? area_id { get; set; }
+        public int? branch_id { get; set; }
+        public string area_name { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

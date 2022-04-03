@@ -6,23 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>@ViewBag.Title</title>
     <link rel="icon" type="image/x-icon" href="~/AJC_Logo.ico" />
-    <link href="~/Content/AdminPanelAssets/assets/css/loader.css" rel="stylesheet" type="text/css" />
-    <script src="~/Content/AdminPanelAssets/assets/js/loader.js"></script>
+    <link href="~/Content/LTR/assets/css/loader.css" rel="stylesheet" type="text/css" />
+    <script src="~/Content/LTR/assets/js/loader.js"></script>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
     <link href="~/Content/googleFonts.css" rel="stylesheet" />
-    <link href="~/Content/AdminPanelAssets/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/AdminPanelAssets/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    @if (HRMS.Helpers.CultureHelper.IsRighToLeft())
+    {
+        <link href="~/Content/RTL/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/RTL/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    }
+    else
+    {
+        <link href="~/Content/LTR/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/LTR/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    }
     <!-- END GLOBAL MANDATORY STYLES -->
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    <link href="~/Content/AdminPanelAssets/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
-    <link href="~/Content/AdminPanelAssets/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="~/Content/AdminPanelAssets/plugins/table/datatable/datatables.css">
-    <link rel="stylesheet" type="text/css" href="~/Content/AdminPanelAssets/plugins/table/datatable/dt-global_style.css">
+    <link href="~/Content/LTR/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/LTR/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="~/Content/LTR/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/LTR/plugins/table/datatable/dt-global_style.css">
     <link href="~/Content/selectize.css" rel="stylesheet" />
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <style>
-        .dataTables_filter{
-            display:none;
+        .dataTables_filter {
+            display: none;
         }
     </style>
     @RenderSection("css", required: false)
@@ -92,6 +101,35 @@
             </ul>
 
             <ul class="navbar-item flex-row navbar-dropdown">
+                @*<li class="nav-item dropdown language-dropdown more-dropdown">
+                    <div class="dropdown  custom-dropdown-icon">
+                        <a class="dropdown-toggle btn" href="#" role="button" id="langDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img src="assets/img/ca.png" class="flag-width" alt="flag">
+                            @if (HRMS.Helpers.CultureHelper.IsRighToLeft())
+                            {
+                                <span>Arabic</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+
+                            }
+                            else
+                            {
+                                <span>English</span> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            }
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="langDropdown">
+                            @if (HRMS.Helpers.CultureHelper.IsRighToLeft())
+                            {
+                                <a class="dropdown-item change_language" data-img-value="ar" data-value="Arabic" href="javascript:void(0);"><img src="assets/img/jp.png" class="flag-width" alt="flag" onClick="getval('ar');"> Arabic</a>
+                                <a class="dropdown-item change_language" data-img-value="en" data-value="English" href="javascript:void(0);"><img src="assets/img/de.png" class="flag-width" alt="flag" onClick="getval('en');"> English</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item change_language" data-img-value="en" data-value="English" href="javascript:void(0);"><img src="assets/img/de.png" class="flag-width" alt="flag" onClick="getval('en');"> English</a>
+                                <a class="dropdown-item change_language" data-img-value="ar" data-value="Arabic" href="javascript:void(0);"><img src="assets/img/jp.png" class="flag-width" alt="flag" onClick="getval('ar');"> Arabic</a>
+                            }
+                        </div>
+                    </div>
+                </li>*@
             </ul>
 
             <ul class="navbar-item flex-row search-ul">
@@ -105,7 +143,7 @@
                         </a>
                         <div class="dropdown-menu p-0 position-absolute" aria-labelledby="messageDropdown">
                             <div class="" id="vacationsNotificationsDiv">
-                            
+
                             </div>
                         </div>
                     </li>
@@ -115,7 +153,7 @@
                         </a>
                         <div class="dropdown-menu p-0 position-absolute" aria-labelledby="messageDropdown">
                             <div class="" id="permissionNotificationsDiv">
-                            
+
                             </div>
                         </div>
                     </li>
@@ -125,7 +163,7 @@
                         </a>
                         <div class="dropdown-menu p-0 position-absolute" aria-labelledby="messageDropdown">
                             <div class="" id="missionsNotificationsDiv">
-                            
+
                             </div>
                         </div>
                     </li>
@@ -407,7 +445,7 @@
                         </li>
                     }
 
-                    @if (HRMS.Auth.isA.BranchAdmin())
+                    @if (HRMS.Auth.isA.TeamLeader())
                     {
                         <li class="menu menu-heading">
                             <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>Manage Parts</span></div>
@@ -546,11 +584,11 @@
     </div>
     <!-- END MAIN CONTAINER -->
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="~/Content/AdminPanelAssets/assets/js/libs/jquery-3.1.1.min.js"></script>
-    <script src="~/Content/AdminPanelAssets/bootstrap/js/popper.min.js"></script>
-    <script src="~/Content/AdminPanelAssets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/Content/AdminPanelAssets/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="~/Content/AdminPanelAssets/assets/js/app.js"></script>
+    <script src="~/Content/LTR/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="~/Content/LTR/bootstrap/js/popper.min.js"></script>
+    <script src="~/Content/LTR/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/LTR/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="~/Content/LTR/assets/js/app.js"></script>
     <script>
         $(document).ready(function () {
             App.init();
@@ -593,6 +631,12 @@
 
 
                 });
+            });
+
+            $(document).on('click', '.change_language', function () {
+                var lang = $(this).attr('data-img-value');
+                getval(lang);
+
             });
         });
 
@@ -896,19 +940,28 @@
                 }
             });
         }
+        function getval(cul) {
+            $.ajax({
+                url: '@Url.Action("SetCulture","Dashboard")',
+                data: { culture: cul },
+                success: function (result) {
+                    location.reload();
+                }
+            });
+        }
     </script>
-    <script src="~/Content/AdminPanelAssets/assets/js/custom.js"></script>
+    <script src="~/Content/LTR/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 
-    <script src="~/Content/AdminPanelAssets/plugins/apex/apexcharts.min.js"></script>
-    <script src="~/Content/AdminPanelAssets/assets/js/dashboard/dash_1.js"></script>
-    <script src="~/Content/AdminPanelAssets/plugins/table/datatable/datatables.js"></script>
+    <script src="~/Content/LTR/plugins/apex/apexcharts.min.js"></script>
+    <script src="~/Content/LTR/assets/js/dashboard/dash_1.js"></script>
+    <script src="~/Content/LTR/plugins/table/datatable/datatables.js"></script>
     <script src="~/Content/selectize.js"></script>
     <script src="~/Content/sweetalert2@10.js"></script>
     <script src="~/Scripts/factory.js"></script>
     <script src="~/Content/fontawesome/js/all.js"></script>
-    <script src="~/Content/AdminPanelAssets/plugins/font-icons/feather/feather.min.js"></script>
+    <script src="~/Content/LTR/plugins/font-icons/feather/feather.min.js"></script>
     <script src="~/Scripts/clipboard.js"></script>
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     @RenderSection("scripts", required: false)

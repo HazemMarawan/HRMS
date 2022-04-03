@@ -6,13 +6,13 @@ using System.Web.Mvc;
 using HRMS.Models;
 using HRMS.ViewModels;
 using HRMS.Auth;
-using HRMS.Enum;
+using HRMS.Enums;
 using HRMS.Helpers;
 
 namespace HRMS.Controllers
 {
     [CustomAuthenticationFilter]
-    public class MissionListController : Controller
+    public class MissionListController : BaseController
     {
         HRMSDBContext db = new HRMSDBContext();
 

@@ -6,14 +6,14 @@ using System.Web.Mvc;
 using HRMS.Models;
 using HRMS.ViewModels;
 using HRMS.Auth;
-using HRMS.Enum;
+using HRMS.Enums;
 using System.IO;
 using HRMS.Helpers;
 
 namespace HRMS.Controllers
 {
     [CustomAuthenticationFilter]
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         HRMSDBContext db = new HRMSDBContext();
         // GET: User

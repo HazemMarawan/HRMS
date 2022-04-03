@@ -22,6 +22,10 @@
                                 <input required name="part" id="part" type="text" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-12">
+                                <label>Area</label>
+                                @Html.DropDownList("area_id", new SelectList(ViewBag.Areas, "id", "name"), "Select Area", new { @class = "form-control", @name = "area_id", @style = "width:100%", @id = "area_id", @required = "@required" })
+                            </div>
+                            <div class="form-group col-md-12">
                                 <label>Status</label>
                                 <select class="form-control" name="active" id="active">
                                     <option value="1">Active</option>
@@ -66,6 +70,7 @@
                     <tr>
                         <th>#</th>
                         <th>Part</th>
+                        <th>Area</th>
                         <th>Active</th>
                         <th>Date</th>
                         <th></th>
@@ -125,6 +130,10 @@
                         },
                         {
                             "data": "part",
+                            "searchable": true
+                        },
+                        {
+                            "data": "area_name",
                             "searchable": true
                         },
                         {
@@ -213,6 +222,7 @@
 
                         dialog.find('#id').val(data.id);
                         dialog.find('#part').val(data.part);
+                        dialog.find('#area_id option[value=' + data.area_id + ']').attr('selected', 'selected');
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
 
                 });

@@ -7,12 +7,12 @@ using HRMS.Models;
 using HRMS.ViewModels;
 using HRMS.Auth;
 using HRMS.Helpers;
-using HRMS.Enum;
+using HRMS.Enums;
 
 namespace HRMS.Controllers
 {
     [CustomAuthenticationFilter]
-    public class VacationTypeController : Controller
+    public class VacationTypeController : BaseController
     {
         HRMSDBContext db = new HRMSDBContext();
         // GET: ProjectType

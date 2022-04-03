@@ -39,6 +39,8 @@ namespace HRMS.Controllers
                 var search_work_place = Request.Form.GetValues("columns[3][search][value]")[0];
                 var from_date = Request.Form.GetValues("columns[4][search][value]")[0];
                 var to_date = Request.Form.GetValues("columns[5][search][value]")[0];
+                var task_id = Request.Form.GetValues("columns[6][search][value]")[0];
+                var part_id = Request.Form.GetValues("columns[7][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
@@ -55,6 +57,8 @@ namespace HRMS.Controllers
                                         from returned in r.DefaultIfEmpty()
                                         join par in db.Parts on userProject.part_id_fk equals par.id into pa
                                         from part in pa.DefaultIfEmpty()
+                                        join tas in db.Tasks on userProject.task_id equals tas.id into ts
+                                        from task in ts.DefaultIfEmpty()
                                         select new UserProjectViewModel
                                         {
                                             id = userProject.id,
@@ -87,6 +91,8 @@ namespace HRMS.Controllers
                                             team_leader_id = user.team_leader_id,
                                             area_id = userProject.area_id,
                                             area_name = area.name,
+                                            task_id = task.id,
+                                            task_name = task.name,
                                             returned_by_name = returned.full_name,
                                             returned_at = userProject.returned_at,
                                             rejected_by_note = userProject.returned_by_note
@@ -170,7 +176,17 @@ namespace HRMS.Controllers
                     }
                 }
 
-              
+                if (!string.IsNullOrEmpty(task_id))
+                {
+                    int task_id_int = int.Parse(task_id);
+                    productivityData = productivityData.Where(s => s.task_id == task_id_int);
+                }
+
+                if (!string.IsNullOrEmpty(part_id))
+                {
+                    int part_id_int = int.Parse(part_id);
+                    productivityData = productivityData.Where(s => s.part_id == part_id || s.part_id_fk == part_id_int);
+                }
                 //var clonedProductivityData = productivityData.ToList();
                 int? Hours = 0;
                 int? Projects = 0;
@@ -242,6 +258,7 @@ namespace HRMS.Controllers
                 ViewBag.branchName = "Company";
                 ViewBag.Projects = db.Projects.Select(p => new { p.id, p.name }).ToList();
             }
+            ViewBag.Tasks = db.Tasks.Where(t => t.active == (int)RowStatus.ACTIVE).Select(t => new { t.id, t.name }).ToList();
             return View();
         }
 

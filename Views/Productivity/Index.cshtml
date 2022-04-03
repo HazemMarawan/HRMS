@@ -55,12 +55,20 @@
     <div class="row">
         <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
         <div class="form-group col-md-4">
-            @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
+            @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
         </div>
         <div class="form-group col-md-4">
-            <select class="form-control" id="search_area_id" name="area_id">
+            <select class="form-control" id="search_area_id" name="search_area_id">
                 <option value="">Select Area</option>
             </select>
+        </div>
+        <div class="form-group col-md-4">
+            <select class="form-control" id="search_part_id" name="search_part_id">
+                <option value="">Select Part</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            @Html.DropDownList("search_task_id", new SelectList(ViewBag.Tasks, "id", "name"), "Select Task", new { @class = "form-control", @name = "search_task_id", @style = "width:100%", @id = "search_task_id" })
         </div>
         <div class="form-group col-md-4">
             <select class="form-control" name="productivity_type" id="search_productivity_type">
@@ -325,7 +333,7 @@
                             }
                         },
                         {
-                            "data": "id", "name":"productivity_type", "searchable": true,
+                            "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.productivity_type) {
@@ -351,15 +359,19 @@
                                 else if (oData.part_id_fk)
                                     html += "<b>Part ID: </b>" + oData.part_name + "<br>";
 
+                                if (oData.task_id)
+                                    html += "<b>Task: </b>" + oData.task_name + "<br>";
                                 if (oData.equipment_quantity)
                                     html += "<b>Equipment Quantity</b>: " + oData.equipment_quantity + "<br>";
-                                if (oData.working_date)
-                                    html = "<b>Working Date</b>: " + fixDate(oData.working_date) + "<br>";
 
-                                if (oData.substation) 
+                                if (oData.substation) {
                                     html += "<b>Sub Station: </b>" + oData.substation + "<br>";
-                                if (oData.no_of_numbers)
+                                }
+
+                                if (oData.no_of_numbers) {
                                     html += "<b>Hours: </b>" + oData.no_of_numbers + "<br>";
+                                }
+
                                 if (oData.mvoh) {
                                     if (oData.mvoh >= oData.mvoh_target)
                                         html += "<span class='badge badge-success'><b>MVOH: </b>" + oData.mvoh + "</span><br>";
@@ -388,7 +400,7 @@
                                         html += "<span class='badge badge-danger'><b>LVUG: </b>" + oData.lvug + "</span><br>";
                                 }
 
-                        
+
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -403,7 +415,7 @@
                                     html = `<span class="badge badge-success">Approved</span>`;
                                 }
                                 else if (oData.status == 4) {
-                                    html = '<span class="badge badge-warning">Returned'; 
+                                    html = '<span class="badge badge-warning">Returned';
                                     if (oData.returned_by_name)
                                         html += 'By: ' + oData.returned_by_name;
                                     if (oData.returned_at)
@@ -435,6 +447,30 @@
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
+                        {
+                            "data": "id",
+                            "name": "id",
+                            "searchable": true,
+                            "visible":false
+                        },
+                        {
+                            "data": "id",
+                            "name": "id",
+                            "searchable": true,
+                            "visible": false
+                        },
+                        {
+                            "data": "id",
+                            "name": "id",
+                            "searchable": true,
+                            "visible": false
+                        },
+                        {
+                            "data": "id",
+                            "name": "id",
+                            "searchable": true,
+                            "visible": false
+                        },
                     ]
                 });
 
@@ -461,6 +497,8 @@
                 datatable.columns(3).search($("#search_work_place").val());
                 datatable.columns(4).search($("#from_date").val());
                 datatable.columns(5).search($("#to_date").val());
+                datatable.columns(6).search($("#search_task_id").val());
+                datatable.columns(7).search($("#search_part_id").val());
                 datatable.draw();
             });
 
@@ -477,6 +515,8 @@
                 $("#search_work_place").val("");
                 $("#from_date").val("");
                 $("#to_date").val("");
+                $("#search_task_id").val("");
+                $("#search_part_id").val("");
                 $('#search').trigger('click');
 
             });
@@ -582,6 +622,34 @@
 
                             }
                             $("#search_area_id").append(html);
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+
+             });
+
+            $(document).on("change", "#search_area_id", function () {
+                var area_id = $(this).val();
+
+                $("#search_part_id").empty();
+                var html = `<option value=''>Select Part</option>`;
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("getPartsByAreaId", "Part")',
+                    contentType: "application/json; charset=utf-8",
+                    data: { "id": area_id },
+                    datatype: "json",
+                        success: function (data) {
+                            if (data.parts.length != 0) {
+
+                                data.parts.forEach(function (value) {
+                                html += `<option value='${value.id}'>${value.part}</option>`;
+                            });
+
+                            }
+                            $("#search_part_id").append(html);
                     },
                     error: function () {
                         alert("Dynamic content load failed.");

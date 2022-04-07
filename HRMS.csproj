@@ -409,6 +409,16 @@
     <Compile Include="Models\MissionRequest.cs" />
     <Compile Include="Models\WorkPermissionRequest.cs" />
     <Compile Include="Models\WorkPermissionMonthYear.cs" />
+    <Compile Include="Resources\HResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\HResource.en.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HResource.en.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AreaViewModel.cs" />
     <Compile Include="ViewModels\AssetViewModel.cs" />
     <Compile Include="ViewModels\BranchProjectViewModel.cs" />
@@ -3306,6 +3316,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\AJC_Logo.jpeg" />
     <Content Include="Images\AJC_Logo.png" />
+    <Content Include="Images\egypt.png" />
     <Content Include="Images\hrlogo.jpg" />
     <Content Include="Images\hrlogo.png" />
     <Content Include="Images\userProfile.jpeg" />
@@ -4291,6 +4302,14 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204022351444_updateParts2.resx">
       <DependentUpon>202204022351444_updateParts2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\HResource.en.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>HResource.en.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\HResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>HResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -235,8 +235,6 @@ namespace HRMS.Controllers
                 db.Users.Add(user);
                 db.SaveChanges();
 
-
-
                 VacationYear vacationYear = new VacationYear();
                 vacationYear.year = DateTime.Now.Year;
                 vacationYear.user_id = user.id;
@@ -284,7 +282,7 @@ namespace HRMS.Controllers
                 if (isA.TeamLeader() || isA.TechnicalManager())
                     oldUser.required_productivity = 1;
                 else
-                oldUser.required_productivity = userVM.required_productivity;
+                    oldUser.required_productivity = userVM.required_productivity;
                 oldUser.last_salary = userVM.last_salary;
                 oldUser.attendance_code = userVM.attendance_code;
                 oldUser.team_leader_id = userVM.team_leader_id;
@@ -301,8 +299,6 @@ namespace HRMS.Controllers
                 }
 
                 oldUser.active = userVM.active;
-
-
 
                 if (userVM.image != null)
                 {

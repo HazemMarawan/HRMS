@@ -18,6 +18,7 @@ namespace HRMS.Enums
         Employee = 3,
         TeamLeader = 4,
         TechnicalManager = 5,
+        ProjectManager = 6,
     }
 
     public enum ProductivityType

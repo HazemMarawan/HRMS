@@ -41,5 +41,11 @@ namespace HRMS.Auth
             return false;
         }
 
+        public static bool ProjectManager()
+        {
+            if (Convert.ToInt32(HttpContext.Current.Session["type"].ToString()) == (int)UserRole.ProjectManager)
+                return true;
+            return false;
+        }
     }
 }

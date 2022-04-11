@@ -24,7 +24,8 @@ namespace HRMS.Controllers
             if (!(isA.SuperAdmin() 
                 || isA.TeamLeader() 
                 || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))
-                || isA.TechnicalManager()))
+                || isA.TechnicalManager()
+                || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -41,6 +42,7 @@ namespace HRMS.Controllers
                 var to_date = Request.Form.GetValues("columns[5][search][value]")[0];
                 var task_id = Request.Form.GetValues("columns[6][search][value]")[0];
                 var part_id = Request.Form.GetValues("columns[7][search][value]")[0];
+                var search_branch_id = Request.Form.GetValues("columns[8][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
@@ -187,6 +189,13 @@ namespace HRMS.Controllers
                     int part_id_int = int.Parse(part_id);
                     productivityData = productivityData.Where(s => s.part_id == part_id || s.part_id_fk == part_id_int);
                 }
+
+                if (!string.IsNullOrEmpty(search_branch_id))
+                {
+                    int search_branch_id_int = int.Parse(search_branch_id);
+                    productivityData = productivityData.Where(s => s.branch_id == search_branch_id_int);
+                }
+                
                 //var clonedProductivityData = productivityData.ToList();
                 int? Hours = 0;
                 int? Projects = 0;
@@ -256,7 +265,8 @@ namespace HRMS.Controllers
             else
             {
                 ViewBag.branchName = "Company";
-                ViewBag.Projects = db.Projects.Select(p => new { p.id, p.name }).ToList();
+                ViewBag.Projects = db.Projects.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
+                ViewBag.Branches = db.Branches.Where(b=>b.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             }
             ViewBag.Tasks = db.Tasks.Where(t => t.active == (int)RowStatus.ACTIVE).Select(t => new { t.id, t.name }).ToList();
             return View();

@@ -18,7 +18,7 @@ namespace HRMS.Controllers
         // GET: ProjectType
         public ActionResult Index()
         {
-            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.TechnicalManager()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.TechnicalManager() || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             User currentUser = Session["user"] as User;

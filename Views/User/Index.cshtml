@@ -105,6 +105,7 @@
                                         <option value="3">Employee</option>
                                         <option value="4">Team Leader</option>
                                         <option value="5">Technical Manager</option>
+                                        <option value="6">Project Manager</option>
                                     }
                                 </select>
                             </div>
@@ -392,6 +393,8 @@
                                     html += "Team Leader";
                                 else if (oData.type == 5)
                                     html += "Technical Manager";
+                                else if (oData.type == 6)
+                                    html += "Project Manager";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

@@ -386,6 +386,14 @@
     <Compile Include="Migrations\202204022351444_updateParts2.Designer.cs">
       <DependentUpon>202204022351444_updateParts2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204111244558_updateColumn.cs" />
+    <Compile Include="Migrations\202204111244558_updateColumn.Designer.cs">
+      <DependentUpon>202204111244558_updateColumn.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202204111245237_updateColumn1.cs" />
+    <Compile Include="Migrations\202204111245237_updateColumn1.Designer.cs">
+      <DependentUpon>202204111245237_updateColumn1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -4302,6 +4310,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204022351444_updateParts2.resx">
       <DependentUpon>202204022351444_updateParts2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204111244558_updateColumn.resx">
+      <DependentUpon>202204111244558_updateColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204111245237_updateColumn1.resx">
+      <DependentUpon>202204111245237_updateColumn1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

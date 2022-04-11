@@ -42,7 +42,7 @@
                 <li class="breadcrumb-item"><a href="@Url.Action("Show","Branch")">Branches</a></li>
                 <li class="breadcrumb-item"><a href="@Url.Action("Details","Branch",new { id = ViewBag.branchId})">@ViewBag.branchName</a></li>
             }
-            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
+            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
             {
                 <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
             }
@@ -53,7 +53,16 @@
 </div>
 <form action="@Url.Action("GenerateProductivityReport","Productivity")" method="post" id="GenerateProductivityReportForm">
     <div class="row">
-        <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
+        @if ((ViewBag.branchId == null && HRMS.Auth.isA.SuperAdmin()) || HRMS.Auth.isA.ProjectManager())
+        {
+            <div class="form-group col-md-4">
+                @Html.DropDownList("branch_id", new SelectList(ViewBag.Branches, "id", "name"), "Select Branch", new { @class = "form-control", @name = "branch_id", @style = "width:100%", @id = "branch_id" })
+            </div>
+        }
+        else
+        {
+            <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
+        }
         <div class="form-group col-md-4">
             @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
         </div>
@@ -499,6 +508,7 @@
                 datatable.columns(5).search($("#to_date").val());
                 datatable.columns(6).search($("#search_task_id").val());
                 datatable.columns(7).search($("#search_part_id").val());
+                datatable.columns(8).search($("#branch_id").val());
                 datatable.draw();
             });
 

@@ -195,7 +195,7 @@ namespace HRMS.Controllers
         public ActionResult Employee()
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin() || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())

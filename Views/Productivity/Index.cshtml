@@ -424,14 +424,18 @@
                                     html = `<span class="badge badge-success">Approved</span>`;
                                 }
                                 else if (oData.status == 4) {
+                                    var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
                                     html = '<span class="badge badge-warning">Returned';
-                                    if (oData.returned_by_name)
-                                        html += 'By: ' + oData.returned_by_name;
-                                    if (oData.returned_at)
-                                        html += `At ${ fixDate(oData.returned_at)} <br />`;
+                                    if (isTeamLeader != 'True') {
+                                        if (oData.returned_by_name)
+                                            html += 'By: ' + oData.returned_by_name;
+                                        if (oData.returned_at)
+                                            html += `At ${fixDate(oData.returned_at)} <br />`;
+                                    }
+                                    else
+                                        html += '<br>';
                                     if (oData.rejected_by_note)
                                         html += `Reason: ${oData.rejected_by_note}`;
-
                                     html += '</span>';
                                 }
                                 else {
@@ -451,6 +455,10 @@
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
                                     html += "<a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp; | ";
                                 }
+
+                                if (isTeamLeader == 'True' && oData.status != 4)
+                                    html += "<a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp; | ";
+
                                 html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";
 
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");

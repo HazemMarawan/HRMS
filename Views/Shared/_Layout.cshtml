@@ -105,7 +105,7 @@
             </ul>
 
             <ul class="navbar-item flex-row search-ul">
-                <li class="nav-item dropdown language-dropdown more-dropdown">
+                @*<li class="nav-item dropdown language-dropdown more-dropdown">
                     <div class="dropdown  custom-dropdown-icon">
                         <a class="dropdown-toggle btn" href="#" role="button" id="langDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img src="assets/img/ca.png" class="flag-width" alt="flag">
@@ -133,7 +133,7 @@
                             }
                         </div>
                     </div>
-                </li>
+                </li>*@
             </ul>
             <ul class="navbar-item flex-row navbar-dropdown">
                 @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.TeamLeader())

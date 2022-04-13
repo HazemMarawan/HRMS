@@ -79,6 +79,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to عرضة.
+        /// </summary>
+        public static string Casual {
+            get {
+                return ResourceManager.GetString("Casual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to تغيير كلمة المرور.
         /// </summary>
         public static string ChangePassword {
@@ -187,6 +196,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to إدارة المهام.
+        /// </summary>
+        public static string ManageMissions {
+            get {
+                return ResourceManager.GetString("ManageMissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to إدارة الاذونات.
         /// </summary>
         public static string ManagePermissions {
@@ -201,6 +219,15 @@ namespace HRMS.Resources {
         public static string ManageProductivity {
             get {
                 return ResourceManager.GetString("ManageProductivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to المدير.
+        /// </summary>
+        public static string Manager {
+            get {
+                return ResourceManager.GetString("Manager", resourceCulture);
             }
         }
         
@@ -228,6 +255,33 @@ namespace HRMS.Resources {
         public static string MissingProductivity {
             get {
                 return ResourceManager.GetString("MissingProductivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to المهام.
+        /// </summary>
+        public static string Missions {
+            get {
+                return ResourceManager.GetString("Missions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to قائمة المهام.
+        /// </summary>
+        public static string MissionsList {
+            get {
+                return ResourceManager.GetString("MissionsList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to مهامي.
+        /// </summary>
+        public static string MyMissions {
+            get {
+                return ResourceManager.GetString("MyMissions", resourceCulture);
             }
         }
         
@@ -295,6 +349,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to الأذونات.
+        /// </summary>
+        public static string Permissions {
+            get {
+                return ResourceManager.GetString("Permissions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to قائمة الأذونات.
         /// </summary>
         public static string PermissionsList {
@@ -309,6 +372,33 @@ namespace HRMS.Resources {
         public static string PrimaryInformation {
             get {
                 return ResourceManager.GetString("PrimaryInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to الإنتاجية.
+        /// </summary>
+        public static string Productivity {
+            get {
+                return ResourceManager.GetString("Productivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to الأنتاجية بالتاريخ.
+        /// </summary>
+        public static string ProductivityByDate {
+            get {
+                return ResourceManager.GetString("ProductivityByDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to الأنتاجية بالمشروع.
+        /// </summary>
+        public static string ProductivityByProject {
+            get {
+                return ResourceManager.GetString("ProductivityByProject", resourceCulture);
             }
         }
         
@@ -340,11 +430,38 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to أعتيادي.
+        /// </summary>
+        public static string Regular {
+            get {
+                return ResourceManager.GetString("Regular", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to إعادة تعيين.
+        /// </summary>
+        public static string Reset {
+            get {
+                return ResourceManager.GetString("Reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to حفظ.
         /// </summary>
         public static string SaveChanges {
             get {
                 return ResourceManager.GetString("SaveChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to بحث.
+        /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
             }
         }
         

@@ -123,6 +123,9 @@
   <data name="Branches" xml:space="preserve">
     <value>الفروع</value>
   </data>
+  <data name="Casual" xml:space="preserve">
+    <value>عرضة</value>
+  </data>
   <data name="ChangePassword" xml:space="preserve">
     <value>تغيير كلمة المرور</value>
   </data>
@@ -159,11 +162,17 @@
   <data name="Manage" xml:space="preserve">
     <value>الإدارة</value>
   </data>
+  <data name="ManageMissions" xml:space="preserve">
+    <value>إدارة المهام</value>
+  </data>
   <data name="ManagePermissions" xml:space="preserve">
     <value>إدارة الاذونات</value>
   </data>
   <data name="ManageProductivity" xml:space="preserve">
     <value>إدارة الأنتاجية</value>
+  </data>
+  <data name="Manager" xml:space="preserve">
+    <value>المدير</value>
   </data>
   <data name="ManageSalary" xml:space="preserve">
     <value>إدارة الرواتب</value>
@@ -173,6 +182,15 @@
   </data>
   <data name="MissingProductivity" xml:space="preserve">
     <value>الأنتاجية الغير مسجلة</value>
+  </data>
+  <data name="Missions" xml:space="preserve">
+    <value>المهام</value>
+  </data>
+  <data name="MissionsList" xml:space="preserve">
+    <value>قائمة المهام</value>
+  </data>
+  <data name="MyMissions" xml:space="preserve">
+    <value>مهامي</value>
   </data>
   <data name="MyPermissions" xml:space="preserve">
     <value>الأذونات الخاصة بي</value>
@@ -195,11 +213,23 @@
   <data name="OldPassword" xml:space="preserve">
     <value>كلمة المرور القديمة</value>
   </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>الأذونات</value>
+  </data>
   <data name="PermissionsList" xml:space="preserve">
     <value>قائمة الأذونات</value>
   </data>
   <data name="PrimaryInformation" xml:space="preserve">
     <value>البيانات الأساسية</value>
+  </data>
+  <data name="Productivity" xml:space="preserve">
+    <value>الإنتاجية</value>
+  </data>
+  <data name="ProductivityByDate" xml:space="preserve">
+    <value>الأنتاجية بالتاريخ</value>
+  </data>
+  <data name="ProductivityByProject" xml:space="preserve">
+    <value>الأنتاجية بالمشروع</value>
   </data>
   <data name="ProductivityList" xml:space="preserve">
     <value>قائمة الأنتاجية</value>
@@ -210,8 +240,17 @@
   <data name="ProjectTypes" xml:space="preserve">
     <value>أنواع المشروعات</value>
   </data>
+  <data name="Regular" xml:space="preserve">
+    <value>أعتيادي</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>إعادة تعيين</value>
+  </data>
   <data name="SaveChanges" xml:space="preserve">
     <value>حفظ</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
   </data>
   <data name="ShowBranches" xml:space="preserve">
     <value>إظهار الفروع</value>

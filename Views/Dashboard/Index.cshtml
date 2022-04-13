@@ -1,4 +1,5 @@
-﻿@{
+﻿@using HRMS.Resources; 
+@{
     ViewBag.Title = "Index";
 }
 @section css
@@ -20,7 +21,7 @@
                         </div>
                         <div class="">
                             <p class="w-value" id="managerName">-</p>
-                            <h5 class="">Manager</h5>
+                            <h5 class="">@HResource.Manager</h5>
                         </div>
                     </div>
                 </div>
@@ -40,7 +41,7 @@
                                 </div>
                                 <div class="">
                                     <p class="w-value" id="regularCounter">-</p>
-                                    <p style="font-weight:bold;font-size:11px;">Regular</p>
+                                    <p style="font-weight:bold;font-size:11px;">@HResource.Regular</p>
                                 </div>
                             </div>
                         </div>
@@ -55,7 +56,7 @@
                                 </div>
                                 <div class="">
                                     <p class="w-value" id="casualCounter">-</p>
-                                    <p style="font-weight:bold;font-size:11px;">Casual</p>
+                                    <p style="font-weight:bold;font-size:11px;">@HResource.Casual</p>
                                 </div>
                             </div>
                         </div>
@@ -70,7 +71,7 @@
                                 </div>
                                 <div class="">
                                     <p class="w-value" id="permissionsCounter">-</p>
-                                    <p style="font-weight:bold;font-size:11px;">Permissions</p>
+                                    <p style="font-weight:bold;font-size:11px;">@HResource.Permissions</p>
                                 </div>
                             </div>
                         </div>
@@ -85,7 +86,7 @@
                                 </div>
                                 <div class="">
                                     <p class="w-value" id="missionsCounter">-</p>
-                                    <p style="font-weight:bold;font-size:11px;">Missions</p>
+                                    <p style="font-weight:bold;font-size:11px;">@HResource.Missions</p>
                                 </div>
                             </div>
                         </div>
@@ -103,7 +104,7 @@
             <div class="widget widget-chart-three">
                 <div class="widget-heading">
                     <div class="">
-                        <h5 class="">Productivity By Date</h5>
+                        <h5 class="">@HResource.ProductivityByDate</h5>
                     </div>
                 </div>
 
@@ -116,7 +117,7 @@
             <div class="widget widget-chart-three">
                 <div class="widget-heading">
                     <div class="">
-                        <h5 class="">Productivity By Project</h5>
+                        <h5 class="">@HResource.ProductivityByProject</h5>
                     </div>
                 </div>
 
@@ -228,7 +229,7 @@
                 //alert("Dynamic content load failed.");
             }
          });
-   
+
         $.ajax({
             type: "GET",
             url: '@Url.Action("getDashboardData", "Dashboard")',
@@ -238,16 +239,30 @@
                 if (data.dashboardData.Manager) {
                     $("#managerName").text(data.dashboardData.Manager.full_name);
                 }
+                var isRTL = '@HRMS.Helpers.CultureHelper.IsRighToLeft()';
+
+                if (isRTL == 'True')
+                {
+                    $("#regularCounter").text(data.dashboardData.RegularVacations + " من " + data.dashboardData.RegularVacationsBalance);
+                    $("#casualCounter").text(data.dashboardData.CasualVacations + " من " + data.dashboardData.CasualVacationsBalance);
+
+                    $("#permissionsCounter").text(data.dashboardData.Permissions);
+
+                    $("#missionsCounter").text(data.dashboardData.Missions);
+                }
+                else
+                {
+                    $("#regularCounter").text(data.dashboardData.RegularVacations + " of " + data.dashboardData.RegularVacationsBalance);
+                    $("#casualCounter").text(data.dashboardData.CasualVacations + " of " + data.dashboardData.CasualVacationsBalance);
+
+                    $("#permissionsCounter").text(data.dashboardData.Permissions);
+
+                    $("#missionsCounter").text(data.dashboardData.Missions);
+                }
                 
-                $("#regularCounter").text(data.dashboardData.RegularVacations + " of " + data.dashboardData.RegularVacationsBalance);
-                $("#casualCounter").text(data.dashboardData.CasualVacations + " of " + data.dashboardData.CasualVacationsBalance);
-                
-                $("#permissionsCounter").text(data.dashboardData.Permissions);
-                
-                $("#missionsCounter").text(data.dashboardData.Missions);
-                
-                console.log(data);
-            },
+
+                    console.log(data);
+                },
             error: function () {
                 alert("Dynamic content load failed.");
             }

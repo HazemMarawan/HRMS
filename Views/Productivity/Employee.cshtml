@@ -49,9 +49,9 @@
                                 </select>
                             </div>
                             @*<div class="form-group col-md-4">
-            <label>Part ID</label>
-            <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
-        </div>*@
+                                <label>Part ID</label>
+                                <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+                            </div>*@
                             <div class="form-group col-md-4">
                                 <label>Part ID</label>
                                 <select class="form-control" id="part_id_fk" name="part_id_fk" required>
@@ -341,7 +341,7 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
-                                if (oData.status == 1 || isTechnicalManager == 'True') {
+                                if (oData.status == 1 || oData.status == 4 || isTechnicalManager == 'True') {
                                     html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
                                     html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;";
                                     html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";

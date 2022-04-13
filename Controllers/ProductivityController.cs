@@ -101,7 +101,6 @@ namespace HRMS.Controllers
                                         });
 
                
-
                 if(HRMS.Auth.isA.TeamLeader())
                 {
                     productivityData = productivityData.Where(p => p.team_leader_id == currentUser.id && p.user_id != currentUser.id && p.branch_id == currentUser.branch_id && p.type == (int)UserRole.Employee);

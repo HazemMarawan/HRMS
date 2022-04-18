@@ -252,6 +252,7 @@
                         <th>#</th>
                         <th>Employee</th>
                         <th>Location</th>
+                        <th>Working Date</th>
                         <th>Info</th>
                         <th>Status</th>
                         <th></th>
@@ -339,6 +340,12 @@
                                 if (oData.area_name)
                                     html += "<b>Area: </b>" + oData.area_name + "<br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "working_date", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                $(nTd).html("<span class='action-column'>" + fixDate(oData.working_date) + "</span>");
                             }
                         },
                         {

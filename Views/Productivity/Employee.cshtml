@@ -379,7 +379,7 @@
                var modal = $('#manage_productivity_modal').clone();
                 var action = '@Url.Action("saveProductivity", "Productivity")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Productivity');
+                modal.find('#modal_title').text('Add Productivity');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -470,7 +470,7 @@
                         dialog.find('#project_id option[value=' + data.project_id + ']').attr('selected', 'selected');
                         dialog.find('#productivity_type option[value=' + data.productivity_type + ']').attr('selected', 'selected');
                         dialog.find('#productivity_work_place option[value=' + data.productivity_work_place + ']').attr('selected', 'selected');
-                        dialog.find('#part_id_fk option[value=' + data.part_id_fk + ']').attr('selected', 'selected');
+                        //dialog.find('#part_id_fk option[value=' + data.part_id_fk + ']').attr('selected', 'selected');
                         dialog.find('#task_id option[value=' + data.task_id + ']').attr('selected', 'selected');
                         //dialog.find('#part_id').val(data.part_id);
                         dialog.find('#equipment_quantity').val(data.equipment_quantity);
@@ -507,6 +507,66 @@
                             error: function () {
                                 alert("Dynamic content load failed.");
                             }
+                            });
+
+                            var part_id_fk = data.part_id_fk;
+                            var area_id = data.area_id;
+                            dialog.find("#part_id_fk").empty();
+                            var html2 = `<option value=''>Select Part</option>`;
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getPartsByAreaId", "Part")',
+                            contentType: "application/json; charset=utf-8",
+                                data: { "id": area_id },
+                            datatype: "json",
+                                success: function (data) {
+                                    if (data.parts.length != 0) {
+
+                                        data.parts.forEach(function (value) {
+                                            if (parseInt(part_id_fk) == parseInt(value.id))
+                                                html2 += `<option selected value='${value.id}'>${value.part}</option>`;
+                                            else
+                                                html2 += `<option value='${value.id}'>${value.part}</option>`;
+
+                                        });
+
+                                    }
+                                    dialog.find("#part_id_fk").append(html2);
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                            });
+
+                    $(document).on("change", "#area_id", function () {
+                        var area_id = $(this).val();
+                        var part_id_fk = data.part_id_fk;
+                            dialog.find("#part_id_fk").empty();
+                            var html3 = `<option value=''>Select Part</option>`;
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getPartsByAreaId", "Part")',
+                            contentType: "application/json; charset=utf-8",
+                                data: { "id": area_id },
+                            datatype: "json",
+                                success: function (data) {
+                                    if (data.parts.length != 0) {
+
+                                    data.parts.forEach(function (value) {
+                                        if (parseInt(part_id_fk) == parseInt(value.id))
+                                            html3 += `<option selected value='${value.id}'>${value.part}</option>`;
+                                        else
+                                            html3 += `<option value='${value.id}'>${value.part}</option>`;
+                                    });
+
+                                    }
+                                    dialog.find("#part_id_fk").append(html3);
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+
                         });
 
                         $(document).on("change", "#project_id", function () {

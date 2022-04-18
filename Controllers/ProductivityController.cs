@@ -526,6 +526,7 @@ namespace HRMS.Controllers
             ViewBag.Projects = db.Projects.Where(p => branchProjects.Contains(p.id));
             ViewBag.Parts = db.Parts.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.part }).ToList();
             ViewBag.Tasks = db.Tasks.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
+
             return View();
         }
 
@@ -559,6 +560,7 @@ namespace HRMS.Controllers
                     userProject.mvug_target = 0;
                     userProject.lvug_target = 0;
                 }
+                userProject.part_id_fk = userProjectViewModel.part_id_fk;
                 userProject.user_id = currentUser.id;
                 userProject.created_at = DateTime.Now;
                 userProject.created_by = Session["id"].ToString().ToInt();
@@ -590,6 +592,7 @@ namespace HRMS.Controllers
                 oldUserProject.lvug = userProjectViewModel.lvug;
                 oldUserProject.substation = userProjectViewModel.substation;
                 oldUserProject.note = userProjectViewModel.note;
+                oldUserProject.part_id_fk = userProjectViewModel.part_id_fk;
 
                 oldUserProject.updated_by = Session["id"].ToString().ToInt();
                 oldUserProject.updated_at = DateTime.Now;

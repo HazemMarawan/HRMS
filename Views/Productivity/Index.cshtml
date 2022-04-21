@@ -457,12 +457,12 @@
                                 var html = "";
                                 var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
-                                if (oData.status == 1 || oData.status == 4 && ((isTeamLeader == 'True' && oData.type == 3) || (isTechnicalManager == 'True' && oData.type == 4))) {
+                                if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') || oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isTechnicalManager == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
                                 }
 
-                                if (oData.status != 4 && ((isTeamLeader == 'True' && oData.type == 3) || (isTechnicalManager == 'True' && oData.type == 4)))
+                                if (oData.status != parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isTechnicalManager == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)'))))
                                     html += "<a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp; | ";
 
                                 html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";

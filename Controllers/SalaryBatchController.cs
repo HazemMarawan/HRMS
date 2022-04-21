@@ -496,17 +496,17 @@ namespace HRMS.Controllers
 
                     salaryBatchDetail.user_id = dt.Rows[i][0].ToString().ToInt();
                     salaryBatchDetail.bank_code = dt.Rows[i][2].ToString();
-                    salaryBatchDetail.salary = dt.Rows[i][3].ToString().ToDouble();
-                    salaryBatchDetail.insurance_deductions = dt.Rows[i][4].ToString().ToDouble();
-                    salaryBatchDetail.tax_deductions = dt.Rows[i][5].ToString().ToDouble();
-                    salaryBatchDetail.absense_days = dt.Rows[i][6].ToString().ToInt();
-                    salaryBatchDetail.absense_deductions = dt.Rows[i][7].ToString().ToDouble();
-                    salaryBatchDetail.gm_amount = dt.Rows[i][8].ToString().ToDouble();
-                    salaryBatchDetail.reserved_amount = dt.Rows[i][9].ToString().ToDouble();
-                    salaryBatchDetail.addtional_hours = dt.Rows[i][10].ToString().ToInt();
-                    salaryBatchDetail.addtional_hours_amount = dt.Rows[i][11].ToString().ToDouble();
-                    salaryBatchDetail.total_kilos = dt.Rows[i][12].ToString().ToDouble();
-                    salaryBatchDetail.total_salary = dt.Rows[i][13].ToString().ToDouble();
+                    salaryBatchDetail.salary = dt.Rows[i][3].ToString() != null ? dt.Rows[i][3].ToString().ToDouble() : 0;
+                    salaryBatchDetail.insurance_deductions = dt.Rows[i][4].ToString() != null ? dt.Rows[i][4].ToString().ToDouble():0;
+                    salaryBatchDetail.tax_deductions = dt.Rows[i][5].ToString() != null ?dt.Rows[i][5].ToString().ToDouble():0;
+                    salaryBatchDetail.absense_days = dt.Rows[i][6].ToString() != null?dt.Rows[i][6].ToString().ToInt():0;
+                    salaryBatchDetail.absense_deductions = dt.Rows[i][7].ToString() != null ? dt.Rows[i][7].ToString().ToDouble():0;
+                    salaryBatchDetail.gm_amount = dt.Rows[i][8].ToString() != null?dt.Rows[i][8].ToString().ToDouble():0;
+                    salaryBatchDetail.reserved_amount = dt.Rows[i][9].ToString() != null ? dt.Rows[i][9].ToString().ToDouble():0;
+                    salaryBatchDetail.addtional_hours = dt.Rows[i][10].ToString() != null ? dt.Rows[i][10].ToString().ToInt():0;
+                    salaryBatchDetail.addtional_hours_amount = dt.Rows[i][11].ToString() != null ? dt.Rows[i][11].ToString().ToDouble():0;
+                    salaryBatchDetail.total_kilos = dt.Rows[i][12].ToString() != null ? dt.Rows[i][12].ToString().ToDouble():0;
+                    salaryBatchDetail.total_salary = dt.Rows[i][13].ToString() != null ? dt.Rows[i][13].ToString().ToDouble() : 0;
                     salaryBatchDetail.notes = dt.Rows[i][14].ToString();
 
                     salaryBatchDetail.active = (int)RowStatus.ACTIVE;

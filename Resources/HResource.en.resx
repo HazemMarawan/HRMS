@@ -246,6 +246,9 @@
   <data name="Reset" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="SalaryBatches" xml:space="preserve">
+    <value>Salary Batches</value>
+  </data>
   <data name="SaveChanges" xml:space="preserve">
     <value>Save Changes</value>
   </data>

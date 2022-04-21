@@ -448,6 +448,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to دفعات الرواتب.
+        /// </summary>
+        public static string SalaryBatches {
+            get {
+                return ResourceManager.GetString("SalaryBatches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to حفظ.
         /// </summary>
         public static string SaveChanges {

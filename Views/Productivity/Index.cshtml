@@ -306,33 +306,17 @@
                         "datatype": "json",
                         "dataSrc": "data"
                     },
-                    "columnDefs":
-                    [
-                    //{
-                    //    "targets": [6],
-                    //    //"visible": false,
-                    //    "orderable": false,
-                    //    "searchable": false
-                    //},
-                    //{
-                    //    "targets": [6],
-                    //    "searchable": false,
-                    //    "orderable": false
-                            //}
-                        ],
                     "columns": [
                         {
                             "data": "id",
-                            "name": "id",
                             "searchable": true
                         },
                         {
                             "data": "user_name",
-                            "name": "user_name",
                             "searchable": true
                         },
                         {
-                            "data": "project_name", "name": "project_name", "searchable": true,
+                            "data": "project_name", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.project_name)
@@ -421,7 +405,7 @@
                             }
                         },
                         {
-                            "data": "status", "name": "status", "searchable": true,
+                            "data": "status", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.status == 1) {
@@ -478,19 +462,16 @@
                         },
                         {
                             "data": "id",
-                            "name": "id",
                             "searchable": true,
                             "visible": false
                         },
                         {
                             "data": "id",
-                            "name": "id",
                             "searchable": true,
                             "visible": false
                         },
                         {
                             "data": "id",
-                            "name": "id",
                             "searchable": true,
                             "visible": false
                         },

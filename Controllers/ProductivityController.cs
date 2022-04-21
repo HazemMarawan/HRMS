@@ -218,14 +218,9 @@ namespace HRMS.Controllers
                 LVUG = productivityData.Select(c => c.lvug).ToList().Sum();
                 EquipmentQuantity = productivityData.Select(c => c.equipment_quantity).ToList().Sum();
                 Substation = productivityData.Select(c => c.substation).ToList().Sum();
-                //Sorting    
-                if ((!string.IsNullOrEmpty(sortColumn) && !string.IsNullOrEmpty(sortColumnDir)))
-                {
-                    productivityData = productivityData.OrderBy(sortColumn + " " + sortColumnDir);
-                }
-
+                
                 //total number of rows count     
-                var displayResult = productivityData.Skip(skip)
+                var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
                      .Take(pageSize).ToList();
                 var totalRecords = productivityData.Count();
 

@@ -43,6 +43,8 @@ namespace HRMS.Controllers
                 var task_id = Request.Form.GetValues("columns[6][search][value]")[0];
                 var part_id = Request.Form.GetValues("columns[7][search][value]")[0];
                 var search_branch_id = Request.Form.GetValues("columns[8][search][value]")[0];
+                var status = Request.Form.GetValues("columns[9][search][value]")[0];
+                var department = Request.Form.GetValues("columns[10][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
@@ -72,6 +74,7 @@ namespace HRMS.Controllers
                                             working_date = userProject.working_date,
                                             no_of_numbers = userProject.no_of_numbers,
                                             branch_id = user.branch_id,
+                                            department_id = user.department_id,
                                             productivity_type = userProject.productivity_type,
                                             productivity_work_place = userProject.productivity_work_place,
                                             part_id = userProject.part_id,
@@ -194,7 +197,19 @@ namespace HRMS.Controllers
                     int search_branch_id_int = int.Parse(search_branch_id);
                     productivityData = productivityData.Where(s => s.branch_id == search_branch_id_int);
                 }
-                
+
+                if (!string.IsNullOrEmpty(status))
+                {
+                    int status_int = int.Parse(status);
+                    productivityData = productivityData.Where(s => s.status == status_int);
+                }
+
+                if (!string.IsNullOrEmpty(department))
+                {
+                    int department_int = int.Parse(department);
+                    productivityData = productivityData.Where(s => s.department_id == department_int);
+                }
+
                 //var clonedProductivityData = productivityData.ToList();
                 int? Hours = 0;
                 int? Projects = 0;
@@ -263,6 +278,9 @@ namespace HRMS.Controllers
                 ViewBag.Branches = db.Branches.Where(b=>b.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
             }
             ViewBag.Tasks = db.Tasks.Where(t => t.active == (int)RowStatus.ACTIVE).Select(t => new { t.id, t.name }).ToList();
+            ViewBag.Departments = db.Departments.Where(t => t.active == (int)RowStatus.ACTIVE).Select(t => new { t.id, t.name }).ToList();
+            //ViewBag.status = ;
+            
             return View();
         }
 

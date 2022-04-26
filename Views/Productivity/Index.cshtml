@@ -99,6 +99,18 @@
         <div class="form-group col-4">
             <input class="form-control" type="date" id="to_date" name="to_date">
         </div>
+        <div class="form-group col-md-4">
+            <select class="form-control" name="search_status" id="search_status">
+                <option value="">Select Status</option>
+                <option value="1">PendingApprove</option>
+                <option value="2">Approved</option>
+                <option value="3">Rejected</option>
+                <option value="4">Returned</option>
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            @Html.DropDownList("search_departments", new SelectList(ViewBag.Departments, "id", "name"), "Select Department", new { @class = "form-control", @name = "search_departments", @style = "width:100%", @id = "search_departments" })
+        </div>
         <div class="form-group col-4">
             <input class="form-control" type="text" id="text_search" name="text_search" placeholder="@HResource.Search">
         </div>
@@ -475,6 +487,16 @@
                             "searchable": true,
                             "visible": false
                         },
+                        {
+                            "data": "id",
+                            "searchable": true,
+                            "visible": false
+                        },
+                        {
+                            "data": "id",
+                            "searchable": true,
+                            "visible": false
+                        },
                     ]
                 });
 
@@ -504,6 +526,8 @@
                 datatable.columns(6).search($("#search_task_id").val());
                 datatable.columns(7).search($("#search_part_id").val());
                 datatable.columns(8).search($("#branch_id").val());
+                datatable.columns(9).search($("#search_status").val());
+                datatable.columns(10).search($("#search_departments").val());
                 datatable.draw();
             });
 
@@ -521,7 +545,8 @@
                 $("#from_date").val("");
                 $("#to_date").val("");
                 $("#search_task_id").val("");
-                $("#search_part_id").val("");
+                $("#search_status").val("");
+                $("#search_departments").val("");
                 $('#search').trigger('click');
 
             });

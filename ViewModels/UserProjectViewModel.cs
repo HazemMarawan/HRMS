@@ -55,5 +55,6 @@ namespace HRMS.ViewModels
         public DateTime? to_date { get; set; }
         public string returned_by_name { get; set; }
         public string rejected_by_note { get; set; }
+        public int? department_id { get; set; }
     }
 }

@@ -43,6 +43,12 @@ namespace HRMS.ViewModels
         public double? lvoh_target { get; set; }
         public double? mvug_target { get; set; }
         public double? lvug_target { get; set; }
+        public double? transformer_target { get; set; }
+        public double? pole_target { get; set; }
+        public double? meter_target { get; set; }
+        public double? distribution_box_target { get; set; }
+        public double? rmu_target { get; set; }
+        public double? switchh_target { get; set; }
         public double? cost { get; set; }
         public string note { get; set; }
         public int? status { get; set; }

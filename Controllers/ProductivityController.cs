@@ -85,6 +85,12 @@ namespace HRMS.Controllers
                                             lvoh = userProject.lvoh,
                                             mvug = userProject.mvug,
                                             lvug = userProject.lvug,
+                                            transformer = userProject.transformer,
+                                            pole = userProject.pole,
+                                            meter = userProject.meter,
+                                            distribution_box = userProject.distribution_box,
+                                            rmu = userProject.rmu,
+                                            switchh = userProject.switchh,
                                             mvoh_target = userProject.mvoh_target,
                                             lvoh_target = userProject.lvoh_target,
                                             mvug_target = userProject.mvug_target,
@@ -221,6 +227,12 @@ namespace HRMS.Controllers
                 double? LVUG = 0;
                 double? EquipmentQuantity = 0;
                 double? Substation = 0;
+                double? transformer = 0;
+                double? pole = 0;
+                double? distributionBox = 0;
+                double? rmu = 0;
+                double? switchh = 0;
+                double? meter = 0;
 
                 Hours = productivityData.Select(c => c.no_of_numbers).ToList().Sum();
                 Projects = productivityData.Select(c => c.project_id).Distinct().ToList().Count();
@@ -233,6 +245,12 @@ namespace HRMS.Controllers
                 LVUG = productivityData.Select(c => c.lvug).ToList().Sum();
                 EquipmentQuantity = productivityData.Select(c => c.equipment_quantity).ToList().Sum();
                 Substation = productivityData.Select(c => c.substation).ToList().Sum();
+                transformer = productivityData.Select(c => c.transformer).ToList().Sum();
+                pole = productivityData.Select(c => c.pole).ToList().Sum();
+                distributionBox = productivityData.Select(c => c.distribution_box).ToList().Sum();
+                rmu = productivityData.Select(c => c.rmu).ToList().Sum();
+                switchh = productivityData.Select(c => c.switchh).ToList().Sum();
+                meter = productivityData.Select(c => c.meter).ToList().Sum();
                 
                 //total number of rows count     
                 var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
@@ -254,8 +272,13 @@ namespace HRMS.Controllers
                     MVUG = MVUG,
                     LVUG = LVUG,
                     EquipmentQuantity = EquipmentQuantity,
-                    Substation = Substation
-
+                    Substation = Substation,
+                    transformer = transformer,
+                    pole = pole,
+                    distributionBox = distributionBox,
+                    rmu = rmu,
+                    switchh = switchh,
+                    meter = meter
                 }, JsonRequestBehavior.AllowGet);
 
             }
@@ -479,6 +502,12 @@ namespace HRMS.Controllers
                                            lvoh = userProject.lvoh,
                                            mvug = userProject.mvug,
                                            lvug = userProject.lvug,
+                                           transformer = userProject.transformer,
+                                           pole = userProject.pole,
+                                           meter = userProject.meter,
+                                           distribution_box = userProject.distribution_box,
+                                           rmu = userProject.rmu,
+                                           switchh = userProject.switchh,
                                            mvoh_target = userProject.mvoh_target,
                                            lvoh_target = userProject.lvoh_target,
                                            mvug_target = userProject.mvug_target,
@@ -555,6 +584,12 @@ namespace HRMS.Controllers
                     lvoh = t.lvoh,
                     mvug = t.mvug,
                     lvug = t.lvug,
+                    transformer = t.transformer,
+                    pole = t.pole,
+                    meter = t.meter,
+                    distribution_box = t.distribution_box,
+                    rmu = t.rmu,
+                    switchh = t.switchh,
                     active = t.active
                 }).Where(t=>t.active == (int)RowStatus.ACTIVE).FirstOrDefault();
 
@@ -565,6 +600,13 @@ namespace HRMS.Controllers
                     userProject.lvoh_target = targetViewModel.lvoh;
                     userProject.mvug_target = targetViewModel.mvug;
                     userProject.lvug_target = targetViewModel.lvug;
+
+                    userProject.transformer_target = targetViewModel.transformer;
+                    userProject.pole_target = targetViewModel.pole;
+                    userProject.meter_target = targetViewModel.meter;
+                    userProject.distribution_box_target = targetViewModel.distribution_box;
+                    userProject.rmu_target = targetViewModel.rmu;
+                    userProject.switchh_target = targetViewModel.switchh;
                 }
                 else
                 {
@@ -572,6 +614,13 @@ namespace HRMS.Controllers
                     userProject.lvoh_target = 0;
                     userProject.mvug_target = 0;
                     userProject.lvug_target = 0;
+
+                    userProject.transformer_target = 0;
+                    userProject.pole_target = 0;
+                    userProject.meter_target = 0;
+                    userProject.distribution_box_target = 0;
+                    userProject.rmu_target = 0;
+                    userProject.switchh_target = 0;
                 }
                 userProject.part_id_fk = userProjectViewModel.part_id_fk;
                 userProject.user_id = currentUser.id;
@@ -604,6 +653,14 @@ namespace HRMS.Controllers
                 oldUserProject.mvug = userProjectViewModel.mvug;
                 oldUserProject.lvug = userProjectViewModel.lvug;
                 oldUserProject.substation = userProjectViewModel.substation;
+
+                oldUserProject.transformer = userProjectViewModel.transformer;
+                oldUserProject.pole = userProjectViewModel.pole;
+                oldUserProject.meter = userProjectViewModel.meter;
+                oldUserProject.distribution_box = userProjectViewModel.distribution_box;
+                oldUserProject.rmu = userProjectViewModel.rmu;
+                oldUserProject.switchh = userProjectViewModel.switchh;
+
                 oldUserProject.note = userProjectViewModel.note;
                 oldUserProject.part_id_fk = userProjectViewModel.part_id_fk;
 
@@ -708,7 +765,15 @@ namespace HRMS.Controllers
             Sheet.Cells["K1"].Value = "LVOH";
             Sheet.Cells["L1"].Value = "MVUG";
             Sheet.Cells["M1"].Value = "LVUG";
-            Sheet.Cells["N1"].Value = "Status";
+
+            Sheet.Cells["N1"].Value = "Transformer";
+            Sheet.Cells["O1"].Value = "Pole";
+            Sheet.Cells["P1"].Value = "Meter";
+            Sheet.Cells["Q1"].Value = "Distribution Box";
+            Sheet.Cells["R1"].Value = "RMU";
+            Sheet.Cells["S1"].Value = "Switch";
+
+            Sheet.Cells["T1"].Value = "Status";
 
             var productivityData = (from user in db.Users
                                     join userProject in db.UserProjects on user.id equals userProject.user_id
@@ -739,6 +804,12 @@ namespace HRMS.Controllers
                                         lvoh = userProject.lvoh,
                                         mvug = userProject.mvug,
                                         lvug = userProject.lvug,
+                                        transformer = userProject.transformer,
+                                        pole = userProject.pole,
+                                        meter = userProject.meter,
+                                        distribution_box = userProject.distribution_box,
+                                        rmu = userProject.rmu,
+                                        switchh = userProject.switchh,
                                         mvoh_target = userProject.mvoh_target,
                                         lvoh_target = userProject.lvoh_target,
                                         mvug_target = userProject.mvug_target,
@@ -911,7 +982,14 @@ namespace HRMS.Controllers
                     Sheet.Cells[string.Format("M{0}", row)].Value = item.lvug;
                 }
 
-                Sheet.Cells[string.Format("N{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
+                Sheet.Cells[string.Format("N{0}", row)].Value = item.transformer;
+                Sheet.Cells[string.Format("O{0}", row)].Value = item.pole;
+                Sheet.Cells[string.Format("P{0}", row)].Value = item.meter;
+                Sheet.Cells[string.Format("Q{0}", row)].Value = item.distribution_box;
+                Sheet.Cells[string.Format("P{0}", row)].Value = item.rmu;
+                Sheet.Cells[string.Format("Q{0}", row)].Value = item.switchh;
+
+                Sheet.Cells[string.Format("T{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
                 
 
                 row++;
@@ -956,6 +1034,31 @@ namespace HRMS.Controllers
             row++;
             Sheet.Cells[string.Format("A{0}", row)].Value = "Sub Station";
             Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.substation).Sum();
+
+            //new
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Transformer";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.transformer).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Pole";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.pole).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Meter";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.meter).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Distribution Box";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.distribution_box).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "RMU";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.rmu).Sum();
+
+            row++;
+            Sheet.Cells[string.Format("A{0}", row)].Value = "Switch";
+            Sheet.Cells[string.Format("B{0}", row)].Value = productivityResult.Select(p => p.switchh).Sum();
 
             Sheet.Cells["A:AZ"].AutoFitColumns();
             Response.Clear();

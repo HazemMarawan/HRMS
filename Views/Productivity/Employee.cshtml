@@ -49,9 +49,9 @@
                                 </select>
                             </div>
                             @*<div class="form-group col-md-4">
-                                <label>Part ID</label>
-                                <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
-                            </div>*@
+            <label>Part ID</label>
+            <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+        </div>*@
                             <div class="form-group col-md-4">
                                 <label>Part ID</label>
                                 <select class="form-control" id="part_id_fk" name="part_id_fk" required>
@@ -85,6 +85,31 @@
                             <div class="form-group col-md-4">
                                 <label>Sub Station</label>
                                 <input name="substation" id="substation" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label>Transformer</label>
+                                <input name="transformer" id="transformer" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Pole</label>
+                                <input name="pole" id="pole" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Meter</label>
+                                <input name="meter" id="meter" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Distribution Box</label>
+                                <input name="distribution_box" id="distribution_box" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>RMU</label>
+                                <input name="rmu" id="rmu" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Switch</label>
+                                <input name="switch" id="switch" type="number" step=".01" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Task Description</label>
@@ -304,6 +329,31 @@
                                         html += "<span class='badge badge-success'><b>LVUG: </b>" + oData.lvug + "</span><br>";
                                     else
                                         html += "<span class='badge badge-danger'><b>LVUG: </b>" + oData.lvug + "</span><br>";
+                                }
+
+                                //new
+                                if (oData.transformer) {
+                                    html += "<span class='badge badge-success'><b>Transformer: </b>" + oData.transformer + "</span><br>";
+                                }
+
+                                if (oData.pole) {
+                                    html += "<span class='badge badge-success'><b>Pole: </b>" + oData.pole + "</span><br>";
+                                }
+
+                                if (oData.meter) {
+                                    html += "<span class='badge badge-success'><b>Meter: </b>" + oData.meter + "</span><br>";
+                                }
+
+                                if (oData.distribution_box) {
+                                    html += "<span class='badge badge-success'><b>Distribution Box: </b>" + oData.distribution_box + "</span><br>";
+                                }
+
+                                if (oData.rmu) {
+                                    html += "<span class='badge badge-success'><b>RMU: </b>" + oData.rmu + "</span><br>";
+                                }
+
+                                if (oData.switchh) {
+                                    html += "<span class='badge badge-success'><b>Switch: </b>" + oData.switchh + "</span><br>";
                                 }
 
 

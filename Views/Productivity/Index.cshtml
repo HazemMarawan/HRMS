@@ -247,6 +247,37 @@
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Sub Station</p>
         </div>
     </div>
+    @*new*@
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="transformer_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Transformer</p>
+        </div>
+    </div>
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="pole_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Pole</p>
+        </div>
+    </div>
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="distributionBox_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Distribution Box</p>
+        </div>
+    </div>
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="rmu_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> RMU</p>
+        </div>
+    </div>
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
+            <h3 id="switchh_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Switch</p>
+        </div>
+    </div>
 </div>
 
 
@@ -411,7 +442,26 @@
                                     else
                                         html += "<span class='badge badge-danger'><b>LVUG: </b>" + oData.lvug + "</span><br>";
                                 }
+                                //new
+                                if (oData.transformer) {
+                                    html += "<span class='badge badge-success'><b>Transformer: </b>" + oData.transformer + "</span><br>";
+                                }
 
+                                if (oData.pole) {
+                                    html += "<span class='badge badge-success'><b>Pole: </b>" + oData.pole + "</span><br>";
+                                }
+
+                                if (oData.distributionBox) {
+                                    html += "<span class='badge badge-success'><b>distributionBox: </b>" + oData.distributionBox + "</span><br>";
+                                }
+
+                                if (oData.rmu) {
+                                    html += "<span class='badge badge-success'><b>RMU: </b>" + oData.rmu + "</span><br>";
+                                }
+
+                                if (oData.switchh) {
+                                    html += "<span class='badge badge-success'><b>Switch: </b>" + oData.switchh + "</span><br>";
+                                }
 
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
@@ -512,7 +562,12 @@
                 $("#mvug_counter").text(json.MVUG.toFixed(2));
                 $("#lvug_counter").text(json.LVUG.toFixed(2));
                 $("#equipment_quantity_counter").text(json.EquipmentQuantity.toFixed(2));
-                $("#substation_counter").text(json.Substation.toFixed(2));
+                $("#transformer_counter").text(json.transformer.toFixed(2));
+                $("#pole_counter").text(json.pole.toFixed(2));
+                $("#distributionBox_counter").text(json.distributionBox.toFixed(2));
+                $("#rmu_counter").text(json.rmu.toFixed(2));
+                $("#switchh_counter").text(json.switchh.toFixed(2));
+                $("#substation_counter").text(json.substation.toFixed(2));
             });
 
             $('#search').on('click', function () {

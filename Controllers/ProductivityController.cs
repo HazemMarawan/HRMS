@@ -747,10 +747,10 @@ namespace HRMS.Controllers
             System.Drawing.Color redColor = System.Drawing.ColorTranslator.FromHtml("#FF0000");
             System.Drawing.Color warningColor = System.Drawing.ColorTranslator.FromHtml("#FFA000");
             System.Drawing.Color greenColor = System.Drawing.ColorTranslator.FromHtml("#00FF00");
-            Sheet.Cells["A1:N1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:N1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:T1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:T1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:N1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:T1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "Employee Name";
             Sheet.Cells["B1"].Value = "Working Date";

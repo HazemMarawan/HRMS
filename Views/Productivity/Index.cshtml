@@ -262,6 +262,12 @@
     </div>
     <div class="col-2" style="border-radius: 25px;">
         <div class="counter">
+            <h3 id="meter_counter">0</h3>
+            <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Meter</p>
+        </div>
+    </div>
+    <div class="col-2" style="border-radius: 25px;">
+        <div class="counter">
             <h3 id="distributionBox_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Distribution Box</p>
         </div>
@@ -568,10 +574,11 @@
                 $("#equipment_quantity_counter").text(json.EquipmentQuantity.toFixed(2));
                 $("#transformer_counter").text(json.transformer.toFixed(2));
                 $("#pole_counter").text(json.pole.toFixed(2));
+                $("#meter_counter").text(json.meter.toFixed(2));
                 $("#distributionBox_counter").text(json.distributionBox.toFixed(2));
                 $("#rmu_counter").text(json.rmu.toFixed(2));
                 $("#switchh_counter").text(json.switchh.toFixed(2));
-                $("#substation_counter").text(json.substation.toFixed(2));
+                $("#substation_counter").text(json.Substation.toFixed(2));
             });
 
             $('#search').on('click', function () {

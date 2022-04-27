@@ -27,7 +27,7 @@ namespace HRMS.Models
         public int? task_id { get; set; }
         public Task Task { get; set; }
         public DateTime? working_date { get; set; }
-        public int? no_of_numbers { get; set; }
+        public double? no_of_numbers { get; set; }
         public int? productivity_type { get; set; }
         public int? productivity_work_place { get; set; }
         public string part_id { get; set; }

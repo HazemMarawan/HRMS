@@ -217,7 +217,7 @@ namespace HRMS.Controllers
                 }
 
                 //var clonedProductivityData = productivityData.ToList();
-                int? Hours = 0;
+                double? Hours = 0;
                 int? Projects = 0;
                 int? Employees = 0;
                 double? Cost = 0;
@@ -663,7 +663,7 @@ namespace HRMS.Controllers
 
                 oldUserProject.note = userProjectViewModel.note;
                 oldUserProject.part_id_fk = userProjectViewModel.part_id_fk;
-
+                oldUserProject.status = (int)ProductivityStatus.PendingApprove;
                 oldUserProject.updated_by = Session["id"].ToString().ToInt();
                 oldUserProject.updated_at = DateTime.Now;
 
@@ -889,6 +889,40 @@ namespace HRMS.Controllers
                 }
             }
 
+            if (userProjectViewModel.task_id != null)
+            {
+                productivityData = productivityData.Where(s => s.task_id == userProjectViewModel.task_id);
+            }
+
+            if (userProjectViewModel.part_id_fk != null)
+            {
+                productivityData = productivityData.Where(s => s.part_id == userProjectViewModel.part_id_fk.ToString() || s.part_id_fk == userProjectViewModel.part_id_fk);
+            }
+
+            if (userProjectViewModel.branch_id != null)
+            {
+                productivityData = productivityData.Where(s => s.branch_id == userProjectViewModel.branch_id);
+            }
+
+            if (userProjectViewModel.status != null)
+            {
+                productivityData = productivityData.Where(s => s.status == userProjectViewModel.status);
+            }
+
+            if (userProjectViewModel.department_id != null)
+            {
+                productivityData = productivityData.Where(s => s.department_id == userProjectViewModel.department_id);
+            }
+
+            if (userProjectViewModel.to_date != null)
+            {
+                if (Convert.ToDateTime(userProjectViewModel.to_date) != DateTime.MinValue)
+                {
+                    DateTime to = Convert.ToDateTime(userProjectViewModel.to_date);
+                    productivityData = productivityData.Where(s => s.working_date <= to);
+                }
+            }
+
             List<UserProjectViewModel> productivityResult = productivityData.OrderByDescending(s=>s.working_date).ToList();
 
             int row = 2;
@@ -902,7 +936,7 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("E{0}", row)].Value = item.no_of_numbers;
                 Sheet.Cells[string.Format("F{0}", row)].Value = item.substation;
                 Sheet.Cells[string.Format("G{0}", row)].Value = item.productivity_type == 1?"Normal": "OverTime";
-                Sheet.Cells[string.Format("H{0}", row)].Value = item.part_id;
+                Sheet.Cells[string.Format("H{0}", row)].Value = item.part_id != null? item.part_id:item.part_name != null?item.part_name:"";
                 Sheet.Cells[string.Format("I{0}", row)].Value = item.equipment_quantity;
 
                 if (item.mvoh == null || item.mvoh == 0)

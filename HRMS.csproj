@@ -398,6 +398,10 @@
     <Compile Include="Migrations\202204261227510_updateProductivity.Designer.cs">
       <DependentUpon>202204261227510_updateProductivity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204271838093_updateUserProject1.cs" />
+    <Compile Include="Migrations\202204271838093_updateUserProject1.Designer.cs">
+      <DependentUpon>202204271838093_updateUserProject1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -4323,6 +4327,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204261227510_updateProductivity.resx">
       <DependentUpon>202204261227510_updateProductivity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204271838093_updateUserProject1.resx">
+      <DependentUpon>202204271838093_updateUserProject1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

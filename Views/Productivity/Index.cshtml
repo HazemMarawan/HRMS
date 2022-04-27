@@ -67,17 +67,17 @@
             @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
         </div>
         <div class="form-group col-md-4">
-            <select class="form-control" id="search_area_id" name="search_area_id">
+            <select class="form-control" id="search_area_id" name="area_id">
                 <option value="">Select Area</option>
             </select>
         </div>
         <div class="form-group col-md-4">
-            <select class="form-control" id="search_part_id" name="search_part_id">
+            <select class="form-control" id="search_part_id" name="part_id_fk">
                 <option value="">Select Part</option>
             </select>
         </div>
         <div class="form-group col-md-4">
-            @Html.DropDownList("search_task_id", new SelectList(ViewBag.Tasks, "id", "name"), "Select Task", new { @class = "form-control", @name = "search_task_id", @style = "width:100%", @id = "search_task_id" })
+            @Html.DropDownList("task_id", new SelectList(ViewBag.Tasks, "id", "name"), "Select Task", new { @class = "form-control", @name = "search_task_id", @style = "width:100%", @id = "search_task_id" })
         </div>
         <div class="form-group col-md-4">
             <select class="form-control" name="productivity_type" id="search_productivity_type">
@@ -100,7 +100,7 @@
             <input class="form-control" type="date" id="to_date" name="to_date">
         </div>
         <div class="form-group col-md-4">
-            <select class="form-control" name="search_status" id="search_status">
+            <select class="form-control" name="status" id="search_status">
                 <option value="">Select Status</option>
                 <option value="1">PendingApprove</option>
                 <option value="2">Approved</option>
@@ -513,7 +513,7 @@
                                 var html = "";
                                 var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
-                                if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') || oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isTechnicalManager == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
+                                if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isTechnicalManager == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
                                 }

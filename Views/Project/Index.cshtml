@@ -33,6 +33,22 @@
                                 <label>End Date</label>
                                 <input required name="end_date" id="end_date" type="date" class="form-control radius-30" />
                             </div>
+                            <div class="form-group col-md-6">
+                                <label>MVOH</label>
+                                <input name="mvoh" id="mvoh" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>LVOH</label>
+                                <input name="lvoh" id="lvoh" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>MVUG</label>
+                                <input name="mvug" id="mvug" type="number" step=".01" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>LVUG</label>
+                                <input name="lvug" id="lvug" type="number" step=".01" class="form-control radius-30" />
+                            </div>
                             <div class="form-group col-md-12">
                                 <label>Status</label>
                                 <select class="form-control" name="active" id="active">
@@ -103,6 +119,7 @@
                         <th>Name</th>
                         <th>Type</th>
                         <th>Areas</th>
+                        <th>Info</th>
                         <th>Active</th>
                         <th>Date</th>
                         <th></th>
@@ -185,6 +202,25 @@
                                 else {
                                     html += "-";
                                 }
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "mvoh", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.mvoh || oData.lvoh || oData.mvug || oData.lvug) {
+                                    if (oData.mvoh)
+                                        html += "<b>MVOH: </b>" + oData.mvoh + "<br>";
+                                    if (oData.lvoh)
+                                        html += "<b>LVOH: </b>" + oData.lvoh + "<br>";
+                                    if (oData.mvug)
+                                        html += "<b>MVUG: </b>" + oData.mvug + "<br>";
+                                    if (oData.lvug)
+                                        html += "<b>LVUG: </b>" + oData.lvug + "<br>";
+                                }
+                                else
+                                    html += "-";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -280,6 +316,10 @@
                         dialog.find('#name').val(data.name);
                         dialog.find('#start_date').val(fixDate(data.start_date));
                         dialog.find('#end_date').val(fixDate(data.end_date));
+                        dialog.find("#mvoh").val(data.mvoh);
+                        dialog.find("#lvoh").val(data.lvoh);
+                        dialog.find("#mvug").val(data.mvug);
+                        dialog.find("#lvug").val(data.lvug);
                         dialog.find('#project_type_id option[value=' + data.project_type_id + ']').attr('selected', 'selected');
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
 

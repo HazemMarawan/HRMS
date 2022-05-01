@@ -17,6 +17,10 @@ namespace HRMS.Models
         public ProjectType ProjectType { get; set; }
         public DateTime? start_date { get; set; }
         public DateTime? end_date { get; set; }
+        public double? mvoh { get; set; }
+        public double? lvoh { get; set; }
+        public double? mvug { get; set; }
+        public double? lvug { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

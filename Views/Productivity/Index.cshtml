@@ -64,7 +64,7 @@
             <input type="hidden" name="branch_id" id="branch_id" value="@ViewBag.branchId" />
         }
         <div class="form-group col-md-4">
-            @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
+            @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id" })
         </div>
         <div class="form-group col-md-4">
             <select class="form-control" id="search_area_id" name="area_id">

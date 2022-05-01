@@ -93,6 +93,10 @@ namespace HRMS.Controllers
                 Area area = db.Areas.Find(areaViewModel.id);
                 area.name = areaViewModel.name;
                 area.active = areaViewModel.active;
+                area.mvoh = areaViewModel.mvoh;
+                area.lvoh = areaViewModel.lvoh;
+                area.lvug = areaViewModel.lvug;
+                area.mvug = areaViewModel.mvug;
                 area.updated_at = DateTime.Now;
                 area.updated_by = user.id;
 

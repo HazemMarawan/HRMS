@@ -20,6 +20,82 @@ namespace HRMS.Controllers
         // GET: Dashboard
         public ActionResult Index()
         {
+            User currentUser = Session["user"] as User;
+
+            if (Request.IsAjaxRequest())
+            {
+                var draw = Request.Form.GetValues("draw").FirstOrDefault();
+                var start = Request.Form.GetValues("start").FirstOrDefault();
+                var length = Request.Form.GetValues("length").FirstOrDefault();
+                var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                var search_project_id = Request.Form.GetValues("columns[0][search][value]")[0];
+           
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
+                var sortColumnDir = Request.Form.GetValues("order[0][dir]").FirstOrDefault();
+
+                // Getting all data    
+                var productivityData = (from project in db.Projects
+                                        
+                                        select new UserProjectViewModel
+                                        {
+                                            id = project.id,
+                                            project_name = project.name,
+                                            mvoh = project.mvoh,
+                                            lvoh = project.lvoh,
+                                            mvug = project.mvug,
+                                            lvug = project.lvug,
+                                            equipment_quantity = project.equipment_quantity,
+                                            mvohSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.mvoh).ToList().Sum(),
+                                            lvohSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.lvoh).ToList().Sum(),
+                                            mvugSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.mvug).ToList().Sum(),
+                                            lvugSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.lvug).ToList().Sum(),
+                                            equipment_quantitySum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.equipment_quantity).ToList().Sum(),
+                                            active = project.active
+                                        }).Where(n => n.active == (int)RowStatus.ACTIVE);
+                //).Where(up => up == (int)RowStatus.ACTIVE
+                //if(HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+                //{
+                //    if (HRMS.Auth.isA.SuperAdmin())
+                //    {
+                //        productivityData = productivityData.Where(p => p.user_id != currentUser.id && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader || p.type == (int)UserRole.BranchAdmin));
+                //        if (currentUser.branch_id != null)
+                //        {
+                //            productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id);
+                //        }
+                //    }
+
+                //    if (HRMS.Auth.isA.BranchAdmin())
+                //    {
+                //        productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
+                //    }
+                //}
+                //else
+                //{
+
+                //}
+
+
+
+
+                //total number of rows count     
+                var displayResult = productivityData.OrderByDescending(u => u.id).Skip(skip)
+                     .Take(pageSize).ToList();
+                var totalRecords = productivityData.Count();
+
+                return Json(new
+                {
+                    draw = draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = totalRecords,
+                    data = displayResult,
+                    
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+
+
             return View();
         }
         [HttpGet]
@@ -35,7 +111,7 @@ namespace HRMS.Controllers
             SqlConnection sql = new SqlConnection(cs);
             sql.Open();
             string query = String.Empty;
-            if (isA.Employee() || isA.TeamLeader() || isA.TeamLeader())
+            if (isA.Employee() || isA.TeamLeader())
             {
                 query = @"select concat(month(working_date),'-',year(working_date)) as date_of_work,sum(no_of_numbers) as number_of_hours from UserProjects
                                             where user_id = " + Session["id"].ToString() + @"

@@ -39,6 +39,11 @@ namespace HRMS.ViewModels
         public double? distribution_box { get; set; }
         public double? rmu { get; set; }
         public double? switchh { get; set; }
+        public double? mvohSum { get; set; }
+        public double? lvohSum { get; set; }
+        public double? mvugSum { get; set; }
+        public double? lvugSum { get; set; }
+        public double? equipment_quantitySum { get; set; }
         public double? mvoh_target { get; set; }
         public double? lvoh_target { get; set; }
         public double? mvug_target { get; set; }
@@ -51,6 +56,7 @@ namespace HRMS.ViewModels
         public double? switchh_target { get; set; }
         public double? cost { get; set; }
         public string note { get; set; }
+        public int? active { get; set; }
         public int? status { get; set; }
         public int? approved_by { get; set; }
         public int? rejected_by { get; set; }

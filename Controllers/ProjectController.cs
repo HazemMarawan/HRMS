@@ -46,6 +46,7 @@ namespace HRMS.Controllers
                                            lvoh = project.lvoh,
                                            mvug = project.mvug,
                                            lvug = project.lvug,
+                                           equipment_quantity = project.equipment_quantity,
                                            created_at = project.created_at,
                                            active = project.active,
                                            areas = db.Areas.Where(a=>a.project_id == project.id && a.active == (int)RowStatus.ACTIVE).Select(a=>new AreaViewModel
@@ -128,6 +129,7 @@ namespace HRMS.Controllers
                 oldProject.lvoh = projectViewModel.lvoh;
                 oldProject.lvug = projectViewModel.lvug;
                 oldProject.mvug = projectViewModel.mvug;
+                oldProject.equipment_quantity = projectViewModel.equipment_quantity;
                 oldProject.active = projectViewModel.active;
                 oldProject.updated_by = Session["id"].ToString().ToInt();
                 oldProject.updated_at = DateTime.Now;

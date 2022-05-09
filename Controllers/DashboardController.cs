@@ -47,10 +47,10 @@ namespace HRMS.Controllers
                                             mvug = project.mvug,
                                             lvug = project.lvug,
                                             equipment_quantity = project.equipment_quantity,
-                                            mvohSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.mvoh).ToList().Sum(),
-                                            lvohSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.lvoh).ToList().Sum(),
-                                            mvugSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.mvug).ToList().Sum(),
-                                            lvugSum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.lvug).ToList().Sum(),
+                                            mvohSum = db.UserProjects.Where(up => up.project_id == project.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.mvoh).ToList().Sum(),
+                                            lvohSum = db.UserProjects.Where(up => up.project_id == project.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.lvoh).ToList().Sum(),
+                                            mvugSum = db.UserProjects.Where(up => up.project_id == project.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.mvug).ToList().Sum(),
+                                            lvugSum = db.UserProjects.Where(up => up.project_id == project.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.lvug).ToList().Sum(),
                                             equipment_quantitySum = db.UserProjects.Where(up => up.project_id == project.id).Select(up => up.equipment_quantity).ToList().Sum(),
                                             active = project.active
                                         }).Where(n => n.active == (int)RowStatus.ACTIVE);
@@ -133,12 +133,12 @@ namespace HRMS.Controllers
             }
             SqlCommand comm = new SqlCommand(query, sql);
             SqlDataReader reader = comm.ExecuteReader();
-            List<int> no_of_hours = new List<int>();
+            List<double> no_of_hours = new List<double>();
             List<string> xAxis = new List<string>();
 
             while (reader.Read())
             {
-                no_of_hours.Add(reader["number_of_hours"].ToString().ToInt());
+                no_of_hours.Add(Convert.ToDouble(reader["number_of_hours"].ToString()));
                 xAxis.Add(reader["date_of_work"].ToString());
             }
 
@@ -190,12 +190,12 @@ namespace HRMS.Controllers
 
             SqlCommand comm = new SqlCommand(query, sql);
             SqlDataReader reader = comm.ExecuteReader();
-            List<int> no_of_hours = new List<int>();
+            List<double> no_of_hours = new List<double>();
             List<string> xAxis = new List<string>();
 
             while (reader.Read())
             {
-                no_of_hours.Add(reader["number_of_hours"].ToString().ToInt());
+                no_of_hours.Add(Convert.ToDouble(reader["number_of_hours"].ToString()));
                 xAxis.Add(reader["name"].ToString());
             }
 

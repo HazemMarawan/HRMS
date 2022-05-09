@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Employee Productivity";
 }
+@section css{
+}
 <div class="modal fade" id="manage_productivity_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
         <div class="modal-dialog modal-lg">
@@ -49,9 +51,9 @@
                                 </select>
                             </div>
                             @*<div class="form-group col-md-4">
-            <label>Part ID</label>
-            <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
-        </div>*@
+                                    <label>Part ID</label>
+                                    <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+                                </div>*@
                             <div class="form-group col-md-4">
                                 <label>Part ID</label>
                                 <select class="form-control" id="part_id_fk" name="part_id_fk" required>
@@ -440,6 +442,25 @@
                 }, function (response) {
 
                 }, function (dialog) {
+                        var todayDate = new Date();
+                        var todayDay = todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate();
+                        var todayMonth = (todayDate.getMonth() + 1) < 10 ? "0" + (todayDate.getMonth() + 1) : (todayDate.getMonth() + 1);
+                        var todayYear = todayDate.getFullYear();
+
+                        var today = todayYear + "-" + todayMonth + "-" + todayDay;
+
+                        var yesterdayDate = new Date(new Date())
+                        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+
+                        var yesterdayDay = yesterdayDate.getDate() < 10 ? "0" + yesterdayDate.getDate() : yesterdayDate.getDate();
+                        var yesterdayMonth = (yesterdayDate.getMonth() + 1) < 10 ? "0" + (yesterdayDate.getMonth() + 1) : (yesterdayDate.getMonth() + 1);
+                        var yesterdayYear = yesterdayDate.getFullYear();
+
+                        var yesterday = yesterdayYear + "-" + yesterdayMonth + "-" + yesterdayDay;
+
+                        dialog.find("#working_date").attr('min', yesterday);
+                        dialog.find("#working_date").attr('max', today);
+
 
                         $(document).on("change", "#project_id", function () {
                             var project_id = $(this).val();
@@ -537,6 +558,9 @@
                         dialog.find('#rmu').val(data.rmu);
                         dialog.find('#switchh').val(data.switchh);
                         dialog.find('#note').text(data.note);
+
+                        dialog.find('#working_date').attr('readonly', true);
+
                         var area_id = data.area_id;
                             var project_id = data.project_id;
                             dialog.find("#area_id").empty();

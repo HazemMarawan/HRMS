@@ -1,0 +1,202 @@
+﻿@{
+    ViewBag.Title = "Project Areas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css
+{
+}
+
+<div class="page-header">
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            @if (ViewBag.ProjectId != null)
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
+                <li class="breadcrumb-item">@ViewBag.ProjectName</li>
+            }
+            else
+            {
+                <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
+            }
+            <li class="breadcrumb-item active" aria-current="page" style="font-weight:bold;">Areas</li>
+
+        </ol>
+    </nav>
+</div>
+@*<div class="row">
+        <div class="form-group col-4">
+            <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
+        </div>
+        <div class="form-group col-2">
+            <button id="search" class="btn btn-primary px-3 radius-30">Search</button>
+        </div>
+        <div class="form-group col-2">
+            <button id="reset" class="btn btn-danger px-3 radius-30">Reset</button>
+        </div>
+
+    </div>*@
+<div class="card">
+    <div class="card-header">
+        @if (ViewBag.ProjectId != null)
+        {
+            @ViewBag.ProjectName
+        }
+        <span>Areas Details</span>
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="areasDetailsTable" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>MVOH</th>
+                        <th>LVOH</th>
+                        <th>MVUG</th>
+                        <th>LVUG</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+        var datatable = $('#areasDetailsTable')
+               .DataTable({/* we added this from the other system to have same search and same pagination*/
+                   "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                       "<'table-responsive  'tr>" +
+                       "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                   "buttons": {
+                       buttons: [
+                           { extend: 'copy', className: 'btn btn-sm' },
+                           { extend: 'csv', className: 'btn btn-sm' },
+                           { extend: 'excel', className: 'btn btn-sm' },
+                           { extend: 'print', className: 'btn btn-sm' }
+                       ]
+                   },
+                   "oLanguage": {
+                       "oPaginate": { "sPrevious": 'Perivous', "sNext": 'Next' },
+                       "sInfo": "Showing page _PAGE_ of _PAGES_",
+                       "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                       "sSearchPlaceholder": "Search...",
+                       "sLengthMenu": "Results :  _MENU_",
+                   },
+                    "processing": true,
+                    "serverSide": true,
+                    "scrollX": true,
+                    "stateSave": false,
+                    "lengthChange": false,
+                    "dom": 'Bfrtip',
+
+                    "buttons": ['copy', 'excel', 'pdf', 'print'],
+                    "pageLength":10,
+                    "rowId": 'id',
+                    "ajax": {
+                        "url": "@Url.Action("AreasDetails", "Project")?id=@ViewBag.ProjectId",
+                        "type": "POST",
+                        "datatype": "json",
+                        "dataSrc": "data"
+                    },
+                    "columns": [
+                        {
+                            "data": "name",
+                            "searchable": true
+                        },
+                        {
+                            "data": "mvoh", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                if (oData.mvoh)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.mvoh + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
+                                if (oData.mvoh_sum > 0)
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.mvoh_sum.toFixed(2) + "</span><br>";
+                                if (oData.mvoh_sum > 0)
+                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.mvoh_sum / oData.mvoh) * 100).toFixed(1) + "%</span><br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "lvoh", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                if (oData.lvoh)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.lvoh + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
+                                if (oData.lvoh_sum > 0)
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.lvoh_sum.toFixed(2) + "</span><br>";
+                                if (oData.lvoh_sum > 0)
+                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.lvoh_sum / oData.lvoh) * 100).toFixed(1) + "%</span><br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "mvug", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                if (oData.mvug)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.mvug + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
+                                if (oData.mvug_sum > 0)
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.mvug_sum.toFixed(2) + "</span><br>";
+                                if (oData.mvug_sum > 0)
+                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.mvug_sum / oData.mvug) * 100).toFixed(1) + "%</span><br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "lvug", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                if (oData.lvug)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.lvug + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
+                                if (oData.lvug_sum > 0)
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.lvug_sum.toFixed(2) + "</span><br>";
+                                if (oData.lvug_sum > 0)
+                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.lvug_sum / oData.lvug) * 100).toFixed(1) + "%</span><br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                    ]
+                 });
+
+            //$('#search').on('click', function () {
+            //    datatable.search($("#text_search").val());
+            //    datatable.draw();
+            //});
+
+            //$('#text_search').on('keyup', function (e) {
+            //    if (e.keyCode == 13)
+            //        $('#search_button').trigger('click');
+            //});
+
+            //$('#reset').on('click', function () {
+            //    $("#text_search").val("");
+
+            //    $('#search').trigger('click');
+
+            //});
+        });
+
+    </script>
+}
+

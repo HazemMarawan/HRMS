@@ -4,8 +4,8 @@
 }
 @section css
 {
-    <link href="~/Content/AdminPanelAssets/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/AdminPanelAssets/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/LTR/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/LTR/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
 }
 <div class="row">
     @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
@@ -128,7 +128,7 @@
         </div>
     </div>
 }
-@if(!HRMS.Auth.isA.Employee()) {
+@if(HRMS.Auth.isA.SuperAdmin()) {
     <div class="card">
         <div class="card-header">
             Projects Statistics
@@ -144,7 +144,8 @@
                             <th>LVOH</th>
                             <th>MVUG</th>
                             <th>LVUG</th>
-                            <th>Equipment Quantity</th>
+                            @*<th>Equipment Quantity</th>*@
+                            <th></th>
                         </tr>
                     </thead>
                 </table>
@@ -205,9 +206,13 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<span class='badge badge-info'><b>Total: </b>" + oData.mvoh + "</span><br>";
+                                if (oData.mvoh)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.mvoh + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
                                 if (oData.mvohSum > 0)
-                                html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.mvohSum + "</span><br>";
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.mvohSum.toFixed(2) + "</span><br>";
                                 if (oData.mvohSum > 0)
                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.mvohSum / oData.mvoh) * 100).toFixed(1) + "%</span><br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
@@ -218,9 +223,13 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<span class='badge badge-info'><b>Total: </b>" + oData.lvoh + "</span><br>";
+                                if (oData.lvoh)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.lvoh + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
                                 if (oData.lvohSum > 0)
-                                html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.lvohSum + "</span><br>";
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.lvohSum.toFixed(2) + "</span><br>";
                                 if (oData.lvohSum > 0)
                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.lvohSum / oData.lvoh) * 100).toFixed(1) + "%</span><br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
@@ -231,9 +240,13 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<span class='badge badge-info'><b>Total: </b>" + oData.mvug + "</span><br>";
+                                if (oData.mvug)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.mvug + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
                                 if (oData.mvugSum > 0)
-                                html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.mvugSum + "</span><br>";
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.mvugSum.toFixed(2) + "</span><br>";
                                 if (oData.mvugSum > 0)
                                     html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.mvugSum / oData.mvug) * 100).toFixed(1) + "%</span><br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
@@ -244,24 +257,37 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<span class='badge badge-info'><b>Total: </b>" + oData.lvug + "</span><br>";
+                                if (oData.lvug)
+                                    html += "<span class='badge badge-info'><b>Total: </b>" + oData.lvug + "</span><br>";
+                                else
+                                    html += "<span class='badge badge-info'><b>Total: </b>-</span><br>";
+
                                 if (oData.lvugSum > 0)
-                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.lvugSum + "</span><br>";
+                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.lvugSum.toFixed(2) + "</span><br>";
                                 if (oData.lvugSum > 0)
                                     html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.lvugSum / oData.lvug) * 100).toFixed(1) + "%</span><br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
+                        //{
+                        //    "data": "equipment_quantity", "searchable": true,
+                        //    fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                        //        var html = "";
+
+                        //        html += "<span class='badge badge-info'><b>Total: </b>" + oData.equipment_quantity + "</span><br>";
+                        //        if (oData.equipment_quantitySum > 0)
+                        //            html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.equipment_quantitySum.toFixed(2) + "</span><br>";
+                        //        if (oData.equipment_quantitySum > 0)
+                        //            html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.equipment_quantitySum / oData.equipment_quantity) * 100).toFixed(1) + "%</span><br>";
+                        //        $(nTd).html("<span class='action-column'>" + html + "</span>");
+                        //    }
+                        //},
                         {
                             "data": "equipment_quantity", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<span class='badge badge-info'><b>Total: </b>" + oData.equipment_quantity + "</span><br>";
-                                if (oData.equipment_quantitySum > 0)
-                                    html += "<span class='badge badge-success'><b>Achieved: </b>" + oData.equipment_quantitySum + "</span><br>";
-                                if (oData.equipment_quantitySum > 0)
-                                    html += "<span class='badge badge-dark'><b>Percentage: </b>" + ((oData.equipment_quantitySum / oData.equipment_quantity) * 100).toFixed(1) + "%</span><br>";
+                                html += `<a title="Details" href="/Project/AreasDetails?id=${oData.id}"><i class="fas fa-info-circle"></i></a>`;
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

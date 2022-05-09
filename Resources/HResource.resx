@@ -147,6 +147,9 @@
   <data name="IDTypes" xml:space="preserve">
     <value>أنواع اثبات الشخصية</value>
   </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>الرصيد الأفتتاحي</value>
+  </data>
   <data name="InternalMessaging" xml:space="preserve">
     <value>المراسلات الداخلية</value>
   </data>

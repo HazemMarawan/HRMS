@@ -450,6 +450,7 @@
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\EmailAttachmentViewModel.cs" />
     <Compile Include="ViewModels\EmailViewModel.cs" />
+    <Compile Include="ViewModels\GeneralUploadViewModel.cs" />
     <Compile Include="ViewModels\IDTypeViewModel.cs" />
     <Compile Include="ViewModels\JobViewModel.cs" />
     <Compile Include="ViewModels\MailboxViewModel.cs" />
@@ -4158,10 +4159,12 @@
     <Content Include="Views\Task\Index.cshtml" />
     <Content Include="Views\Area\Index.cshtml" />
     <Content Include="Views\Project\AreasDetails.cshtml" />
+    <Content Include="Views\VacationRequest\InitialBalance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Uploads\Email\Attachments\" />
+    <Folder Include="Uploads\EmployeeBalanceSheet\" />
     <Folder Include="Uploads\Profile\" />
     <Folder Include="Uploads\SalaryBatches\" />
     <Folder Include="Views\Base\" />

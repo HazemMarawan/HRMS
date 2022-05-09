@@ -8,6 +8,12 @@ using HRMS.ViewModels;
 using HRMS.Auth;
 using HRMS.Helpers;
 using HRMS.Enums;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using System.IO;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Data;
 
 namespace HRMS.Controllers
 {
@@ -751,6 +757,342 @@ namespace HRMS.Controllers
             db.SaveChanges();
 
             return Json(new { msg = "done" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult InitialBalance()
+        {
+            if (!isA.BranchAdmin())
+                return RedirectToAction("Index", "Dashboard");
+
+            return View();
+        }
+        public void ExportEmployeeBalanceSheet()
+        {
+            User currentUser = Session["user"] as User;
+
+            ExcelPackage Ep = new ExcelPackage();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Employee Balance Sheet" + DateTime.Now.Month + "-" + DateTime.Now.Year);
+
+            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
+            System.Drawing.Color redColor = System.Drawing.ColorTranslator.FromHtml("#FF0000");
+            System.Drawing.Color warningColor = System.Drawing.ColorTranslator.FromHtml("#FFA000");
+            System.Drawing.Color greenColor = System.Drawing.ColorTranslator.FromHtml("#00FF00");
+            Sheet.Cells["A1:H1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:H1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            Sheet.Cells["A1:H1"].Style.Font.Color.SetColor(text);
+
+            Sheet.Cells["A1"].Value = "م";
+            Sheet.Cells["B1"].Value = "اسم الموظف";
+            Sheet.Cells["C1"].Value = "أعتيادي";
+            Sheet.Cells["D1"].Value = "عرضة";
+            Sheet.Cells["E1"].Value = "مرضي";
+            Sheet.Cells["F1"].Value = "زواج";
+            Sheet.Cells["G1"].Value = "عمل من المنزل";
+            Sheet.Cells["H1"].Value = "وفاه";
+           
+
+            var userData = (from user in db.Users
+                            join idtype in db.IDTypes on user.id_type equals idtype.id
+                            join nationality in db.Nationalities on user.nationality_id equals nationality.id
+                            join bran in db.Branches on user.branch_id equals bran.id into br
+                            from branch in br.DefaultIfEmpty()
+                            join department in db.Departments on user.department_id equals department.id
+                            join job in db.Jobs on user.job_id equals job.id
+                            select new UserViewModel
+                            {
+                                id = user.id,
+                                code = user.code,
+                                attendance_code = user.attendance_code,
+                                user_name = user.user_name,
+                                full_name = user.full_name,
+                                first_name = user.first_name,
+                                middle_name = user.middle_name,
+                                last_name = user.last_name,
+                                password = user.password,
+                                id_type = user.id_type,
+                                id_type_name = idtype.name,
+                                id_number = user.id_number,
+                                birth_date = user.birth_date,
+                                last_salary = user.last_salary,
+                                last_hour_price = user.last_hour_price,
+                                last_over_time_price = user.last_over_time_price,
+                                required_productivity = user.required_productivity,
+                                phone = user.phone,
+                                address = user.address,
+                                nationality_id = user.nationality_id,
+                                team_leader_id = user.team_leader_id,
+                                nationality_name = nationality.name,
+                                branch_id = user.branch_id,
+                                branch_name = branch.name,
+                                department_id = user.department_id,
+                                department_name = department.name,
+                                job_id = user.job_id,
+                                job_name = job.name,
+                                gender = user.gender,
+                                hiring_date = user.hiring_date,
+                                vacations_balance = user.vacations_balance,
+                                imagePath = user.image,
+                                notes = user.notes,
+                                type = user.type,
+                                active = user.active
+                            }).Where(s => s.active == (int)RowStatus.ACTIVE && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager || s.type == (int)UserRole.BranchAdmin) && s.branch_id == currentUser.branch_id);
+
+            List<UserViewModel> employees = userData.ToList();
+
+            int row = 2;
+            foreach (var item in employees)
+            {
+
+                Sheet.Cells[string.Format("A{0}", row)].Value = item.id;
+                Sheet.Cells[string.Format("B{0}", row)].Value = item.full_name;
+                Sheet.Cells[string.Format("C{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("D{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("E{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("F{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("G{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("H{0}", row)].Value = "0";
+
+
+                row++;
+            }
+
+            row++;
+
+            Sheet.Cells["A:AZ"].AutoFitColumns();
+
+            Response.Clear();
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment: filename=" + DateTime.Now.ToString() + "Report.xlsx");
+            Response.BinaryWrite(Ep.GetAsByteArray());
+            Response.End();
+        }
+
+        public JsonResult ImportEmployeeBalanceSheet(GeneralUploadViewModel generalUploadViewModel)
+        {
+            User currentUser = Session["user"] as User;
+
+            Guid guid = Guid.NewGuid();
+            var InputFileName = Path.GetFileName(generalUploadViewModel.file.FileName);
+            var ServerSavePath = Path.Combine(Server.MapPath("~/Uploads/EmployeeBalanceSheet/") + guid.ToString() + "_EBS" + Path.GetExtension(generalUploadViewModel.file.FileName));
+            generalUploadViewModel.file.SaveAs(ServerSavePath);
+
+            
+            //Save the uploaded Excel file.
+
+            //Open the Excel file in Read Mode using OpenXml.
+            using (SpreadsheetDocument doc = SpreadsheetDocument.Open(ServerSavePath, false))
+            {
+                //Read the first Sheet from Excel file.
+                Sheet sheet = doc.WorkbookPart.Workbook.Sheets.GetFirstChild<Sheet>();
+
+                //Get the Worksheet instance.
+                Worksheet worksheet = (doc.WorkbookPart.GetPartById(sheet.Id.Value) as WorksheetPart).Worksheet;
+
+                //Fetch all the rows present in the Worksheet.
+                IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Descendants<Row>();
+
+                //Create a new DataTable.
+                DataTable dt = new DataTable();
+
+                //Loop through the Worksheet rows.
+                foreach (Row row in rows)
+                {
+                    //Use the first row to add columns to DataTable.
+                    if (row.RowIndex.Value == 1)
+                    {
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            dt.Columns.Add(GetValue(doc, cell));
+                        }
+                    }
+                    else
+                    {
+                        //Add rows to DataTable.
+                        dt.Rows.Add();
+                        int i = 0;
+                        foreach (Cell cell in row.Descendants<Cell>())
+                        {
+                            dt.Rows[dt.Rows.Count - 1][i] = GetValue(doc, cell);
+                            i++;
+                        }
+                    }
+                }
+                List<VacationRequest> importedVacationRequests = new List<VacationRequest>();
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    int currentImportedUserId = dt.Rows[i][0].ToString().ToInt();
+
+                    User currentImportedUser = db.Users.Find(currentImportedUserId);
+                    if (currentUser.vacations_balance == null)
+                    {
+                        currentImportedUser.vacations_balance = 21;
+                        db.SaveChanges();
+                    }
+
+                    VacationYear vacationYear = new VacationYear();
+                    if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentImportedUserId).Any())
+                    {
+                        vacationYear.year = DateTime.Now.Year;
+                        vacationYear.user_id = currentImportedUserId;
+                        vacationYear.vacation_balance = currentImportedUser.vacations_balance;
+                        vacationYear.remaining = vacationYear.vacation_balance;
+                        vacationYear.a3tyady_vacation_counter = 0;
+                        vacationYear.arda_vacation_counter = 0;
+                        vacationYear.medical_vacation_counter = 0;
+                        vacationYear.married_vacation_counter = 0;
+                        vacationYear.work_from_home_vacation_counter = 0;
+                        vacationYear.death_vacation_counter = 0;
+                        vacationYear.active = 1;
+                        vacationYear.created_by = currentUser.id;
+                        vacationYear.created_at = DateTime.Now;
+
+                        db.VacationYears.Add(vacationYear);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        vacationYear = db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentImportedUserId).FirstOrDefault();
+                        vacationYear.vacation_balance = db.Users.Find(currentUser.id).vacations_balance;
+                        db.SaveChanges();
+                    }
+
+                    if (dt.Rows[i][2].ToString().ToInt() != 0)
+                    {
+                        VacationRequest vacationRequest = new VacationRequest();
+                        vacationRequest.id = 0;
+                        vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
+                        vacationRequest.vacation_type_id = 3;
+                        vacationRequest.year = DateTime.Now.Year;
+                        vacationRequest.days = dt.Rows[i][2].ToString().ToInt();
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                        vacationRequest.active = (int)RowStatus.ACTIVE;
+                        vacationRequest.created_by = currentUser.id;
+                        vacationRequest.created_at = DateTime.Now;
+
+                        vacationYear.a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter != null ? vacationYear.a3tyady_vacation_counter + dt.Rows[i][2].ToString().ToInt() : dt.Rows[i][2].ToString().ToInt();
+                        db.SaveChanges();
+
+                        importedVacationRequests.Add(vacationRequest);
+
+                    }
+
+                    if (dt.Rows[i][3].ToString().ToInt() != 0)
+                    {
+                        VacationRequest vacationRequest = new VacationRequest();
+                        vacationRequest.id = 0;
+                        vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
+                        vacationRequest.vacation_type_id = 4;
+                        vacationRequest.year = DateTime.Now.Year;
+                        vacationRequest.days = dt.Rows[i][3].ToString().ToInt();
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                        vacationRequest.active = (int)RowStatus.ACTIVE;
+                        vacationRequest.created_by = currentUser.id;
+                        vacationRequest.created_at = DateTime.Now;
+
+                        vacationYear.arda_vacation_counter = vacationYear.arda_vacation_counter != null ? vacationYear.arda_vacation_counter + dt.Rows[i][3].ToString().ToInt() : dt.Rows[i][3].ToString().ToInt();
+                        db.SaveChanges();
+
+                        importedVacationRequests.Add(vacationRequest);
+
+                    }
+
+                    if (dt.Rows[i][4].ToString().ToInt() != 0)
+                    {
+                        VacationRequest vacationRequest = new VacationRequest();
+                        vacationRequest.id = 0;
+                        vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
+                        vacationRequest.vacation_type_id = 5;
+                        vacationRequest.year = DateTime.Now.Year;
+                        vacationRequest.days = dt.Rows[i][4].ToString().ToInt();
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                        vacationRequest.active = (int)RowStatus.ACTIVE;
+                        vacationRequest.created_by = currentUser.id;
+                        vacationRequest.created_at = DateTime.Now;
+
+                        vacationYear.medical_vacation_counter = vacationYear.medical_vacation_counter != null ? vacationYear.medical_vacation_counter + dt.Rows[i][4].ToString().ToInt() : dt.Rows[i][4].ToString().ToInt();
+                        db.SaveChanges();
+
+                        importedVacationRequests.Add(vacationRequest);
+
+                        
+                    }
+
+                    if (dt.Rows[i][5].ToString().ToInt() != 0)
+                    {
+                        VacationRequest vacationRequest = new VacationRequest();
+                        vacationRequest.id = 0;
+                        vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
+                        vacationRequest.vacation_type_id = 6;
+                        vacationRequest.year = DateTime.Now.Year;
+                        vacationRequest.days = dt.Rows[i][5].ToString().ToInt();
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                        vacationRequest.active = (int)RowStatus.ACTIVE;
+                        vacationRequest.created_by = currentUser.id;
+                        vacationRequest.created_at = DateTime.Now;
+
+                        vacationYear.married_vacation_counter = vacationYear.married_vacation_counter != null ? vacationYear.married_vacation_counter + dt.Rows[i][5].ToString().ToInt() : dt.Rows[i][5].ToString().ToInt();
+                        db.SaveChanges();
+
+                        importedVacationRequests.Add(vacationRequest);
+                    }
+
+                    if (dt.Rows[i][6].ToString().ToInt() != 0)
+                    {
+                        VacationRequest vacationRequest = new VacationRequest();
+                        vacationRequest.id = 0;
+                        vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
+                        vacationRequest.vacation_type_id = 7;
+                        vacationRequest.year = DateTime.Now.Year;
+                        vacationRequest.days = dt.Rows[i][6].ToString().ToInt();
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                        vacationRequest.active = (int)RowStatus.ACTIVE;
+                        vacationRequest.created_by = currentUser.id;
+                        vacationRequest.created_at = DateTime.Now;
+
+                        vacationYear.work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter != null ? vacationYear.work_from_home_vacation_counter + dt.Rows[i][6].ToString().ToInt() : dt.Rows[i][6].ToString().ToInt();
+                        db.SaveChanges();
+
+                        importedVacationRequests.Add(vacationRequest);
+                    }
+
+                    if (dt.Rows[i][7].ToString().ToInt() != 0)
+                    {
+                        VacationRequest vacationRequest = new VacationRequest();
+                        vacationRequest.id = 0;
+                        vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
+                        vacationRequest.vacation_type_id = 8;
+                        vacationRequest.year = DateTime.Now.Year;
+                        vacationRequest.days = dt.Rows[i][6].ToString().ToInt();
+                        vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
+                        vacationRequest.active = (int)RowStatus.ACTIVE;
+                        vacationRequest.created_by = currentUser.id;
+                        vacationRequest.created_at = DateTime.Now;
+
+                        vacationYear.death_vacation_counter = vacationYear.death_vacation_counter != null ? vacationYear.death_vacation_counter + dt.Rows[i][7].ToString().ToInt() : dt.Rows[i][7].ToString().ToInt();
+                        db.SaveChanges();
+
+                        importedVacationRequests.Add(vacationRequest);
+                    }
+
+                }
+                db.VacationRequests.AddRange(importedVacationRequests);
+                db.SaveChanges();
+            }
+
+            return Json(new { msg = "done" }, JsonRequestBehavior.AllowGet);
+        }
+
+        private string GetValue(SpreadsheetDocument doc, Cell cell)
+        {
+            string value = cell.CellValue.InnerText;
+            if (cell.DataType != null && cell.DataType.Value == CellValues.SharedString)
+            {
+                return doc.WorkbookPart.SharedStringTablePart.SharedStringTable.ChildElements.GetItem(int.Parse(value)).InnerText;
+            }
+            return value;
         }
     }
 }

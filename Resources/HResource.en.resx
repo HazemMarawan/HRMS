@@ -147,6 +147,9 @@
   <data name="IDTypes" xml:space="preserve">
     <value>ID Types</value>
   </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>Initial Balance</value>
+  </data>
   <data name="InternalMessaging" xml:space="preserve">
     <value>Internal Messaging</value>
   </data>

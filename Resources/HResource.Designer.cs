@@ -151,6 +151,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to الرصيد الأفتتاحي.
+        /// </summary>
+        public static string InitialBalance {
+            get {
+                return ResourceManager.GetString("InitialBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to المراسلات الداخلية.
         /// </summary>
         public static string InternalMessaging {

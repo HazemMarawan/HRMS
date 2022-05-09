@@ -137,9 +137,13 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 if (oData.vacation_from)
-                                    html += "<b>From: </b>" + fixDate(oData.vacation_from)+"<br>";
+                                    html += "<b>From: </b>" + fixDate(oData.vacation_from) + "<br>";
+                                else
+                                    html += "<b>From: </b>-<br>";
                                 if (oData.vacation_to)
                                     html += "<b>To: </b>" + fixDate(oData.vacation_to) + "<br>";
+                                else
+                                    html += "<b>To: </b>-<br>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

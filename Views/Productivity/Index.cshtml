@@ -562,10 +562,21 @@
 
 
             datatable.on('xhr.dt', function (e, settings, json, xhr) {
+                if (json.Hours)
+                    $("#hours_counter").text(json.Hours.toFixed(2));
+                else
+                    $("#hours_counter").text(0);
 
-                $("#hours_counter").text(json.Hours);
-                $("#projects_counter").text(json.Projects);
-                $("#employees_counter").text(json.Employees);
+                if (json.Projects)
+                    $("#projects_counter").text(json.Projects.toFixed(2));
+                else
+                    $("#projects_counter").text(0);
+
+                if (json.Employees)
+                    $("#employees_counter").text(json.Employees.toFixed(2));
+                else
+                    $("#employees_counter").text(0);
+
                 $("#cost_counter").text((addCommas(json.Cost.toFixed(2))));
                 $("#mvoh_counter").text(json.MVOH.toFixed(2));
                 $("#lvoh_counter").text(json.LVOH.toFixed(2));

@@ -323,6 +323,8 @@ namespace HRMS.Controllers
                 var length = Request.Form.GetValues("length").FirstOrDefault();
                 var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
                 var search_date = Request.Form.GetValues("columns[0][search][value]")[0];
+                var search_from = Request.Form.GetValues("columns[1][search][value]")[0];
+                var search_to = Request.Form.GetValues("columns[2][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
@@ -390,7 +392,26 @@ namespace HRMS.Controllers
                 }
                 else
                 {
-                    productivityData = productivityData.Where(s => s.id == -1);
+                   
+                    if (!string.IsNullOrEmpty(search_from) || !string.IsNullOrEmpty(search_to))
+                    {
+                        if (Convert.ToDateTime(search_from) != DateTime.MinValue)
+                        {
+                            DateTime date = Convert.ToDateTime(search_from);
+                            List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year >= date.Year && ((DateTime)us.working_date).Month >= date.Month && ((DateTime)us.working_date).Day >= date.Day).Select(us => us.user_id).ToList();
+                            productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
+                        }
+                        if (Convert.ToDateTime(search_to) != DateTime.MinValue)
+                        {
+                            DateTime date = Convert.ToDateTime(search_to);
+                            List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year <= date.Year && ((DateTime)us.working_date).Month <= date.Month && ((DateTime)us.working_date).Day <= date.Day).Select(us => us.user_id).ToList();
+                            productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
+                        }
+                    }
+                    else
+                    {
+                        productivityData = productivityData.Where(s => s.id == -1);
+                    }
                 }
 
                 if(isA.SuperAdmin())

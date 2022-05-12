@@ -61,11 +61,11 @@ namespace HRMS.Controllers
                 if(isA.SuperAdmin())
                 {
                     if (branch_id != null)
-                        salaryBatches = salaryBatches.Where(sb => sb.branch_id == branch_id && (sb.type == (int)UserRole.BranchAdmin || sb.type == (int)UserRole.TeamLeader || sb.type == (int)UserRole.TechnicalManager || sb.type == (int)UserRole.Employee));
+                        salaryBatches = salaryBatches.Where(sb => sb.branch_id == branch_id && (sb.type == (int)UserRole.BranchAdmin || sb.type == (int)UserRole.TeamLeader || sb.type == (int)UserRole.Supervisor || sb.type == (int)UserRole.Employee));
                 }
 
                 if(isA.BranchAdmin())
-                    salaryBatches = salaryBatches.Where(sb => sb.branch_id == currentUser.branch_id && (sb.type == (int)UserRole.BranchAdmin || sb.type == (int)UserRole.TeamLeader || sb.type == (int)UserRole.TechnicalManager || sb.type == (int)UserRole.Employee));
+                    salaryBatches = salaryBatches.Where(sb => sb.branch_id == currentUser.branch_id && (sb.type == (int)UserRole.BranchAdmin || sb.type == (int)UserRole.TeamLeader || sb.type == (int)UserRole.Supervisor || sb.type == (int)UserRole.Employee));
 
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
@@ -195,7 +195,7 @@ namespace HRMS.Controllers
         public ActionResult Employee()
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin() || isA.ProjectManager()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.Supervisor() || isA.BranchAdmin() || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -267,7 +267,7 @@ namespace HRMS.Controllers
             User currentUser = Session["user"] as User;
             int? user_batch_id = db.SalaryBatchDetails.Where(sb => sb.id == id).FirstOrDefault().user_id;
             
-            if (!((isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin()) && currentUser.id == user_batch_id))
+            if (!((isA.Employee() || isA.TeamLeader() || isA.Supervisor() || isA.BranchAdmin()) && currentUser.id == user_batch_id))
                 return RedirectToAction("Index", "Dashboard");
 
             SalaryBatchDetailViewModel salaryBatche = (from salary_batch in db.SalaryBatches
@@ -387,7 +387,7 @@ namespace HRMS.Controllers
                                 notes = user.notes,
                                 type = user.type,
                                 active = user.active
-                            }).Where(s => s.active == (int)RowStatus.ACTIVE && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager || s.type == (int)UserRole.BranchAdmin) && s.branch_id == currentUser.branch_id);
+                            }).Where(s => s.active == (int)RowStatus.ACTIVE && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor || s.type == (int)UserRole.BranchAdmin) && s.branch_id == currentUser.branch_id);
 
             List<UserViewModel> employees = userData.ToList();
 

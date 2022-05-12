@@ -42,7 +42,7 @@
                 <li class="breadcrumb-item"><a href="@Url.Action("Show","Branch")">Branches</a></li>
                 <li class="breadcrumb-item"><a href="@Url.Action("Details","Branch",new { id = ViewBag.branchId})">@ViewBag.branchName</a></li>
             }
-            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
+            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.ProjectManager())
             {
                 <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
             }
@@ -511,14 +511,14 @@
                             "data": "id", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
-                                var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
+                                var isSupervisor = '@HRMS.Auth.isA.Supervisor()';
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
-                                if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isTechnicalManager == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
+                                if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
                                 }
 
-                                if (oData.status != parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isTechnicalManager == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)'))))
+                                if (oData.status != parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)'))))
                                     html += "<a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp; | ";
 
                                 html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";

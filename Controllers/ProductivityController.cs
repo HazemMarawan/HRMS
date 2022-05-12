@@ -24,7 +24,7 @@ namespace HRMS.Controllers
             if (!(isA.SuperAdmin() 
                 || isA.TeamLeader() 
                 || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))
-                || isA.TechnicalManager()
+                || isA.Supervisor()
                 || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
@@ -129,7 +129,7 @@ namespace HRMS.Controllers
                     productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
                 }
 
-                if (HRMS.Auth.isA.TechnicalManager())
+                if (HRMS.Auth.isA.Supervisor())
                 {
                     productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
                 }
@@ -283,7 +283,7 @@ namespace HRMS.Controllers
 
             }
 
-            if (isA.BranchAdmin() || isA.TeamLeader() || isA.TechnicalManager())
+            if (isA.BranchAdmin() || isA.TeamLeader() || isA.Supervisor())
             {
                 branch_id = currentUser.branch_id;
             }
@@ -313,7 +313,7 @@ namespace HRMS.Controllers
             if (!(isA.SuperAdmin() 
                 || isA.TeamLeader() 
                 || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null))
-                || isA.TechnicalManager()))
+                || isA.Supervisor()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -416,7 +416,7 @@ namespace HRMS.Controllers
 
                 if(isA.SuperAdmin())
                 {
-                    productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager));
+                    productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor));
                     if (branch_id != null)
                     {
                         productivityData = productivityData.Where(s => s.branch_id == branch_id);
@@ -425,7 +425,7 @@ namespace HRMS.Controllers
 
                 if(isA.BranchAdmin())
                 {
-                    productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager));
+                    productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor));
                 }
 
                 if (isA.TeamLeader())
@@ -433,7 +433,7 @@ namespace HRMS.Controllers
                     productivityData = productivityData.Where(s => s.team_leader_id == currentUser.id && s.id != currentUser.id && s.type == (int)UserRole.Employee);
                 }
 
-                if (isA.TechnicalManager())
+                if (isA.Supervisor())
                 {
                     productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader));
                 }
@@ -453,7 +453,7 @@ namespace HRMS.Controllers
 
             }
 
-            if (isA.BranchAdmin() || isA.TeamLeader() || isA.TechnicalManager())
+            if (isA.BranchAdmin() || isA.TeamLeader() || isA.Supervisor())
             {
                 branch_id = currentUser.branch_id; 
             }
@@ -475,7 +475,7 @@ namespace HRMS.Controllers
         }
         public ActionResult Employee()
         {
-            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.Supervisor()))
                 return RedirectToAction("Index", "Dashboard");
 
             User currentUser = Session["user"] as User;
@@ -647,7 +647,7 @@ namespace HRMS.Controllers
                 userProject.user_id = currentUser.id;
                 userProject.created_at = DateTime.Now;
                 userProject.created_by = Session["id"].ToString().ToInt();
-                if(isA.TechnicalManager())
+                if(isA.Supervisor())
                     userProject.status = (int)ProductivityStatus.Approved;
                 else
                     userProject.status = (int)ProductivityStatus.PendingApprove;
@@ -865,7 +865,7 @@ namespace HRMS.Controllers
                 productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
             }
 
-            if (HRMS.Auth.isA.TechnicalManager())
+            if (HRMS.Auth.isA.Supervisor())
             {
                 productivityData = productivityData.Where(p => p.branch_id == currentUser.branch_id && p.user_id != currentUser.id && (p.type == (int)UserRole.Employee || p.type == (int)UserRole.TeamLeader));
             }
@@ -1208,7 +1208,7 @@ namespace HRMS.Controllers
 
             if (isA.SuperAdmin())
             {
-                productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager));
+                productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor));
                 if (userProjectViewModel.branch_id != null)
                 {
                     productivityData = productivityData.Where(s => s.branch_id == userProjectViewModel.branch_id);
@@ -1217,7 +1217,7 @@ namespace HRMS.Controllers
 
             if (isA.BranchAdmin())
             {
-                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager));
+                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor));
             }
 
             if (isA.TeamLeader())
@@ -1225,7 +1225,7 @@ namespace HRMS.Controllers
                 productivityData = productivityData.Where(s => s.team_leader_id == currentUser.id && s.id != currentUser.id && s.type == (int)UserRole.Employee);
             }
 
-            if (isA.TechnicalManager())
+            if (isA.Supervisor())
             {
                 productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader));
             }

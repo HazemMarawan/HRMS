@@ -20,7 +20,7 @@ namespace HRMS.Controllers
         public ActionResult Index()
         {
             User currentUser = Session["user"] as User;
-            if (!(isA.Employee() || isA.TeamLeader() || isA.TechnicalManager() || isA.BranchAdmin() || isA.ProjectManager()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.Supervisor() || isA.BranchAdmin() || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -38,8 +38,8 @@ namespace HRMS.Controllers
                                       join team_leader_approve in db.Users on mission.approved_by_team_leader equals team_leader_approve.id into tla
                                       from team_leader_approved in tla.DefaultIfEmpty()
 
-                                      join technical_manager_approve in db.Users on mission.approved_by_technical_manager equals technical_manager_approve.id into tecm
-                                      from technical_manager_approved in tecm.DefaultIfEmpty()
+                                      join supervisor_approve in db.Users on mission.approved_by_supervisor equals supervisor_approve.id into tecm
+                                      from supervisor_approved in tecm.DefaultIfEmpty()
 
                                       join branch_admin_approve in db.Users on mission.approved_by_branch_admin equals branch_admin_approve.id into baa
                                       from branch_admin_approved in baa.DefaultIfEmpty()
@@ -68,15 +68,15 @@ namespace HRMS.Controllers
                                           approved_by_branch_admin_at = mission.approved_by_branch_admin_at,
                                           approved_by_team_leader = mission.approved_by_team_leader,
                                           approved_by_team_leader_at = mission.approved_by_team_leader_at,
-                                          approved_by_technical_manager = mission.approved_by_technical_manager,
-                                          approved_by_technical_manager_at = mission.approved_by_technical_manager_at,
+                                          approved_by_supervisor = mission.approved_by_supervisor,
+                                          approved_by_supervisor_at = mission.approved_by_supervisor_at,
                                           created_at = mission.created_at,
                                           full_name = user.full_name,
                                           type = user.type,
                                           team_leader_id = user.team_leader_id,
                                           permission_count = db.MissionRequests.Where(wo => wo.year == mission.year && wo.month == mission.month && wo.status == (int)ApprovementStatus.ApprovedBySuperAdmin && wo.user_id == mission.user_id).Count(),
                                           team_leader_name = team_leader_approved.full_name,
-                                          technical_manager_name = technical_manager_approved.full_name,
+                                          supervisor_name = supervisor_approved.full_name,
                                           branch_admin_name = branch_admin_approved.full_name,
                                           super_admin_name = super_admin_approved.full_name,
                                           rejected_by_name = rejected_by.full_name,
@@ -131,9 +131,9 @@ namespace HRMS.Controllers
                 {
                     MissionRequest.status = (int?)ApprovementStatus.ApprovedByTeamLeader;
                 }
-                else if (currentUser.type == (int?)UserRole.TechnicalManager)
+                else if (currentUser.type == (int?)UserRole.Supervisor)
                 {
-                    MissionRequest.status = (int?)ApprovementStatus.ApprovedByTechnicalManager;
+                    MissionRequest.status = (int?)ApprovementStatus.ApprovedBySupervisor;
                 }
                 else if(currentUser.type == (int?)UserRole.Employee)
                 {

@@ -34,9 +34,9 @@ namespace HRMS.Auth
             return false;
         }
 
-        public static bool TechnicalManager()
+        public static bool Supervisor()
         {
-            if (Convert.ToInt32(HttpContext.Current.Session["type"].ToString()) == (int)UserRole.TechnicalManager)
+            if (Convert.ToInt32(HttpContext.Current.Session["type"].ToString()) == (int)UserRole.Supervisor)
                 return true;
             return false;
         }

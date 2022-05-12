@@ -7,18 +7,18 @@ namespace HRMS.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.VacationRequests", "approved_by_technical_manager", c => c.Int());
-            AddColumn("dbo.VacationRequests", "approved_by_technical_manager_at", c => c.DateTime());
-            AddColumn("dbo.WorkPermissionRequests", "approved_by_technical_manager", c => c.Int());
-            AddColumn("dbo.WorkPermissionRequests", "approved_by_technical_manager_at", c => c.DateTime());
+            AddColumn("dbo.VacationRequests", "approved_by_supervisor", c => c.Int());
+            AddColumn("dbo.VacationRequests", "approved_by_supervisor_at", c => c.DateTime());
+            AddColumn("dbo.WorkPermissionRequests", "approved_by_supervisor", c => c.Int());
+            AddColumn("dbo.WorkPermissionRequests", "approved_by_supervisor_at", c => c.DateTime());
         }
         
         public override void Down()
         {
-            DropColumn("dbo.WorkPermissionRequests", "approved_by_technical_manager_at");
-            DropColumn("dbo.WorkPermissionRequests", "approved_by_technical_manager");
-            DropColumn("dbo.VacationRequests", "approved_by_technical_manager_at");
-            DropColumn("dbo.VacationRequests", "approved_by_technical_manager");
+            DropColumn("dbo.WorkPermissionRequests", "approved_by_supervisor_at");
+            DropColumn("dbo.WorkPermissionRequests", "approved_by_supervisor");
+            DropColumn("dbo.VacationRequests", "approved_by_supervisor_at");
+            DropColumn("dbo.VacationRequests", "approved_by_supervisor");
         }
     }
 }

@@ -17,7 +17,7 @@ namespace HRMS.Enums
         BranchAdmin = 2,
         Employee = 3,
         TeamLeader = 4,
-        TechnicalManager = 5,
+        Supervisor = 5,
         ProjectManager = 6,
     }
 
@@ -48,6 +48,6 @@ namespace HRMS.Enums
         ApprovedByBranchAdmin = 3,
         ApprovedBySuperAdmin = 4,
         Rejected = 5,
-        ApprovedByTechnicalManager = 6,
+        ApprovedBySupervisor = 6,
     }
 }

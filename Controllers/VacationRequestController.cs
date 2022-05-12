@@ -24,7 +24,7 @@ namespace HRMS.Controllers
         // GET: ProjectType
         public ActionResult Index()
         {
-            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.TechnicalManager() || isA.ProjectManager()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.Supervisor() || isA.ProjectManager()))
                 return RedirectToAction("Index", "Dashboard");
 
             User currentUser = Session["user"] as User;
@@ -347,8 +347,8 @@ namespace HRMS.Controllers
                                     vacationRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
                                 if (isA.BranchAdmin())
                                     vacationRequest.status = (int)ApprovementStatus.ApprovedByBranchAdmin;
-                                if (isA.TechnicalManager())
-                                    vacationRequest.status = (int)ApprovementStatus.ApprovedByTechnicalManager;
+                                if (isA.Supervisor())
+                                    vacationRequest.status = (int)ApprovementStatus.ApprovedBySupervisor;
                             }
                             else
                                 vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
@@ -504,7 +504,7 @@ namespace HRMS.Controllers
 
         public ActionResult History(int year)
         {
-            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.TechnicalManager()))
+            if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.Supervisor()))
                 return RedirectToAction("Index", "Dashboard");
             User currentUser = Session["user"] as User;
             if (Request.IsAjaxRequest())
@@ -568,7 +568,7 @@ namespace HRMS.Controllers
             if (!(isA.TeamLeader() 
                 || (isA.BranchAdmin() && (currentUser.branch_id == branch_id || branch_id == null)) 
                 || isA.SuperAdmin()
-                || isA.TechnicalManager()))
+                || isA.Supervisor()))
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())
@@ -591,8 +591,8 @@ namespace HRMS.Controllers
                                          from branchAdmin in ba.DefaultIfEmpty()
                                          join teamLead in db.Users on vacationRequest.approved_by_team_leader equals teamLead.id into tl
                                          from teamLeader in tl.DefaultIfEmpty()
-                                         join techManager in db.Users on vacationRequest.approved_by_technical_manager equals techManager.id into tm
-                                         from technicalManager in tm.DefaultIfEmpty()
+                                         join super in db.Users on vacationRequest.approved_by_supervisor equals super.id into tm
+                                         from supervisor in tm.DefaultIfEmpty()
                                          select new VacationRequestViewModel
                                          {
                                              id = vacationRequest.id,
@@ -613,11 +613,11 @@ namespace HRMS.Controllers
                                              approved_by_super_admin_name = superAdmin.full_name,
                                              approved_by_branch_admin_name = branchAdmin.full_name,
                                              approved_by_team_leader_name = teamLeader.full_name,
-                                             approved_by_technical_manager_name = technicalManager.full_name,
+                                             approved_by_supervisor_name = supervisor.full_name,
                                              approved_by_super_admin_at = vacationRequest.approved_by_super_admin_at,
                                              approved_by_branch_admin_at = vacationRequest.approved_by_branch_admin_at,
                                              approved_by_team_leader_at = vacationRequest.approved_by_team_leader_at,
-                                             approved_by_technical_manager_at = vacationRequest.approved_by_technical_manager_at,
+                                             approved_by_supervisor_at = vacationRequest.approved_by_supervisor_at,
                                          }).Where(n => n.active == (int)RowStatus.ACTIVE);
 
                 //Search    
@@ -628,7 +628,7 @@ namespace HRMS.Controllers
 
                 if (isA.SuperAdmin())
                 {
-                    vacationsRequestsData = vacationsRequestsData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager || p.user_type == (int)UserRole.BranchAdmin));
+                    vacationsRequestsData = vacationsRequestsData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.Supervisor || p.user_type == (int)UserRole.BranchAdmin));
                     if (branch_id != null)
                     {
                         vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == branch_id);
@@ -637,7 +637,7 @@ namespace HRMS.Controllers
 
                 if (isA.BranchAdmin())
                 {
-                    vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTechnicalManager && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager));
+                    vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedBySupervisor && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.Supervisor));
 
                 }
 
@@ -647,7 +647,7 @@ namespace HRMS.Controllers
 
                 }
 
-                if (isA.TechnicalManager())
+                if (isA.Supervisor())
                 {
                     vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTeamLeader && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader));
 
@@ -710,11 +710,11 @@ namespace HRMS.Controllers
                 vacationRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
             }
 
-            if (isA.TechnicalManager())
+            if (isA.Supervisor())
             {
                 vacationRequest.approved_by_team_leader = Session["id"].ToString().ToInt();
                 vacationRequest.approved_by_team_leader_at = DateTime.Now;
-                vacationRequest.status = (int)ApprovementStatus.ApprovedByTechnicalManager;
+                vacationRequest.status = (int)ApprovementStatus.ApprovedBySupervisor;
             }
 
             db.SaveChanges();
@@ -838,7 +838,7 @@ namespace HRMS.Controllers
                                 notes = user.notes,
                                 type = user.type,
                                 active = user.active
-                            }).Where(s => s.active == (int)RowStatus.ACTIVE && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.TechnicalManager || s.type == (int)UserRole.BranchAdmin) && s.branch_id == currentUser.branch_id);
+                            }).Where(s => s.active == (int)RowStatus.ACTIVE && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor || s.type == (int)UserRole.BranchAdmin) && s.branch_id == currentUser.branch_id);
 
             List<UserViewModel> employees = userData.ToList();
 

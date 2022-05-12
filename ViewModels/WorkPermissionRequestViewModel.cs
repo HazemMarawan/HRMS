@@ -21,8 +21,8 @@ namespace HRMS.ViewModels
         public DateTime? approved_by_super_admin_at { get; set; }
         public int? approved_by_branch_admin { get; set; }
         public DateTime? approved_by_branch_admin_at { get; set; }
-        public int? approved_by_technical_manager { get; set; }
-        public DateTime? approved_by_technical_manager_at { get; set; }
+        public int? approved_by_supervisor { get; set; }
+        public DateTime? approved_by_supervisor_at { get; set; }
         public int? approved_by_team_leader { get; set; }
         public DateTime? approved_by_team_leader_at { get; set; }
         public int? rejected_by { get; set; }
@@ -42,7 +42,7 @@ namespace HRMS.ViewModels
         public string super_admin_name { get; set; }
         public string branch_admin_name { get; set; }
         public string team_leader_name { get; set; }
-        public string technical_manager_name { get; set; }
+        public string supervisor_name { get; set; }
         public string rejected_by_name { get; set; }
 
     }

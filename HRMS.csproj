@@ -410,6 +410,14 @@
     <Compile Include="Migrations\202205051457311_add_projrct_eq.Designer.cs">
       <DependentUpon>202205051457311_add_projrct_eq.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205120800360_update_supervisor.cs" />
+    <Compile Include="Migrations\202205120800360_update_supervisor.Designer.cs">
+      <DependentUpon>202205120800360_update_supervisor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205120803297_update_supervisor_2.cs" />
+    <Compile Include="Migrations\202205120803297_update_supervisor_2.Designer.cs">
+      <DependentUpon>202205120803297_update_supervisor_2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -4350,6 +4358,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205051457311_add_projrct_eq.resx">
       <DependentUpon>202205051457311_add_projrct_eq.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205120800360_update_supervisor.resx">
+      <DependentUpon>202205120800360_update_supervisor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205120803297_update_supervisor_2.resx">
+      <DependentUpon>202205120803297_update_supervisor_2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

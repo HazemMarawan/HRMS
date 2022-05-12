@@ -177,16 +177,16 @@
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span>";
                                     else if (oData.status == 6) {
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span>";
                                     }
                                     else if (oData.status == 3) {
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span>";
                                     }
                                     else if (oData.status == 4) {
                                         html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
                                     }
@@ -199,13 +199,13 @@
                                     if (oData.status == 2)
                                         html += "<span class='badge badge-info'>Pending Approve</span>";
                                     if (oData.status == 6) {
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
                                     } else if (oData.status == 3) {
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
                                     }
                                     else if (oData.status == 4) {
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.technical_manager_name + " At " + fixDate(oData.approved_by_technical_manager_at) + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
                                         html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
                                     }
@@ -214,7 +214,7 @@
                                     else
                                         html += "-";
                                 }
-                                else if (oData.type == 5) { //Technical Manager
+                                else if (oData.type == 5) { //Supervisor
                                     console.log(oData.status)
                                     if (oData.status == 6)
                                         html += "<span class='badge badge-info'>Pending Approve</span>";

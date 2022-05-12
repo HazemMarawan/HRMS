@@ -28,8 +28,8 @@ namespace HRMS.Models
         public DateTime? approved_by_branch_admin_at { get; set; }
         public int? approved_by_team_leader { get; set; }
         public DateTime? approved_by_team_leader_at { get; set; }
-        public int? approved_by_technical_manager { get; set; }
-        public DateTime? approved_by_technical_manager_at { get; set; }
+        public int? approved_by_supervisor { get; set; }
+        public DateTime? approved_by_supervisor_at { get; set; }
         public int? rejected_by { get; set; }
         public DateTime? rejected_by_at { get; set; }
         public int? active { get; set; }

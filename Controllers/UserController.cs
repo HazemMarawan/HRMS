@@ -105,7 +105,7 @@ namespace HRMS.Controllers
                 {
                     if (branch_id != null)
                     {
-                        userData = userData.Where(u => u.branch_id == branch_id &&(u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.TechnicalManager || u.type == (int)UserRole.ProjectManager));
+                        userData = userData.Where(u => u.branch_id == branch_id &&(u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.Supervisor || u.type == (int)UserRole.ProjectManager));
                     }
                     else
                     {
@@ -115,7 +115,7 @@ namespace HRMS.Controllers
 
                 else if (isA.BranchAdmin())
                 {
-                    userData = userData.Where(u => u.branch_id == currentUser.branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.TechnicalManager || u.type == (int)UserRole.ProjectManager));
+                    userData = userData.Where(u => u.branch_id == currentUser.branch_id && (u.type == (int)UserRole.Employee || u.type == (int)UserRole.TeamLeader || u.type == (int)UserRole.Supervisor || u.type == (int)UserRole.ProjectManager));
                 }
            
 
@@ -220,7 +220,7 @@ namespace HRMS.Controllers
                     user.vacations_balance = 21;
                 }
 
-                if (isA.TeamLeader() || isA.TechnicalManager())
+                if (isA.TeamLeader() || isA.Supervisor())
                     user.required_productivity = 1;
                 user.created_at = DateTime.Now;
                 user.created_by = Session["id"].ToString().ToInt();
@@ -280,7 +280,7 @@ namespace HRMS.Controllers
                 oldUser.notes = userVM.notes;
                 oldUser.type = userVM.type;
                 oldUser.last_over_time_price = userVM.last_over_time_price;
-                if (isA.TeamLeader() || isA.TechnicalManager())
+                if (isA.TeamLeader() || isA.Supervisor())
                     oldUser.required_productivity = 1;
                 else
                     oldUser.required_productivity = userVM.required_productivity;

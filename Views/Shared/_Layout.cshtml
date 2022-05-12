@@ -136,7 +136,7 @@
                     </li>*@
             </ul>
             <ul class="navbar-item flex-row navbar-dropdown">
-                @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.TeamLeader())
+                @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.TeamLeader())
                 {
                     <li class="nav-item dropdown message-dropdown">
                         <a href="javascript:void(0);" class="nav-link dropdown-toggle" id="vacationsNotificationsMarker" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -357,13 +357,13 @@
                             </a>
                         </li>
                     }
-                    @if ((HRMS.Auth.isA.Employee() && HRMS.Auth.can.makeProductivity()) || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
+                    @if ((HRMS.Auth.isA.Employee() && HRMS.Auth.can.makeProductivity()) || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor())
                     {
                         <li class="menu menu-heading">
                             <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>@HResource.ManageProductivity</span></div>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.ProjectManager())
                     {
                         <li class="menu">
                             <a href="@Url.Action("Index", "Productivity")" aria-expanded="false" class="dropdown-toggle">
@@ -374,7 +374,7 @@
                             </a>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
+                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor())
                     {
                         if (HRMS.Auth.can.makeProductivity())
                         {
@@ -389,7 +389,7 @@
                         }
                     }
 
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor())
                     {
                         <li class="menu">
                             <a href="@Url.Action("Missing", "Productivity")" aria-expanded="false" class="dropdown-toggle">
@@ -407,7 +407,7 @@
                             <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>@HResource.ManageVacations</span></div>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.SuperAdmin())
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.SuperAdmin())
                     {
 
                         <li class="menu">
@@ -419,7 +419,7 @@
                             </a>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Employee() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.ProjectManager())
                     {
 
                         <li class="menu">
@@ -483,7 +483,7 @@
                             <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>@HResource.ManagePermissions</span></div>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin())
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.BranchAdmin())
                     {
                         <li class="menu">
                             <a href="@Url.Action("Index", "PermissionList")" aria-expanded="false" class="dropdown-toggle">
@@ -494,7 +494,7 @@
                             </a>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
+                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.ProjectManager())
                     {
 
                         <li class="menu">
@@ -513,7 +513,7 @@
                             <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg><span>@HResource.ManageMissions</span></div>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin())
+                    @if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.BranchAdmin())
                     {
                         <li class="menu">
                             <a href="@Url.Action("Index", "MissionList")" aria-expanded="false" class="dropdown-toggle">
@@ -524,7 +524,7 @@
                             </a>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
+                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.ProjectManager())
                     {
 
                         <li class="menu">
@@ -556,7 +556,7 @@
                             </a>
                         </li>
                     }
-                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.ProjectManager())
+                    @if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.BranchAdmin() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.ProjectManager())
                     {
 
                         <li class="menu">
@@ -621,11 +621,11 @@
             App.init();
             var isSuperAdmin = '@HRMS.Auth.isA.SuperAdmin()';
             var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
-            var isTechnicalManager = '@HRMS.Auth.isA.TechnicalManager()';
+            var isSupervisor = '@HRMS.Auth.isA.Supervisor()';
             var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
             var isEmployee = '@HRMS.Auth.isA.Employee()';
 
-            if (isSuperAdmin == 'True' || isBranchAdmin == 'True' || isTechnicalManager == 'True' || isTeamLeader == 'True') {
+            if (isSuperAdmin == 'True' || isBranchAdmin == 'True' || isSupervisor == 'True' || isTeamLeader == 'True') {
                 refreshVacationsNotifications();
                 refreshPermissionsNotifications();
                 refresMissionsNotifications();

@@ -10,7 +10,7 @@
                 <li class="breadcrumb-item"><a href="@Url.Action("Show","Branch")">Branches</a></li>
                 <li class="breadcrumb-item"><a href="@Url.Action("Details","Branch",new { id = ViewBag.branchId})">@ViewBag.branchName</a></li>
             }
-            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager())
+            else if (HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor())
             {
                 <li class="breadcrumb-item"><a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home"></i></a></li>
             }

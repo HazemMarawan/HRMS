@@ -233,12 +233,12 @@ namespace HRMS.Controllers
 
             if (isA.SuperAdmin())
             {
-                vacationsRequestsData = vacationsRequestsData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager || p.user_type == (int)UserRole.BranchAdmin));
+                vacationsRequestsData = vacationsRequestsData.Where(p => p.user_id != currentUser.id && p.status == (int)ApprovementStatus.ApprovedByBranchAdmin && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.Supervisor || p.user_type == (int)UserRole.BranchAdmin));
             }
 
             if (isA.BranchAdmin())
             {
-                vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTechnicalManager && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.TechnicalManager));
+                vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedBySupervisor && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader || p.user_type == (int)UserRole.Supervisor));
 
             }
 
@@ -248,7 +248,7 @@ namespace HRMS.Controllers
 
             }
 
-            if (isA.TechnicalManager())
+            if (isA.Supervisor())
             {
                 vacationsRequestsData = vacationsRequestsData.Where(p => p.branch_id == currentUser.branch_id && p.status == (int)ApprovementStatus.ApprovedByTeamLeader && p.user_id != currentUser.id && (p.user_type == (int)UserRole.Employee || p.user_type == (int)UserRole.TeamLeader));
 
@@ -284,13 +284,13 @@ namespace HRMS.Controllers
             {
                 permissionData = permissionData.Where(t => t.team_leader_id == currentUser.id && t.type == (int)UserRole.Employee && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.PendingApprove);
             }
-            else if (isA.TechnicalManager())
+            else if (isA.Supervisor())
             {
                 permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedByTeamLeader);
             }
             else if (isA.BranchAdmin())
             {
-                permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.TechnicalManager) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedByTechnicalManager);
+                permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.Supervisor) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedBySupervisor);
             }
             else if (isA.SuperAdmin())
             {
@@ -335,13 +335,13 @@ namespace HRMS.Controllers
             {
                 missionData = missionData.Where(t => t.team_leader_id == currentUser.id && t.type == (int)UserRole.Employee && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.PendingApprove);
             }
-            else if (isA.TechnicalManager())
+            else if (isA.Supervisor())
             {
                 missionData = missionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedByTeamLeader);
             }
             else if (isA.BranchAdmin())
             {
-                missionData = missionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.TechnicalManager) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedByTechnicalManager);
+                missionData = missionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.Supervisor) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedBySupervisor);
             }
             else if (isA.SuperAdmin())
             {
@@ -377,15 +377,15 @@ namespace HRMS.Controllers
 
             if (isA.TeamLeader())
             {
-                dashboardViewModel.Manager = db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.TechnicalManager).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
+                dashboardViewModel.Manager = db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.Supervisor).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
             }
 
-            if (isA.TechnicalManager())
+            if (isA.Supervisor())
             {
                 dashboardViewModel.Manager = db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.BranchAdmin).Select(u => new UserViewModel { id = u.id, full_name = u.full_name, imagePath = u.image }).FirstOrDefault();
             }
 
-            if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.TechnicalManager() || HRMS.Auth.isA.BranchAdmin())
+            if (HRMS.Auth.isA.Employee() || HRMS.Auth.isA.TeamLeader() || HRMS.Auth.isA.Supervisor() || HRMS.Auth.isA.BranchAdmin())
             {
                 VacationTypeViewModel casualVacationType = db.VacationTypes.Where(vt => vt.value == 2).Select(vt => new VacationTypeViewModel
                 {

@@ -418,6 +418,18 @@
     <Compile Include="Migrations\202205120803297_update_supervisor_2.Designer.cs">
       <DependentUpon>202205120803297_update_supervisor_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205230843103_sup_app.cs" />
+    <Compile Include="Migrations\202205230843103_sup_app.Designer.cs">
+      <DependentUpon>202205230843103_sup_app.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205230845231_sup_app2.cs" />
+    <Compile Include="Migrations\202205230845231_sup_app2.Designer.cs">
+      <DependentUpon>202205230845231_sup_app2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202205230850278_sup_app3.cs" />
+    <Compile Include="Migrations\202205230850278_sup_app3.Designer.cs">
+      <DependentUpon>202205230850278_sup_app3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -4364,6 +4376,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205120803297_update_supervisor_2.resx">
       <DependentUpon>202205120803297_update_supervisor_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205230843103_sup_app.resx">
+      <DependentUpon>202205230843103_sup_app.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205230845231_sup_app2.resx">
+      <DependentUpon>202205230845231_sup_app2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205230850278_sup_app3.resx">
+      <DependentUpon>202205230850278_sup_app3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

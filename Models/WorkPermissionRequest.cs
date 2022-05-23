@@ -18,6 +18,7 @@ namespace HRMS.Models
         public User User { get; set; }
         public string reason { get; set; }
         public DateTime? date { get; set; }
+        public TimeSpan? from_time { get; set; }
         public int? minutes { get; set; }
         public int? status { get; set; }
         public int? approved_by_super_admin { get; set; }

@@ -57,6 +57,7 @@ namespace HRMS.Controllers
                                           month = perReq.month,
                                           year = perReq.year,
                                           date = perReq.date,
+                                          from_time = perReq.from_time,
                                           minutes = perReq.minutes,
                                           reason = perReq.reason,
                                           active = perReq.active,
@@ -138,9 +139,10 @@ namespace HRMS.Controllers
                 {
                     WorkPermissionRequest.status = (int?)ApprovementStatus.Rejected;
                 }
-                WorkPermissionRequest.date = workPermissionRequestViewModel.date;
-                WorkPermissionRequest.year = ((DateTime)(workPermissionRequestViewModel.date)).Year;
-                WorkPermissionRequest.month = ((DateTime)(workPermissionRequestViewModel.date)).Month;
+                WorkPermissionRequest.date = DateTime.Now.Date;
+                WorkPermissionRequest.from_time = (TimeSpan)(workPermissionRequestViewModel.from_time);
+                WorkPermissionRequest.year = DateTime.Now.Year;
+                WorkPermissionRequest.month = DateTime.Now.Month;
                 WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
                 WorkPermissionRequest.created_at = DateTime.Now;
                 WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
@@ -165,9 +167,10 @@ namespace HRMS.Controllers
                 WorkPermissionRequest.reason = workPermissionRequestViewModel.reason;
                 WorkPermissionRequest.minutes = workPermissionRequestViewModel.minutes;
                 //WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
-                WorkPermissionRequest.date = workPermissionRequestViewModel.date;
-                WorkPermissionRequest.year = ((DateTime)(workPermissionRequestViewModel.date)).Year;
-                WorkPermissionRequest.month = ((DateTime)(workPermissionRequestViewModel.date)).Month;
+                WorkPermissionRequest.date = DateTime.Now.Date;
+                WorkPermissionRequest.from_time = (TimeSpan)(workPermissionRequestViewModel.from_time);
+                WorkPermissionRequest.year = DateTime.Now.Year;
+                WorkPermissionRequest.month = DateTime.Now.Month;
                 //WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
                 WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
                 WorkPermissionRequest.updated_at = DateTime.Now;

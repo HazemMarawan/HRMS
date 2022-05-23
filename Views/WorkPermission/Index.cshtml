@@ -18,8 +18,8 @@
                         <div class="form-row">
                             <input type="hidden" name="id" id="id" value="0" />
                             <div class="form-group col-md-6">
-                                <label>Date</label>
-                                <input required name="date" id="date" type="datetime-local" class="form-control radius-30" />
+                                <label>From</label>
+                                <input required name="from_time" id="from_time" type="time" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Duration</label>
@@ -72,6 +72,7 @@
                     <tr>
                         <th>#</th>
                         <th>Date</th>
+                        <th>From</th>
                         <th>Duration</th>
                         <th>Status</th>
                         @*<th>Active</th>*@
@@ -136,6 +137,15 @@
                                 var html = '';
                                 if (oData.date)
                                     html = fixDate(oData.date);
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
+                        },
+                        {
+                            "data": "from_time", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = '';
+                                if (oData.from_time)
+                                    html = fixTime(oData.from_time);
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -319,7 +329,8 @@
 
                         dialog.find('#id').val(data.id);
                         dialog.find('#reason').text(data.reason);
-                        dialog.find('#date').val(fixDateTimeLocal(data.date));
+                        if (data.from_time)
+                        dialog.find('#from_time').val(fixTime(data.from_time));
                         dialog.find('#minutes option[value=' + data.minutes + ']').attr('selected', 'selected');
 
                 });

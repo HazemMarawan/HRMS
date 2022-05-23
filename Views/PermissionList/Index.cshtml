@@ -154,6 +154,7 @@
                         <th>#</th>
                         <th>Name</th>
                         <th>Date</th>
+                        <th>From</th>
                         <th>Duration</th>
                         <th>Status</th>
                         @*<th>Active</th>*@
@@ -222,6 +223,15 @@
                             "data": "date", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 $(nTd).html("<span class='action-column'>" + fixDate(oData.date) + "</span>");
+                            }
+                        },
+                        {
+                            "data": "from_time", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = '';
+                                if (oData.from_time)
+                                    html = fixTime(oData.from_time);
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
                         {

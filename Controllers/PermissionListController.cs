@@ -62,6 +62,7 @@ namespace HRMS.Controllers
                                           reason = perReq.reason,
                                           active = perReq.active,
                                           status = perReq.status,
+                                          from_time = perReq.from_time,
                                           approved_by_super_admin = perReq.approved_by_super_admin,
                                           approved_by_super_admin_at = perReq.approved_by_super_admin_at,
                                           approved_by_branch_admin = perReq.approved_by_branch_admin,

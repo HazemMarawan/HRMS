@@ -69,10 +69,13 @@ namespace HRMS.ViewModels
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
+        public DateTime? search_date { get; set; }
         public DateTime? from_date { get; set; }
         public DateTime? to_date { get; set; }
         public string returned_by_name { get; set; }
         public string rejected_by_note { get; set; }
         public int? department_id { get; set; }
+        public DateTime? search_from { get; set; }
+        public DateTime? search_to { get; set; }
     }
 }

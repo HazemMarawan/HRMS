@@ -404,7 +404,10 @@ namespace HRMS.Controllers
                                                            user_id = vacationRequest.user_id,
                                                            days = vacationRequest.days
                                                        }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin && vr.value == 1 && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days);
+                                                       ).Where(vr => vr.user_id == currentUser.id && 
+                                                       vr.year == DateTime.Now.Year &&
+                                                       vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin &&
+                                                       vr.value == 1 && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days);
                 dashboardViewModel.RegularVacations = dashboardViewModel.RegularVacations != null ? dashboardViewModel.RegularVacations : 0;
 
 
@@ -419,7 +422,10 @@ namespace HRMS.Controllers
                                                            user_id = vacationRequest.user_id,
                                                            days = vacationRequest.days
                                                        }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin && vr.value == 2 && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days);
+                                                       ).Where(vr => vr.user_id == currentUser.id &&
+                                                       vr.year == DateTime.Now.Year && 
+                                                       vr.status == (int)ApprovementStatus.ApprovedBySuperAdmin &&
+                                                       vr.value == 2 && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days);
                 dashboardViewModel.CasualVacations = dashboardViewModel.CasualVacations != null ? dashboardViewModel.CasualVacations : 0;
 
 

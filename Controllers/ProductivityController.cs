@@ -395,18 +395,47 @@ namespace HRMS.Controllers
                    
                     if (!string.IsNullOrEmpty(search_from) || !string.IsNullOrEmpty(search_to))
                     {
+                        DateTime toDate = DateTime.Now;
+                        DateTime fromDate = toDate;
+                        bool fromFlag = false;
+                        
                         if (Convert.ToDateTime(search_from) != DateTime.MinValue)
                         {
-                            DateTime date = Convert.ToDateTime(search_from);
-                            List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year >= date.Year && ((DateTime)us.working_date).Month >= date.Month && ((DateTime)us.working_date).Day >= date.Day).Select(us => us.user_id).ToList();
-                            productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
+                            fromDate = Convert.ToDateTime(search_from);
+                        }
+                        else
+                        {
+                            fromFlag = true;
                         }
                         if (Convert.ToDateTime(search_to) != DateTime.MinValue)
                         {
-                            DateTime date = Convert.ToDateTime(search_to);
-                            List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year <= date.Year && ((DateTime)us.working_date).Month <= date.Month && ((DateTime)us.working_date).Day <= date.Day).Select(us => us.user_id).ToList();
-                            productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
+                            toDate = Convert.ToDateTime(search_to);
                         }
+
+                        if(fromFlag)
+                        {
+                            fromDate = toDate;
+
+                        }
+
+                        List<DateTime> searchDates = new List<DateTime>();
+                        List<int?> userIDs = new List<int?>();
+                        List<int?> missingUsers = new List<int?>();
+                        var queryRegistered = db.UserProjects.Where(us => us.deleted_at == null);
+
+                        for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
+                        {
+                            userIDs.Clear();
+                            var temp = queryRegistered.Where(us => ((DateTime)us.working_date).Year == dt.Year && ((DateTime)us.working_date).Month == dt.Month && ((DateTime)us.working_date).Day == dt.Day).Select(q => q.user_id);
+                            userIDs.AddRange(temp.ToList());
+
+                            var missingTemp = queryRegistered.Where(q => !userIDs.Contains(q.user_id)).Select(q => q.user_id);
+                            missingUsers.AddRange(missingTemp.ToList());
+                        }
+                      
+                        productivityData = productivityData.Where(s => missingUsers.Contains(s.id) && s.required_productivity == 1);
+
+
                     }
                     else
                     {
@@ -1144,6 +1173,7 @@ namespace HRMS.Controllers
             Sheet.Cells["E1"].Value = "Address";
             Sheet.Cells["F1"].Value = "Gender";
             Sheet.Cells["G1"].Value = "Role";
+            //Sheet.Cells["H1"].Value = "Date";
           
 
             var productivityData = (from user in db.Users
@@ -1189,22 +1219,86 @@ namespace HRMS.Controllers
                                         notes = user.notes,
                                         type = user.type,
                                         active = user.active,
+
                                     }).Where(u => u.active == (int)RowStatus.ACTIVE);
 
 
-            if (userProjectViewModel.from_date != null)
+            //if (userProjectViewModel.from_date != null)
+            //{
+            //    if (Convert.ToDateTime(userProjectViewModel.from_date) != DateTime.MinValue)
+            //    {
+            //        DateTime date = Convert.ToDateTime(userProjectViewModel.from_date);
+            //        List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year == date.Year && ((DateTime)us.working_date).Month == date.Month && ((DateTime)us.working_date).Day == date.Day).Select(us => us.user_id).ToList();
+            //        productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
+            //    }
+            //}
+            //else
+            //{
+            //    productivityData = productivityData.Where(s => s.id == -1);
+            //}
+
+            if (userProjectViewModel.search_date != null)
             {
-                if (Convert.ToDateTime(userProjectViewModel.from_date) != DateTime.MinValue)
+                if (Convert.ToDateTime(userProjectViewModel.search_date) != DateTime.MinValue)
                 {
-                    DateTime date = Convert.ToDateTime(userProjectViewModel.from_date);
+                    DateTime date = Convert.ToDateTime(userProjectViewModel.search_date);
                     List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year == date.Year && ((DateTime)us.working_date).Month == date.Month && ((DateTime)us.working_date).Day == date.Day).Select(us => us.user_id).ToList();
                     productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
                 }
             }
             else
             {
-                productivityData = productivityData.Where(s => s.id == -1);
+
+                if (userProjectViewModel.search_from != null || userProjectViewModel.search_to != null)
+                {
+                    DateTime toDate = DateTime.Now;
+                    DateTime fromDate = toDate;
+                    bool fromFlag = false;
+
+                    if (Convert.ToDateTime(userProjectViewModel.search_from) != DateTime.MinValue)
+                    {
+                        fromDate = Convert.ToDateTime(userProjectViewModel.search_from);
+                    }
+                    else
+                    {
+                        fromFlag = true;
+                    }
+                    if (Convert.ToDateTime(userProjectViewModel.search_to) != DateTime.MinValue)
+                    {
+                        toDate = Convert.ToDateTime(userProjectViewModel.search_to);
+                    }
+
+                    if (fromFlag)
+                    {
+                        fromDate = toDate;
+
+                    }
+
+                    List<DateTime> searchDates = new List<DateTime>();
+                    List<int?> userIDs = new List<int?>();
+                    List<int?> missingUsers = new List<int?>();
+                    var queryRegistered = db.UserProjects.Where(us => us.deleted_at == null);
+
+                    for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
+                    {
+                        userIDs.Clear();
+                        var temp = queryRegistered.Where(us => ((DateTime)us.working_date).Year == dt.Year && ((DateTime)us.working_date).Month == dt.Month && ((DateTime)us.working_date).Day == dt.Day).Select(q => q.user_id);
+                        userIDs.AddRange(temp.ToList());
+
+                        var missingTemp = queryRegistered.Where(q => !userIDs.Contains(q.user_id)).Select(q => q.user_id);
+                        missingUsers.AddRange(missingTemp.ToList());
+                    }
+
+                    productivityData = productivityData.Where(s => missingUsers.Contains(s.id) && s.required_productivity == 1);
+
+
+                }
+                else
+                {
+                    productivityData = productivityData.Where(s => s.id == -1);
+                }
             }
+
 
             if (isA.SuperAdmin())
             {
@@ -1244,6 +1338,8 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("E{0}", row)].Value = item.address;
                 Sheet.Cells[string.Format("F{0}", row)].Value = item.gender == 1?"Male":"Female";
                 Sheet.Cells[string.Format("G{0}", row)].Value = item.type == 1? "Super Admin": item.type == 2?"Branch Admin":item.type == 3?"Employee":"Team Leader";
+                //Sheet.Cells[string.Format("H{0}", row)].Value = item.address;
+
                 row++;
             }
 

@@ -177,25 +177,25 @@ namespace HRMS.Controllers
                     {
                         MissionRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
                         MissionRequest.approved_by_team_leader = currentUser.id;
-                        MissionRequest.approved_by_team_leader_at = DateTime.Now;
+                        MissionRequest.approved_by_team_leader_at = DateTime.Now.AddHours(-3);;
                     }
                     else if (isA.Supervisor())
                     {
                         MissionRequest.status = (int)ApprovementStatus.ApprovedBySupervisor;
                         MissionRequest.approved_by_supervisor = currentUser.id;
-                        MissionRequest.approved_by_supervisor_at = DateTime.Now;
+                        MissionRequest.approved_by_supervisor_at = DateTime.Now.AddHours(-3);;
                     }
                     else if (isA.BranchAdmin())
                     {
                         MissionRequest.status = (int)ApprovementStatus.ApprovedByBranchAdmin;
                         MissionRequest.approved_by_branch_admin = currentUser.id;
-                        MissionRequest.approved_by_branch_admin_at = DateTime.Now;
+                        MissionRequest.approved_by_branch_admin_at = DateTime.Now.AddHours(-3);;
                     }
                     else if(isA.SuperAdmin())
                     {
                         MissionRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         MissionRequest.approved_by_super_admin = currentUser.id;
-                        MissionRequest.approved_by_super_admin_at = DateTime.Now;
+                        MissionRequest.approved_by_super_admin_at = DateTime.Now.AddHours(-3);;
                     }
                     db.SaveChanges();
 
@@ -209,7 +209,7 @@ namespace HRMS.Controllers
                         missionMonthYear.cost = MissionRequest.cost;
                         missionMonthYear.mission_count = 1;
                         missionMonthYear.active = (int?)RowStatus.ACTIVE;
-                        missionMonthYear.created_at = DateTime.Now;
+                        missionMonthYear.created_at = DateTime.Now.AddHours(-3);;
                         missionMonthYear.created_by = Session["id"].ToString().ToInt();
                         db.MissionMonthYears.Add(missionMonthYear);
 
@@ -219,7 +219,7 @@ namespace HRMS.Controllers
                         missionMonthYear.mission_count += 1;
                         missionMonthYear.cost += MissionRequest.cost;
                         missionMonthYear.active = (int?)RowStatus.ACTIVE;
-                        missionMonthYear.updated_at = DateTime.Now;
+                        missionMonthYear.updated_at = DateTime.Now.AddHours(-3);;
                         missionMonthYear.updated_by = Session["id"].ToString().ToInt();
                     }
 
@@ -229,7 +229,7 @@ namespace HRMS.Controllers
                 {
                     MissionRequest.status = (int?)ApprovementStatus.Rejected;
                     MissionRequest.rejected_by = currentUser.id;
-                    MissionRequest.rejected_by_at = DateTime.Now;
+                    MissionRequest.rejected_by_at = DateTime.Now.AddHours(-3);;
                     db.SaveChanges();
                 }
             }

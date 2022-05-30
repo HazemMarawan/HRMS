@@ -752,7 +752,7 @@ namespace HRMS.Controllers
         {
             VacationRequest vacationRequest = db.VacationRequests.Find(id);
             vacationRequest.rejected_by = Session["id"].ToString().ToInt();
-            vacationRequest.rejected_by_at = DateTime.Now;
+            vacationRequest.rejected_by_at = DateTime.Now.AddHours(-3);
             vacationRequest.status = (int)ApprovementStatus.Rejected;
             db.SaveChanges();
 
@@ -947,7 +947,7 @@ namespace HRMS.Controllers
                         vacationYear.death_vacation_counter = 0;
                         vacationYear.active = 1;
                         vacationYear.created_by = currentUser.id;
-                        vacationYear.created_at = DateTime.Now;
+                        vacationYear.created_at = DateTime.Now.AddHours(-3);
 
                         db.VacationYears.Add(vacationYear);
                         db.SaveChanges();
@@ -970,7 +970,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now;
+                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
 
                         vacationYear.a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter != null ? vacationYear.a3tyady_vacation_counter + dt.Rows[i][2].ToString().ToInt() : dt.Rows[i][2].ToString().ToInt();
                         db.SaveChanges();
@@ -990,7 +990,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now;
+                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
 
                         vacationYear.arda_vacation_counter = vacationYear.arda_vacation_counter != null ? vacationYear.arda_vacation_counter + dt.Rows[i][3].ToString().ToInt() : dt.Rows[i][3].ToString().ToInt();
                         db.SaveChanges();
@@ -1010,7 +1010,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now;
+                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
 
                         vacationYear.medical_vacation_counter = vacationYear.medical_vacation_counter != null ? vacationYear.medical_vacation_counter + dt.Rows[i][4].ToString().ToInt() : dt.Rows[i][4].ToString().ToInt();
                         db.SaveChanges();
@@ -1031,7 +1031,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now;
+                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
 
                         vacationYear.married_vacation_counter = vacationYear.married_vacation_counter != null ? vacationYear.married_vacation_counter + dt.Rows[i][5].ToString().ToInt() : dt.Rows[i][5].ToString().ToInt();
                         db.SaveChanges();
@@ -1050,7 +1050,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now;
+                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
 
                         vacationYear.work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter != null ? vacationYear.work_from_home_vacation_counter + dt.Rows[i][6].ToString().ToInt() : dt.Rows[i][6].ToString().ToInt();
                         db.SaveChanges();
@@ -1069,7 +1069,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now;
+                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
 
                         vacationYear.death_vacation_counter = vacationYear.death_vacation_counter != null ? vacationYear.death_vacation_counter + dt.Rows[i][7].ToString().ToInt() : dt.Rows[i][7].ToString().ToInt();
                         db.SaveChanges();

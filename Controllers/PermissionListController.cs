@@ -177,25 +177,25 @@ namespace HRMS.Controllers
                     {
                         workPermissionRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
                         workPermissionRequest.approved_by_team_leader = currentUser.id;
-                        workPermissionRequest.approved_by_team_leader_at = DateTime.Now;
+                        workPermissionRequest.approved_by_team_leader_at = DateTime.Now.AddHours(-3);
                     }
                     else if (isA.Supervisor())
                     {
                         workPermissionRequest.status = (int)ApprovementStatus.ApprovedBySupervisor;
                         workPermissionRequest.approved_by_supervisor = currentUser.id;
-                        workPermissionRequest.approved_by_supervisor_at = DateTime.Now;
+                        workPermissionRequest.approved_by_supervisor_at = DateTime.Now.AddHours(-3);
                     }
                     else if (isA.BranchAdmin())
                     {
                         workPermissionRequest.status = (int)ApprovementStatus.ApprovedByBranchAdmin;
                         workPermissionRequest.approved_by_branch_admin = currentUser.id;
-                        workPermissionRequest.approved_by_branch_admin_at = DateTime.Now;
+                        workPermissionRequest.approved_by_branch_admin_at = DateTime.Now.AddHours(-3);
                     }
                     else if(isA.SuperAdmin())
                     {
                         workPermissionRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         workPermissionRequest.approved_by_super_admin = currentUser.id;
-                        workPermissionRequest.approved_by_super_admin_at = DateTime.Now;
+                        workPermissionRequest.approved_by_super_admin_at = DateTime.Now.AddHours(-3);
                     }
                     db.SaveChanges();
 
@@ -208,7 +208,7 @@ namespace HRMS.Controllers
                         workPermissionMonthYear.user_id = workPermissionRequest.user_id;
                         workPermissionMonthYear.permission_count = 1;
                         workPermissionMonthYear.active = (int?)RowStatus.ACTIVE;
-                        workPermissionMonthYear.created_at = DateTime.Now;
+                        workPermissionMonthYear.created_at = DateTime.Now.AddHours(-3);
                         workPermissionMonthYear.created_by = Session["id"].ToString().ToInt();
                         db.WorkPermissionMonthYears.Add(workPermissionMonthYear);
 
@@ -217,7 +217,7 @@ namespace HRMS.Controllers
                     {
                         workPermissionMonthYear.permission_count += 1;
                         workPermissionMonthYear.active = (int?)RowStatus.ACTIVE;
-                        workPermissionMonthYear.updated_at = DateTime.Now;
+                        workPermissionMonthYear.updated_at = DateTime.Now.AddHours(-3);
                         workPermissionMonthYear.updated_by = Session["id"].ToString().ToInt();
                     }
 
@@ -227,7 +227,7 @@ namespace HRMS.Controllers
                 {
                     workPermissionRequest.status = (int?)ApprovementStatus.Rejected;
                     workPermissionRequest.rejected_by = currentUser.id;
-                    workPermissionRequest.rejected_by_at = DateTime.Now;
+                    workPermissionRequest.rejected_by_at = DateTime.Now.AddHours(-3);
                     db.SaveChanges();
                 }
             }

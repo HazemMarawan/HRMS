@@ -74,7 +74,7 @@ namespace HRMS.Controllers
             {
                 Part part = AutoMapper.Mapper.Map<PartViewModel, Part>(partViewModel);
 
-                part.created_at = DateTime.Now;
+                part.created_at = DateTime.Now.AddHours(-3).AddHours(-3);
                 part.created_by = Session["id"].ToString().ToInt();
 
                 db.Parts.Add(part);
@@ -89,7 +89,7 @@ namespace HRMS.Controllers
                 oldpart.area_id = partViewModel.area_id;
                 oldpart.active = partViewModel.active;
                 oldpart.updated_by = Session["id"].ToString().ToInt();
-                oldpart.updated_at = DateTime.Now;
+                oldpart.updated_at = DateTime.Now.AddHours(-3);
 
                 db.SaveChanges();
             }
@@ -104,7 +104,7 @@ namespace HRMS.Controllers
             Part deletePart = db.Parts.Find(id);
             deletePart.active = (int)RowStatus.INACTIVE;
             deletePart.deleted_by = Session["id"].ToString().ToInt();
-            deletePart.deleted_at = DateTime.Now;
+            deletePart.deleted_at = DateTime.Now.AddHours(-3);
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

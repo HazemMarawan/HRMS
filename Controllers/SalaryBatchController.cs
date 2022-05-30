@@ -442,7 +442,7 @@ namespace HRMS.Controllers
             salaryBatch.total = 0;
             salaryBatch.active = 1;
             salaryBatch.created_by = user.id;
-            salaryBatch.created_at = DateTime.Now;
+            salaryBatch.created_at = DateTime.Now.AddHours(-3);
             salaryBatch.notes = salaryBatchViewModel.notes;
             salaryBatch.file_path = ServerSavePath;
 

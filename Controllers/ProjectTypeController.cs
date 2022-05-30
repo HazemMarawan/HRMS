@@ -71,7 +71,7 @@ namespace HRMS.Controllers
             {
                 ProjectType projectType = AutoMapper.Mapper.Map<ProjectTypeViewModel, ProjectType>(projectTypeViewModel);
 
-                projectType.created_at = DateTime.Now;
+                projectType.created_at = DateTime.Now.AddHours(-3);
                 projectType.created_by = Session["id"].ToString().ToInt();
 
                 db.ProjectTypes.Add(projectType);
@@ -85,7 +85,7 @@ namespace HRMS.Controllers
                 oldProjectType.name = projectTypeViewModel.name;
                 oldProjectType.active = projectTypeViewModel.active;
                 oldProjectType.updated_by = Session["id"].ToString().ToInt();
-                oldProjectType.updated_at = DateTime.Now;
+                oldProjectType.updated_at = DateTime.Now.AddHours(-3);
 
                 db.SaveChanges();
             }
@@ -100,7 +100,7 @@ namespace HRMS.Controllers
             ProjectType deleteProjectType = db.ProjectTypes.Find(id);
             deleteProjectType.active = (int)RowStatus.INACTIVE;
             deleteProjectType.deleted_by = Session["id"].ToString().ToInt();
-            deleteProjectType.deleted_at = DateTime.Now;
+            deleteProjectType.deleted_at = DateTime.Now.AddHours(-3);
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

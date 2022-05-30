@@ -105,7 +105,7 @@ namespace HRMS.Controllers
                 Asset asset = AutoMapper.Mapper.Map<AssetViewModel, Asset>(assetViewModel);
 
                 asset.active = (int)RowStatus.ACTIVE;
-                asset.created_at = DateTime.Now;
+                asset.created_at = DateTime.Now.AddHours(-3);;
                 asset.created_by = Session["id"].ToString().ToInt();
 
                 db.Assets.Add(asset);
@@ -121,7 +121,7 @@ namespace HRMS.Controllers
                 oldAsset.notes = assetViewModel.notes;
                 oldAsset.active = assetViewModel.active;
                 oldAsset.updated_by = Session["id"].ToString().ToInt();
-                oldAsset.updated_at = DateTime.Now;
+                oldAsset.updated_at = DateTime.Now.AddHours(-3);;
 
                 db.SaveChanges();
             }
@@ -136,7 +136,7 @@ namespace HRMS.Controllers
             Asset deleteAsset = db.Assets.Find(id);
             deleteAsset.active = (int)RowStatus.INACTIVE;
             deleteAsset.deleted_by = Session["id"].ToString().ToInt();
-            deleteAsset.deleted_at = DateTime.Now;
+            deleteAsset.deleted_at = DateTime.Now.AddHours(-3);;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

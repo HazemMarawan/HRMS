@@ -721,7 +721,7 @@ namespace HRMS.Controllers
                 oldUserProject.part_id_fk = userProjectViewModel.part_id_fk;
                 oldUserProject.status = (int)ProductivityStatus.PendingApprove;
                 oldUserProject.updated_by = Session["id"].ToString().ToInt();
-                oldUserProject.updated_at = DateTime.Now;
+                oldUserProject.updated_at = DateTime.Now.AddHours(-3);
 
                 db.SaveChanges();
             }
@@ -752,7 +752,7 @@ namespace HRMS.Controllers
             }).FirstOrDefault();
 
             approveUserProject.status = (int)ProductivityStatus.Approved;
-            approveUserProject.approved_at = DateTime.Now;
+            approveUserProject.approved_at = DateTime.Now.AddHours(-3);
             approveUserProject.approved_by = Session["id"].ToString().ToInt();
             if(approveUserProject.productivity_type == 1)
                 approveUserProject.cost = currentUser.last_hour_price * approveUserProject.no_of_numbers;
@@ -769,7 +769,7 @@ namespace HRMS.Controllers
         {
             UserProject approveUserProject = db.UserProjects.Find(id);
             approveUserProject.status = (int)ProductivityStatus.Rejected;
-            approveUserProject.rejected_at = DateTime.Now;
+            approveUserProject.rejected_at = DateTime.Now.AddHours(-3);
             approveUserProject.rejected_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();
@@ -782,7 +782,7 @@ namespace HRMS.Controllers
             UserProject approveUserProject = db.UserProjects.Find(id);
             approveUserProject.status = (int)ProductivityStatus.Returned;
             approveUserProject.returned_by_note = note;
-            approveUserProject.returned_at = DateTime.Now;
+            approveUserProject.returned_at = DateTime.Now.AddHours(-3);
             approveUserProject.returned_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();
@@ -1167,89 +1167,75 @@ namespace HRMS.Controllers
             ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Missing Productivity Report");
 
             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
-            Sheet.Cells["A1:G1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:G1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:H1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:H1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:G1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:H1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "ID";
-            Sheet.Cells["B1"].Value = "Name";
-            Sheet.Cells["C1"].Value = "Code";
-            Sheet.Cells["D1"].Value = "Phone";
-            Sheet.Cells["E1"].Value = "Address";
-            Sheet.Cells["F1"].Value = "Gender";
-            Sheet.Cells["G1"].Value = "Role";
+            Sheet.Cells["B1"].Value = "Working Date";
+            Sheet.Cells["C1"].Value = "Name";
+            Sheet.Cells["D1"].Value = "Code";
+            Sheet.Cells["E1"].Value = "Phone";
+            Sheet.Cells["F1"].Value = "Address";
+            Sheet.Cells["G1"].Value = "Gender";
+            Sheet.Cells["H1"].Value = "Role";
             //Sheet.Cells["H1"].Value = "Date";
-          
 
-            var productivityData = (from user in db.Users
-                                    join idtype in db.IDTypes on user.id_type equals idtype.id
-                                    join nationality in db.Nationalities on user.nationality_id equals nationality.id
-                                    join branch in db.Branches on user.branch_id equals branch.id
-                                    join department in db.Departments on user.department_id equals department.id
-                                    join job in db.Jobs on user.job_id equals job.id
-                                    select new UserViewModel
-                                    {
-                                        id = user.id,
-                                        code = user.code,
-                                        attendance_code = user.attendance_code,
-                                        user_name = user.user_name,
-                                        full_name = user.full_name,
-                                        first_name = user.first_name,
-                                        middle_name = user.middle_name,
-                                        last_name = user.last_name,
-                                        password = user.password,
-                                        id_type = user.id_type,
-                                        id_type_name = idtype.name,
-                                        id_number = user.id_number,
-                                        birth_date = user.birth_date,
-                                        last_salary = user.last_salary,
-                                        last_hour_price = user.last_hour_price,
-                                        last_over_time_price = user.last_over_time_price,
-                                        required_productivity = user.required_productivity,
-                                        phone = user.phone,
-                                        address = user.address,
-                                        nationality_id = user.nationality_id,
-                                        team_leader_id = user.team_leader_id,
-                                        nationality_name = nationality.name,
-                                        branch_id = user.branch_id,
-                                        branch_name = branch.name,
-                                        department_id = user.department_id,
-                                        department_name = department.name,
-                                        job_id = user.job_id,
-                                        job_name = job.name,
-                                        gender = user.gender,
-                                        hiring_date = user.hiring_date,
-                                        vacations_balance = user.vacations_balance,
-                                        imagePath = user.image,
-                                        notes = user.notes,
-                                        type = user.type,
-                                        active = user.active,
-
-                                    }).Where(u => u.active == (int)RowStatus.ACTIVE);
-
-
-            //if (userProjectViewModel.from_date != null)
-            //{
-            //    if (Convert.ToDateTime(userProjectViewModel.from_date) != DateTime.MinValue)
-            //    {
-            //        DateTime date = Convert.ToDateTime(userProjectViewModel.from_date);
-            //        List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year == date.Year && ((DateTime)us.working_date).Month == date.Month && ((DateTime)us.working_date).Day == date.Day).Select(us => us.user_id).ToList();
-            //        productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
-            //    }
-            //}
-            //else
-            //{
-            //    productivityData = productivityData.Where(s => s.id == -1);
-            //}
-
+            List<UserViewModel> productivityData = new List<UserViewModel>();
             if (userProjectViewModel.search_date != null)
             {
                 if (Convert.ToDateTime(userProjectViewModel.search_date) != DateTime.MinValue)
                 {
                     DateTime date = Convert.ToDateTime(userProjectViewModel.search_date);
                     List<int?> missingProductivityUsers = db.UserProjects.Where(us => ((DateTime)us.working_date).Year == date.Year && ((DateTime)us.working_date).Month == date.Month && ((DateTime)us.working_date).Day == date.Day).Select(us => us.user_id).ToList();
-                    productivityData = productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
+                    productivityData = (from user in db.Users
+                                        join idtype in db.IDTypes on user.id_type equals idtype.id
+                                        join nationality in db.Nationalities on user.nationality_id equals nationality.id
+                                        join branch in db.Branches on user.branch_id equals branch.id
+                                        join department in db.Departments on user.department_id equals department.id
+                                        join job in db.Jobs on user.job_id equals job.id
+                                        select new UserViewModel
+                                        {
+                                            id = user.id,
+                                            code = user.code,
+                                            attendance_code = user.attendance_code,
+                                            user_name = user.user_name,
+                                            full_name = user.full_name,
+                                            first_name = user.first_name,
+                                            middle_name = user.middle_name,
+                                            last_name = user.last_name,
+                                            password = user.password,
+                                            id_type = user.id_type,
+                                            id_type_name = idtype.name,
+                                            id_number = user.id_number,
+                                            birth_date = user.birth_date,
+                                            last_salary = user.last_salary,
+                                            last_hour_price = user.last_hour_price,
+                                            last_over_time_price = user.last_over_time_price,
+                                            required_productivity = user.required_productivity,
+                                            phone = user.phone,
+                                            address = user.address,
+                                            nationality_id = user.nationality_id,
+                                            team_leader_id = user.team_leader_id,
+                                            nationality_name = nationality.name,
+                                            branch_id = user.branch_id,
+                                            branch_name = branch.name,
+                                            department_id = user.department_id,
+                                            department_name = department.name,
+                                            job_id = user.job_id,
+                                            job_name = job.name,
+                                            gender = user.gender,
+                                            hiring_date = user.hiring_date,
+                                            vacations_balance = user.vacations_balance,
+                                            imagePath = user.image,
+                                            notes = user.notes,
+                                            type = user.type,
+                                            working_date = userProjectViewModel.search_date,
+                                            active = user.active,
+
+                                        }).Where(u => u.active == (int)RowStatus.ACTIVE && !missingProductivityUsers.Contains(u.id) && u.required_productivity == 1).ToList();
+                    //productivityData.Where(s => !missingProductivityUsers.Contains(s.id) && s.required_productivity == 1);
                 }
             }
             else
@@ -1261,7 +1247,7 @@ namespace HRMS.Controllers
                     DateTime fromDate = toDate;
                     bool fromFlag = false;
 
-                    if (Convert.ToDateTime(userProjectViewModel.search_from) != DateTime.MinValue)
+                    if (userProjectViewModel.search_from != DateTime.MinValue)
                     {
                         fromDate = Convert.ToDateTime(userProjectViewModel.search_from);
                     }
@@ -1288,46 +1274,94 @@ namespace HRMS.Controllers
                     for (var dt = fromDate; dt <= toDate; dt = dt.AddDays(1))
                     {
                         userIDs.Clear();
-                        var temp = queryRegistered.Where(us => ((DateTime)us.working_date).Year == dt.Year && ((DateTime)us.working_date).Month == dt.Month && ((DateTime)us.working_date).Day == dt.Day).Select(q => q.user_id);
-                        userIDs.AddRange(temp.ToList());
+                        userIDs = queryRegistered.Where(us => ((DateTime)us.working_date).Year == dt.Year && ((DateTime)us.working_date).Month == dt.Month && ((DateTime)us.working_date).Day == dt.Day).Select(q => q.user_id).ToList();
+                        //userIDs.AddRange(temp.ToList());
 
-                        var missingTemp = queryRegistered.Where(q => !userIDs.Contains(q.user_id)).Select(q => q.user_id);
-                        missingUsers.AddRange(missingTemp.ToList());
+                        List<UserViewModel> tempMissedByDay = (from user in db.Users
+                                                                 join idtype in db.IDTypes on user.id_type equals idtype.id
+                                                                 join nationality in db.Nationalities on user.nationality_id equals nationality.id
+                                                                 join branch in db.Branches on user.branch_id equals branch.id
+                                                                 join department in db.Departments on user.department_id equals department.id
+                                                                 join job in db.Jobs on user.job_id equals job.id
+                                                                 select new UserViewModel
+                                                                 {
+                                                                     id = user.id,
+                                                                     code = user.code,
+                                                                     attendance_code = user.attendance_code,
+                                                                     user_name = user.user_name,
+                                                                     full_name = user.full_name,
+                                                                     first_name = user.first_name,
+                                                                     middle_name = user.middle_name,
+                                                                     last_name = user.last_name,
+                                                                     password = user.password,
+                                                                     id_type = user.id_type,
+                                                                     id_type_name = idtype.name,
+                                                                     id_number = user.id_number,
+                                                                     birth_date = user.birth_date,
+                                                                     last_salary = user.last_salary,
+                                                                     last_hour_price = user.last_hour_price,
+                                                                     last_over_time_price = user.last_over_time_price,
+                                                                     required_productivity = user.required_productivity,
+                                                                     phone = user.phone,
+                                                                     address = user.address,
+                                                                     nationality_id = user.nationality_id,
+                                                                     team_leader_id = user.team_leader_id,
+                                                                     nationality_name = nationality.name,
+                                                                     branch_id = user.branch_id,
+                                                                     branch_name = branch.name,
+                                                                     department_id = user.department_id,
+                                                                     department_name = department.name,
+                                                                     job_id = user.job_id,
+                                                                     job_name = job.name,
+                                                                     gender = user.gender,
+                                                                     hiring_date = user.hiring_date,
+                                                                     vacations_balance = user.vacations_balance,
+                                                                     imagePath = user.image,
+                                                                     notes = user.notes,
+                                                                     type = user.type,
+                                                                     working_date = dt,
+                                                                     active = user.active,
+
+                                                                 }).Where(u => u.active == (int)RowStatus.ACTIVE && !userIDs.Contains(u.id) && u.required_productivity == 1).ToList();
+
+                        //var missingTemp = queryRegistered.Where(q => !userIDs.Contains(q.user_id)).Select(q => q.user_id);
+                        //missingUsers.AddRange(missingTemp.ToList());
+
+                        productivityData.AddRange(tempMissedByDay);
                     }
 
-                    productivityData = productivityData.Where(s => missingUsers.Contains(s.id) && s.required_productivity == 1);
+                    //productivityData = productivityData.Where(s => missingUsers.Contains(s.id) && s.required_productivity == 1);
 
 
                 }
                 else
                 {
-                    productivityData = productivityData.Where(s => s.id == -1);
+                    productivityData = productivityData.Where(s => s.id == -1).ToList();
                 }
             }
 
-
             if (isA.SuperAdmin())
             {
-                productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor));
+                productivityData = productivityData.Where(s => s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor)).ToList();
                 if (userProjectViewModel.branch_id != null)
                 {
-                    productivityData = productivityData.Where(s => s.branch_id == userProjectViewModel.branch_id);
+                    productivityData = productivityData.Where(s => s.branch_id == userProjectViewModel.branch_id).ToList();
                 }
             }
 
             if (isA.BranchAdmin())
             {
-                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor));
+                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor)).ToList();
             }
 
             if (isA.TeamLeader())
             {
-                productivityData = productivityData.Where(s => s.team_leader_id == currentUser.id && s.id != currentUser.id && s.type == (int)UserRole.Employee);
+                productivityData = productivityData.Where(s => s.team_leader_id == currentUser.id && s.id != currentUser.id && s.type == (int)UserRole.Employee).ToList();
             }
 
             if (isA.Supervisor())
             {
-                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader));
+                productivityData = productivityData.Where(s => s.branch_id == currentUser.branch_id && s.id != currentUser.id && (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader)).ToList();
             }
 
 
@@ -1338,12 +1372,13 @@ namespace HRMS.Controllers
             {
 
                 Sheet.Cells[string.Format("A{0}", row)].Value = item.id;
-                Sheet.Cells[string.Format("B{0}", row)].Value = item.full_name;
-                Sheet.Cells[string.Format("C{0}", row)].Value = item.code;
-                Sheet.Cells[string.Format("D{0}", row)].Value = item.phone;
-                Sheet.Cells[string.Format("E{0}", row)].Value = item.address;
-                Sheet.Cells[string.Format("F{0}", row)].Value = item.gender == 1?"Male":"Female";
-                Sheet.Cells[string.Format("G{0}", row)].Value = item.type == 1? "Super Admin": item.type == 2?"Branch Admin":item.type == 3?"Employee":"Team Leader";
+                Sheet.Cells[string.Format("B{0}", row)].Value = item.working_date;
+                Sheet.Cells[string.Format("C{0}", row)].Value = item.full_name;
+                Sheet.Cells[string.Format("D{0}", row)].Value = item.code;
+                Sheet.Cells[string.Format("E{0}", row)].Value = item.phone;
+                Sheet.Cells[string.Format("F{0}", row)].Value = item.address;
+                Sheet.Cells[string.Format("G{0}", row)].Value = item.gender == 1?"Male":"Female";
+                Sheet.Cells[string.Format("H{0}", row)].Value = item.type == 1? "Super Admin": item.type == 2?"Branch Admin":item.type == 3?"Employee":"Team Leader";
                 //Sheet.Cells[string.Format("H{0}", row)].Value = item.address;
 
                 row++;

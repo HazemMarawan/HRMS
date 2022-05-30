@@ -32,6 +32,7 @@ namespace HRMS.ViewModels
         public string job_name { get; set; }
         public int? gender { get; set; }
         public DateTime? hiring_date { get; set; }
+        public DateTime? working_date { get; set; }
         public int? vacations_balance { get; set; }
         public string imagePath { get; set; }
         public HttpPostedFileBase image { get; set; }

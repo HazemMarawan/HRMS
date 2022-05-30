@@ -222,7 +222,7 @@ namespace HRMS.Controllers
 
                 if (isA.TeamLeader() || isA.Supervisor())
                     user.required_productivity = 1;
-                user.created_at = DateTime.Now;
+                user.created_at = DateTime.Now.AddHours(-3);
                 user.created_by = Session["id"].ToString().ToInt();
 
                 if (userVM.image != null)
@@ -249,7 +249,7 @@ namespace HRMS.Controllers
                 vacationYear.death_vacation_counter = 0;
                 vacationYear.active = 1;
                 vacationYear.created_by = Session["id"].ToString().ToInt();
-                vacationYear.created_at = DateTime.Now;
+                vacationYear.created_at = DateTime.Now.AddHours(-3);
 
                 db.VacationYears.Add(vacationYear);
                 db.SaveChanges();
@@ -310,7 +310,7 @@ namespace HRMS.Controllers
                     oldUser.image = "/Uploads/Profile/" + guid.ToString() + "_Profile" + Path.GetExtension(userVM.image.FileName);
                 }
 
-                oldUser.updated_at = DateTime.Now;
+                oldUser.updated_at = DateTime.Now.AddHours(-3);
                 oldUser.updated_by = Session["id"].ToString().ToInt();
                 db.SaveChanges();
 
@@ -351,6 +351,7 @@ namespace HRMS.Controllers
             User deleteUser = db.Users.Find(id);
             deleteUser.active = (int)RowStatus.INACTIVE;
             deleteUser.deleted_by = Session["id"].ToString().ToInt();
+            deleteUser.deleted_at = DateTime.Now.AddHours(-3);
 
             db.SaveChanges();
 

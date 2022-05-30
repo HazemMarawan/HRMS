@@ -75,7 +75,7 @@ namespace HRMS.Controllers
             {
                 Job job = AutoMapper.Mapper.Map<JobViewModel, Job>(jobViewModel);
 
-                job.created_at = DateTime.Now;
+                job.created_at = DateTime.Now.AddHours(-3);;
                 job.created_by = Session["id"].ToString().ToInt();
 
                 db.Jobs.Add(job);
@@ -89,7 +89,7 @@ namespace HRMS.Controllers
                 oldJob.name = jobViewModel.name;
                 oldJob.active = jobViewModel.active;
                 oldJob.updated_by = Session["id"].ToString().ToInt();
-                oldJob.updated_at = DateTime.Now;
+                oldJob.updated_at = DateTime.Now.AddHours(-3);;
 
                 db.SaveChanges();
             }
@@ -103,7 +103,7 @@ namespace HRMS.Controllers
         {
             Job deleteJob = db.Jobs.Find(id);
             deleteJob.active = (int)RowStatus.INACTIVE;
-            deleteJob.deleted_at = DateTime.Now;
+            deleteJob.deleted_at = DateTime.Now.AddHours(-3);;
             deleteJob.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

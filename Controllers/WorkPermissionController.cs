@@ -144,7 +144,7 @@ namespace HRMS.Controllers
                 WorkPermissionRequest.year = DateTime.Now.Year;
                 WorkPermissionRequest.month = DateTime.Now.Month;
                 WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
-                WorkPermissionRequest.created_at = DateTime.Now;
+                WorkPermissionRequest.created_at = DateTime.Now.AddHours(-3);
                 WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
 
                 if (db.WorkPermissionRequests.Where(w => w.year == WorkPermissionRequest.year && w.month == WorkPermissionRequest.month && w.user_id == currentUser.id).Count() >= 2)
@@ -173,7 +173,7 @@ namespace HRMS.Controllers
                 WorkPermissionRequest.month = DateTime.Now.Month;
                 //WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
                 WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
-                WorkPermissionRequest.updated_at = DateTime.Now;
+                WorkPermissionRequest.updated_at = DateTime.Now.AddHours(-3);
 
                 db.SaveChanges();
             }
@@ -187,7 +187,7 @@ namespace HRMS.Controllers
         {
             WorkPermissionRequest deleteWorkPermissionRequest = db.WorkPermissionRequests.Find(id);
             deleteWorkPermissionRequest.active = (int)RowStatus.INACTIVE;
-            deleteWorkPermissionRequest.deleted_at = DateTime.Now;
+            deleteWorkPermissionRequest.deleted_at = DateTime.Now.AddHours(-3);
             deleteWorkPermissionRequest.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

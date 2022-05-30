@@ -11,6 +11,7 @@ namespace HRMS.ViewModels
         public int? user_id { get; set; }
         public int? type { get; set; }
         public int? team_leader_id { get; set; }
+        public int? required_productivity { get; set; }
         public string user_name { get; set; }
         public int? project_id { get; set; }
         public string project_name { get; set; }

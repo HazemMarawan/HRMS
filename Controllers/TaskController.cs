@@ -74,7 +74,7 @@ namespace HRMS.Controllers
             {
                 Task task = AutoMapper.Mapper.Map<TaskViewModel, Task>(taskViewModel);
 
-                task.created_at = DateTime.Now;
+                task.created_at = DateTime.Now.AddHours(-3);
                 task.created_by = Session["id"].ToString().ToInt();
 
                 db.Tasks.Add(task);
@@ -88,7 +88,7 @@ namespace HRMS.Controllers
                 oldTask.name = taskViewModel.name;
                 oldTask.active = taskViewModel.active;
                 oldTask.updated_by = Session["id"].ToString().ToInt();
-                oldTask.updated_at = DateTime.Now;
+                oldTask.updated_at = DateTime.Now.AddHours(-3);
 
                 db.SaveChanges();
             }
@@ -103,7 +103,7 @@ namespace HRMS.Controllers
             Task deleteTask = db.Tasks.Find(id);
             deleteTask.active = (int)RowStatus.INACTIVE;
             deleteTask.deleted_by = Session["id"].ToString().ToInt();
-            deleteTask.deleted_at = DateTime.Now;
+            deleteTask.deleted_at = DateTime.Now.AddHours(-3);
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

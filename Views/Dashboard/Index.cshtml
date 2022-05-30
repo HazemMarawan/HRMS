@@ -128,7 +128,7 @@
         </div>
     </div>
 }
-@if(HRMS.Auth.isA.SuperAdmin()) {
+@if(!HRMS.Auth.isA.Employee()) {
     <div class="card">
         <div class="card-header">
             Projects Statistics

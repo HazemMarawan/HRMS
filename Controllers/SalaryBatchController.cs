@@ -309,23 +309,23 @@ namespace HRMS.Controllers
         }
 
 
-        public void ExportSalarySheet()
+        public void ExportSalarySheet(int month)
         {
             User currentUser = Session["user"] as User;
 
             ExcelPackage Ep = new ExcelPackage();
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Salary Batch"+DateTime.Now.Month+"-"+ DateTime.Now.Year);
+            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Salary Batch"+ month + "-"+ DateTime.Now.Year);
 
             System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
             System.Drawing.Color redColor = System.Drawing.ColorTranslator.FromHtml("#FF0000");
             System.Drawing.Color warningColor = System.Drawing.ColorTranslator.FromHtml("#FFA000");
             System.Drawing.Color greenColor = System.Drawing.ColorTranslator.FromHtml("#00FF00");
-            Sheet.Cells["A1:O1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:O1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:P1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:P1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:O1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:P1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "م";
             Sheet.Cells["B1"].Value = "اسم الموظف";
@@ -341,7 +341,8 @@ namespace HRMS.Controllers
             Sheet.Cells["L1"].Value = "قيمة ساعات الاضافى";
             Sheet.Cells["M1"].Value = "قيمة كيلوهات";
             Sheet.Cells["N1"].Value = "إجمالي الراتب";
-            Sheet.Cells["O1"].Value = "ملحوظات";
+            Sheet.Cells["O1"].Value = "الشهر";
+            Sheet.Cells["P1"].Value = "ملحوظات";
 
             var userData = (from user in db.Users
                             join idtype in db.IDTypes on user.id_type equals idtype.id
@@ -409,7 +410,8 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("L{0}", row)].Value = "";
                 Sheet.Cells[string.Format("M{0}", row)].Value = "";
                 Sheet.Cells[string.Format("N{0}", row)].Value = "";
-                Sheet.Cells[string.Format("O{0}", row)].Value = "";
+                Sheet.Cells[string.Format("O{0}", row)].Value = month;
+                Sheet.Cells[string.Format("P{0}", row)].Value = "";
 
 
                 row++;
@@ -435,7 +437,6 @@ namespace HRMS.Controllers
             salaryBatchViewModel.file.SaveAs(ServerSavePath);
 
             SalaryBatch salaryBatch = new SalaryBatch();
-            salaryBatch.month = DateTime.Now.Month;
             salaryBatch.year = DateTime.Now.Year;
             salaryBatch.count = 0;
             salaryBatch.total = 0;
@@ -488,6 +489,7 @@ namespace HRMS.Controllers
                     }
                 }
                 List<SalaryBatchDetail> importedSalaryBatchDetails = new List<SalaryBatchDetail>();
+                int month = 0;
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     SalaryBatchDetail salaryBatchDetail = new SalaryBatchDetail();
@@ -507,7 +509,8 @@ namespace HRMS.Controllers
                     salaryBatchDetail.addtional_hours_amount = (dt.Rows[i][11].ToString() != null && dt.Rows[i][11].ToString() != "") ? dt.Rows[i][11].ToString().ToDouble():0;
                     salaryBatchDetail.total_kilos = (dt.Rows[i][12].ToString() != null && dt.Rows[i][12].ToString() != "") ? dt.Rows[i][12].ToString().ToDouble():0;
                     salaryBatchDetail.total_salary = (dt.Rows[i][13].ToString() != null && dt.Rows[i][13].ToString() != "") ? dt.Rows[i][13].ToString().ToDouble() : 0;
-                    salaryBatchDetail.notes = dt.Rows[i][14].ToString();
+                    month = (dt.Rows[i][14].ToString() != null && dt.Rows[i][14].ToString() != "") ? dt.Rows[i][14].ToString().ToInt() : 0;
+                    salaryBatchDetail.notes = dt.Rows[i][15].ToString();
 
                     salaryBatchDetail.active = (int)RowStatus.ACTIVE;
                     salaryBatchDetail.created_at = DateTime.Now;
@@ -520,6 +523,7 @@ namespace HRMS.Controllers
 
                 salaryBatch.count = importedSalaryBatchDetails.Count();
                 salaryBatch.total = importedSalaryBatchDetails.Select(im => im.total_salary).ToList().Sum();
+                salaryBatch.month = month;
 
                 db.SaveChanges();
             }

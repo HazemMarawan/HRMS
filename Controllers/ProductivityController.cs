@@ -63,6 +63,8 @@ namespace HRMS.Controllers
                                         from part in pa.DefaultIfEmpty()
                                         join tas in db.Tasks on userProject.task_id equals tas.id into ts
                                         from task in ts.DefaultIfEmpty()
+                                        join us in db.Users on user.team_leader_id equals us.id into u
+                                        from leader in u.DefaultIfEmpty()
                                         select new UserProjectViewModel
                                         {
                                             id = userProject.id,
@@ -106,7 +108,11 @@ namespace HRMS.Controllers
                                             task_name = task.name,
                                             returned_by_name = returned.full_name,
                                             returned_at = userProject.returned_at,
-                                            rejected_by_note = userProject.returned_by_note
+                                            rejected_by_note = userProject.returned_by_note,
+                                            leader_name = (user.type == (int)UserRole.Employee) ? leader.full_name :
+                                            (user.type == (int)UserRole.TeamLeader) ? (db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.Supervisor).Select(u => new UserViewModel { id = u.id, full_name = u.full_name }).FirstOrDefault().full_name) :
+                                            ( user.type == (int)UserRole.Supervisor) ?
+                                            (db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.BranchAdmin).Select(u => new UserViewModel { id = u.id, full_name = u.full_name }).FirstOrDefault().full_name) : "",
                                         });
 
                
@@ -140,7 +146,7 @@ namespace HRMS.Controllers
                     productivityData = productivityData.Where(
                        m => m.project_name.ToLower().Contains(searchValue.ToLower())
                     || m.id.ToString().ToLower().Contains(searchValue.ToLower())
-                    || m.user_name.ToString().ToLower().Contains(searchValue.ToLower())
+                    || m.user_name.ToString().Contains(searchValue)
                     );
                 }
 

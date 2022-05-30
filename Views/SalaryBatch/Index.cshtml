@@ -38,6 +38,50 @@
 </div>
 
 
+<div class="modal fade" id="export_salary_batch_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="@Url.Action("ExportSalarySheet", "SalaryBatch")" id="export_sheet" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title">Export Salary Batch</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-12">
+                                <label>Month</label>
+                                <select name="month" id="month" class="form-control">
+                                    <option @(((int)DateTime.Now.Month) == 1 ? "selected": "") value="1">Jan</option>
+                                    <option @(((int)DateTime.Now.Month) == 2 ? "selected": "") value="2">Feb</option>
+                                    <option @(((int)DateTime.Now.Month) == 3 ? "selected": "") value="3">March</option>
+                                    <option @(((int)DateTime.Now.Month) == 4 ? "selected": "") value="4">April</option>
+                                    <option @(((int)DateTime.Now.Month) == 5 ? "selected": "") value="5">May</option>
+                                    <option @(((int)DateTime.Now.Month) == 6 ? "selected": "") value="6">Jun</option>
+                                    <option @(((int)DateTime.Now.Month) == 7 ? "selected": "") value="7">July</option>
+                                    <option @(((int)DateTime.Now.Month) == 8 ? "selected": "") value="8">Aug</option>
+                                    <option @(((int)DateTime.Now.Month) == 9 ? "selected": "") value="9">Sep</option>
+                                    <option @(((int)DateTime.Now.Month) == 10 ? "selected": "") value="10">Oct</option>
+                                    <option @(((int)DateTime.Now.Month) == 11 ? "selected": "") value="11">Nov</option>
+                                    <option @(((int)DateTime.Now.Month) == 12 ? "selected": "") value="12">Dec</option>
+                                </select>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <div class="row">
     <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
@@ -78,7 +122,7 @@
                                 <i class="fas fa-cog"></i> Manage <svg> ... </svg>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                                <a class="dropdown-item" href="@Url.Action("ExportSalarySheet", "SalaryBatch")">Export Salary Sheet</a>
+                                <a class="dropdown-item export" href="javascript:void(0)">Export Salary Sheet</a>
                                 <a class="dropdown-item" href="javascript:void(0)" id="upload_salary_sheet">Import Salary Sheet</a>
                             </div>
                         </div>
@@ -159,7 +203,7 @@
                             "data": "month", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = oData.month + "-" + oData.year;
-                                
+
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -171,7 +215,7 @@
                             "data": "total", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = addCommas(oData.total.toFixed(2));
-                               
+
 
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
@@ -248,7 +292,18 @@
 
 
                 });
-            });
+           });
+
+           $(".export").click(function () {
+
+               var modal = $('#export_salary_batch_modal').modal("show");
+               
+           });
+
+           $("#export_sheet").submit(function () {
+
+               $('#export_salary_batch_modal').modal("hide");
+           });
 
         });
 

@@ -77,5 +77,6 @@ namespace HRMS.ViewModels
         public int? department_id { get; set; }
         public DateTime? search_from { get; set; }
         public DateTime? search_to { get; set; }
+        public string leader_name { get; set; }
     }
 }

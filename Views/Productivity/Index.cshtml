@@ -361,8 +361,15 @@
                             "searchable": true
                         },
                         {
-                            "data": "user_name",
-                            "searchable": true
+                            "data": "user_name", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+                                if (oData.user_name)
+                                    html += "<b>Name: </b>" + oData.user_name + "<br>";
+                                if (oData.leader_name)
+                                    html += "<b>Manager: </b>" + oData.leader_name + "<br>";
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
                         },
                         {
                             "data": "project_name", "searchable": true,

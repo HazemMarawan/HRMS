@@ -434,6 +434,10 @@
     <Compile Include="Migrations\202205230914362_work_perm.Designer.cs">
       <DependentUpon>202205230914362_work_perm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202205312106544_vacation_req_sup.cs" />
+    <Compile Include="Migrations\202205312106544_vacation_req_sup.Designer.cs">
+      <DependentUpon>202205312106544_vacation_req_sup.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -4392,6 +4396,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205230914362_work_perm.resx">
       <DependentUpon>202205230914362_work_perm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202205312106544_vacation_req_sup.resx">
+      <DependentUpon>202205312106544_vacation_req_sup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

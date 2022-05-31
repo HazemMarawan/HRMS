@@ -1372,7 +1372,7 @@ namespace HRMS.Controllers
             {
 
                 Sheet.Cells[string.Format("A{0}", row)].Value = item.id;
-                Sheet.Cells[string.Format("B{0}", row)].Value = item.working_date;
+                Sheet.Cells[string.Format("B{0}", row)].Value = item.working_date.ToString().Split(' ')[0];
                 Sheet.Cells[string.Format("C{0}", row)].Value = item.full_name;
                 Sheet.Cells[string.Format("D{0}", row)].Value = item.code;
                 Sheet.Cells[string.Format("E{0}", row)].Value = item.phone;

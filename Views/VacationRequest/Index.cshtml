@@ -21,15 +21,14 @@
                                 <label>Vacation Type</label>
                                 @Html.DropDownList("vacation_type_id", new SelectList(ViewBag.VacationTypes, "id", "name"), "Select Vacation Type", new { @class = "form-control", @name = "vacation_type_id", @style = "width:100%", @id = "vacation_type_id", @required = "required" })
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-6 dates_area">
                                 <label>From</label>
                                 <input required name="vacation_from" id="vacation_from" type="date" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-6 dates_area">
                                 <label>To</label>
                                 <input required name="vacation_to" id="vacation_to" type="date" class="form-control radius-30" />
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -267,10 +266,43 @@
                             datatable.draw();
                         }
 
+
                 }, function (response) {
 
                 }, function (dialog) {
+                    $(document).on("change", "#vacation_type_id", function () {
+                        $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getVactionType", "VacationRequest")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": $(this).val() },
+                            datatype: "json",
+                            success: function (data) {
+                                if (data.vaction_type == 2) {
+                                    dialog.find(".dates_area").hide()
+                                    dialog.find("#vacation_from").prop("required", false)
+                                    dialog.find("#vacation_to").prop("required", false)
+                                    var todayDate = new Date();
+                                    var todayDay = todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate();
+                                    var todayMonth = (todayDate.getMonth() + 1) < 10 ? "0" + (todayDate.getMonth() + 1) : (todayDate.getMonth() + 1);
+                                    var todayYear = todayDate.getFullYear();
 
+                                    var today = todayYear + "-" + todayMonth + "-" + todayDay;
+                                    dialog.find("#vacation_from").val(today)
+                                    dialog.find("#vacation_to").val(today)
+
+                                } else {
+                                    dialog.find(".dates_area").show()
+                                    dialog.find("#vacation_from").prop("required", true)
+                                    dialog.find("#vacation_to").prop("required", true)
+                                }
+                            },
+                            error: function () {
+                                alert("Dynamic content load failed.");
+                            }
+                        });
+                       
+                    });
 
                 });
             });
@@ -318,6 +350,7 @@
                     });
                 });
             });
+
 
         });
 

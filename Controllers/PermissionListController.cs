@@ -8,6 +8,8 @@ using HRMS.ViewModels;
 using HRMS.Auth;
 using HRMS.Enums;
 using HRMS.Helpers;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace HRMS.Controllers
 {
@@ -101,11 +103,12 @@ namespace HRMS.Controllers
                 }
                 else if (isA.BranchAdmin())
                 {
-                    permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.Supervisor) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedBySupervisor);
+                    permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.Supervisor) && t.user_id != currentUser.id);
+                    //permissionData = permissionData.Where(t => t.branch_id == currentUser.branch_id && (t.type == (int)UserRole.Employee || t.type == (int)UserRole.TeamLeader || t.type == (int)UserRole.Supervisor) && t.user_id != currentUser.id && t.status == (int)ApprovementStatus.ApprovedBySupervisor);
                 } 
                 else if(isA.SuperAdmin())
                 {
-                    permissionData = permissionData.Where(t => t.status == (int)ApprovementStatus.ApprovedByBranchAdmin);
+                    //permissionData = permissionData.Where(t => t.status == (int)ApprovementStatus.ApprovedByBranchAdmin);
                     if(branch_id != null)
                     {
                         permissionData = permissionData.Where(t => t.branch_id == branch_id);
@@ -234,5 +237,113 @@ namespace HRMS.Controllers
             
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
+
+
+        public void PermissionsSheet(int month)
+        {
+            User currentUser = Session["user"] as User;
+
+            ExcelPackage Ep = new ExcelPackage();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            ExcelWorksheet Sheet = Ep.Workbook.Worksheets.Add("Permissions Report for " + month + "-" + DateTime.Now.Year);
+
+            System.Drawing.Color colFromHex = System.Drawing.ColorTranslator.FromHtml("#000000");
+            System.Drawing.Color redColor = System.Drawing.ColorTranslator.FromHtml("#FF0000");
+            System.Drawing.Color warningColor = System.Drawing.ColorTranslator.FromHtml("#FFA000");
+            System.Drawing.Color greenColor = System.Drawing.ColorTranslator.FromHtml("#00FF00");
+            Sheet.Cells["A1:E1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:E1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
+            Sheet.Cells["A1:E1"].Style.Font.Color.SetColor(text);
+
+            Sheet.Cells["A1"].Value = "اسم الموظف";
+            Sheet.Cells["B1"].Value = "القسم";
+            Sheet.Cells["C1"].Value = "الوظيفة";
+            Sheet.Cells["D1"].Value = "عدد الاذونات";
+            Sheet.Cells["E1"].Value = "ساعات الاذونات";
+        
+           
+
+            List<int?> userPermission = db.WorkPermissionRequests.Where(th => th.month == month && th.status == (int)ApprovementStatus.ApprovedBySuperAdmin ).Select(s => s.user_id).ToList();
+
+            var userData = (from  user in db.Users
+                            join branch in db.Branches on user.branch_id equals branch.id
+                            join dep in db.Departments on user.department_id equals dep.id into d
+                            from department in d.DefaultIfEmpty()
+                            join jo in db.Departments on user.department_id equals jo.id into j
+                            from job in j.DefaultIfEmpty()
+                            //group per by per.month into permissionGroup
+                            //group user by user.id into userGroup
+                            select new UserViewModel
+                            {
+                                total_permissions = db.WorkPermissionRequests.Where(th => th.month == month && th.user_id == user.id && th.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Count(),
+                                total_hours = db.WorkPermissionRequests.Where(th => th.month == month && th.user_id == user.id && th.status == (int)ApprovementStatus.ApprovedBySuperAdmin).Select(s => s.minutes).Sum()/60.0,
+                                id = user.id,
+                                code = user.code,
+                                attendance_code = user.attendance_code,
+                                user_name = user.user_name,
+                                full_name = user.full_name,
+                                first_name = user.first_name,
+                                middle_name = user.middle_name,
+                                last_name = user.last_name,
+                                password = user.password,
+                                id_type = user.id_type,
+                                id_number = user.id_number,
+                                birth_date = user.birth_date,
+                                last_salary = user.last_salary,
+                                last_hour_price = user.last_hour_price,
+                                last_over_time_price = user.last_over_time_price,
+                                required_productivity = user.required_productivity,
+                                phone = user.phone,
+                                address = user.address,
+                                nationality_id = user.nationality_id,
+                                team_leader_id = user.team_leader_id,
+                                branch_id = user.branch_id,
+                                branch_name = branch.name,
+                                department_id = user.department_id,
+                                department_name = department.name,
+                                job_id = user.job_id,
+                                job_name = job.name,
+                                gender = user.gender,
+                                hiring_date = user.hiring_date,
+                                vacations_balance = user.vacations_balance,
+                                imagePath = user.image,
+                                notes = user.notes,
+                                type = user.type,
+                                active = user.active
+                            }).Where(s => s.active == (int)RowStatus.ACTIVE && userPermission.Contains(s.id) &&
+                            (s.type == (int)UserRole.Employee || s.type == (int)UserRole.TeamLeader || s.type == (int)UserRole.Supervisor || s.type == (int)UserRole.BranchAdmin));
+            
+            if(!isA.SuperAdmin())
+            {
+                userData = userData.Where(s => s.branch_id == currentUser.branch_id);
+            }
+            List<UserViewModel> employees = userData.ToList();
+
+            int row = 2;
+            foreach (var item in employees)
+            {
+
+                Sheet.Cells[string.Format("A{0}", row)].Value = item.full_name;
+                Sheet.Cells[string.Format("B{0}", row)].Value = item.department_name;
+                Sheet.Cells[string.Format("C{0}", row)].Value = item.job_name;
+                Sheet.Cells[string.Format("D{0}", row)].Value = item.total_permissions;
+                Sheet.Cells[string.Format("E{0}", row)].Value = Math.Round((double)item.total_hours,2);
+
+                row++;
+            }
+
+            row++;
+
+            Sheet.Cells["A:AZ"].AutoFitColumns();
+
+            Response.Clear();
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", "attachment: filename=" + DateTime.Now.ToString() + "_Permission_Report.xlsx");
+            Response.BinaryWrite(Ep.GetAsByteArray());
+            Response.End();
+        }
+
     }
 }

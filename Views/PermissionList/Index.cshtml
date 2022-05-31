@@ -3,6 +3,51 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="modal fade" id="export_permission_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="@Url.Action("PermissionsSheet", "PermissionList")" id="export_sheet" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title">Export Permissions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-12">
+                                <label>Month</label>
+                                <select name="month" id="month" class="form-control">
+                                    <option @(((int)DateTime.Now.Month) == 1 ? "selected" : "") value="1">Jan</option>
+                                    <option @(((int)DateTime.Now.Month) == 2 ? "selected" : "") value="2">Feb</option>
+                                    <option @(((int)DateTime.Now.Month) == 3 ? "selected" : "") value="3">March</option>
+                                    <option @(((int)DateTime.Now.Month) == 4 ? "selected" : "") value="4">April</option>
+                                    <option @(((int)DateTime.Now.Month) == 5 ? "selected" : "") value="5">May</option>
+                                    <option @(((int)DateTime.Now.Month) == 6 ? "selected" : "") value="6">Jun</option>
+                                    <option @(((int)DateTime.Now.Month) == 7 ? "selected" : "") value="7">July</option>
+                                    <option @(((int)DateTime.Now.Month) == 8 ? "selected" : "") value="8">Aug</option>
+                                    <option @(((int)DateTime.Now.Month) == 9 ? "selected" : "") value="9">Sep</option>
+                                    <option @(((int)DateTime.Now.Month) == 10 ? "selected" : "") value="10">Oct</option>
+                                    <option @(((int)DateTime.Now.Month) == 11 ? "selected" : "") value="11">Nov</option>
+                                    <option @(((int)DateTime.Now.Month) == 12 ? "selected" : "") value="12">Dec</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <div class="modal fade" id="manage_PermissionList_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
         <div class="modal-dialog modal-lg">
@@ -144,6 +189,11 @@
 <div class="card">
     <div class="card-header">
         <b>@ViewBag.branchName  Permissions</b>
+        @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+        {
+            <span style="float:right;font-weight:bold;text-decoration:underline;"><a href="javascript:void(0);" class="export" id=""><i class="far fa-file-excel"></i> Generate Report</a></span>
+
+        }
     </div>
     <div class="card-body">
 
@@ -216,13 +266,17 @@
                         {
                             "data": "full_name", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + oData.full_name + "</span>");
+                                $(nTd).html("<span>" + oData.full_name + "</span>");
                             }
                         },
                         {
                             "data": "date", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + fixDate(oData.date) + "</span>");
+                                var html = '';
+                                if (oData.date)
+                                    html = fixDate(oData.date);
+                                $(nTd).html("<span>" + html + "</span>");
+
                             }
                         },
                         {
@@ -231,42 +285,47 @@
                                 var html = '';
                                 if (oData.from_time)
                                     html = fixTime(oData.from_time);
-                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                                $(nTd).html("<span>" + html + "</span>");
                             }
                         },
                         {
                             "data": "minutes", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                $(nTd).html("<span class='action-column'>" + oData.minutes + " Minute</span>");
+                                var html = '';
+                                if (oData.minutes)
+                                    html = oData.minutes + " Minute";
+                                $(nTd).html("<span>" + html + "</span>");
+
                             }
                         },
                         {
                             "data": "status", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                console.log(oData.minutes)
                                 var html = "";
                                 //employee
                                 if (oData.type == 3) {
                                     if (oData.status == 1)
                                         html += "<span class='badge badge-info'>Pending Approve</span>";
                                     else if (oData.status == 2)
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + (oData.approved_by_team_leader_at ? fixDate(oData.approved_by_team_leader_at) : "") + "</span>";
                                     else if (oData.status == 6) {
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + (oData.approved_by_team_leader_at ? fixDate(oData.approved_by_team_leader_at) : "") + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + (oData.approved_by_supervisor_at ? fixDate(oData.approved_by_supervisor_at) : "") + "</span>";
                                     }
                                     else if (oData.status == 3) {
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + (oData.approved_by_team_leader_at ? fixDate(oData.approved_by_team_leader_at) : "") + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + (oData.approved_by_supervisor_at ? fixDate(oData.approved_by_supervisor_at) : "") + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + (oData.approved_by_branch_admin_at ? fixDate(oData.approved_by_branch_admin_at) : "") + "</span>";
                                     }
                                     else if (oData.status == 4) {
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + fixDate(oData.approved_by_team_leader_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + fixDate(oData.approved_by_supervisor_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + fixDate(oData.approved_by_branch_admin_at) + "</span><br/>";
-                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + fixDate(oData.approved_by_super_admin_at) + "</span>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.team_leader_name + " At " + (oData.approved_by_team_leader_at ? fixDate(oData.approved_by_team_leader_at) : "") + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.supervisor_name + " At " + (oData.approved_by_supervisor_at ? fixDate(oData.approved_by_supervisor_at) : "") + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.branch_admin_name + " At " + (oData.approved_by_branch_admin_at ? fixDate(oData.approved_by_branch_admin_at) : "") + "</span><br/>";
+                                        html += "<span class='badge badge-success'>Approved By: " + oData.super_admin_name + " At " + (oData.approved_by_super_admin_at ? fixDate(oData.approved_by_super_admin_at) : "") + "</span>";
                                     }
                                     else if (oData.status == 5)
-                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + fixDate(oData.rejected_by_at) + "</span>";
+                                        html += "<span class='badge badge-danger'>Rejected By" + oData.rejected_by_name + " At " + (oData.rejected_by_at ? fixDate(oData.rejected_by_at) : "") + "</span>";
                                     else
                                         html += "-";
                                 }
@@ -338,7 +397,14 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
                                 //accepted or rejected
-                                if (oData.status != 4 || oData.status != 5) {
+                                 var isSuperAdmin = '@HRMS.Auth.isA.SuperAdmin()';
+                                var isBranchAdmin = '@HRMS.Auth.isA.BranchAdmin()';
+                                var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
+                                var isEmployee = '@HRMS.Auth.isA.Employee()';
+                                var isSupervisor = '@HRMS.Auth.isA.Supervisor()';
+
+                                if (((isSuperAdmin == "True" && oData.status == 3) || (isBranchAdmin == "True" && oData.status == 6) || (isTeamLeader == "True" && oData.status == 1) || (isSupervisor == "True" && oData.status == 2)) && (oData.status != 4 || oData.status != 5)) {
+
                                     html += "<a class='accept' href='javascript:void(0)' title='Accept'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fa fa-times'></i></a>";
                                 }
@@ -520,6 +586,17 @@
                     });
                 });
             });
+
+           $(".export").click(function () {
+
+               var modal = $('#export_permission_modal').modal("show");
+
+           });
+
+           $("#export_sheet").submit(function () {
+
+               $('#export_permission_modal').modal("hide");
+           });
 
         });
 

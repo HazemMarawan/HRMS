@@ -12,9 +12,11 @@ namespace HRMS.Models
         [Key]
         public int id { get; set; }
         public int? user_id { get; set; }
+
         [ForeignKey("VacationType")]
         public int? vacation_type_id { get; set; }
         public VacationType VacationType { get; set; }
+
         public DateTime? vacation_from { get; set; }
         public DateTime? vacation_to { get; set; }
         public int? days { get; set; }

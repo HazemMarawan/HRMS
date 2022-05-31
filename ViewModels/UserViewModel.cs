@@ -49,5 +49,15 @@ namespace HRMS.ViewModels
         public int? created_by { get; set; }
         public int? updated_by { get; set; }
         public int? deleted_by { get; set; }
+
+        public double? total_hours { get; set; }
+        public int? total_permissions { get; set; }
+
+        public int? a3tyady_vacation_counter { get; set; }
+        public int? arda_vacation_counter { get; set; }
+        public int? medical_vacation_counter { get; set; }
+        public int? married_vacation_counter { get; set; }
+        public int? work_from_home_vacation_counter { get; set; }
+        public int? death_vacation_counter { get; set; }
     }
 }

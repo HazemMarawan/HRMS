@@ -112,73 +112,82 @@ namespace HRMS.Controllers
         public JsonResult saveWorkPermission(WorkPermissionRequestViewModel workPermissionRequestViewModel)
         {
             User currentUser = Session["user"] as User;
-
-            if (workPermissionRequestViewModel.id == 0)
+            DateTime currentDateTime = DateTime.Now.AddHours(-3);
+            TimeSpan currentTime = new TimeSpan(currentDateTime.Hour, currentDateTime.Minute, currentDateTime.Second);
+            TimeSpan currentTimeMetric = new TimeSpan(9, 30, 0);
+            if (currentTime <= currentTimeMetric)
             {
+                if (workPermissionRequestViewModel.id == 0)
+                {
 
-                WorkPermissionRequest WorkPermissionRequest = AutoMapper.Mapper.Map<WorkPermissionRequestViewModel, WorkPermissionRequest>(workPermissionRequestViewModel);
+                    WorkPermissionRequest WorkPermissionRequest = AutoMapper.Mapper.Map<WorkPermissionRequestViewModel, WorkPermissionRequest>(workPermissionRequestViewModel);
 
-                WorkPermissionRequest.user_id = currentUser.id;
-                WorkPermissionRequest.minutes = workPermissionRequestViewModel.minutes;
-                if(currentUser.type == (int?)UserRole.BranchAdmin)
-                {
-                    WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedByBranchAdmin;
-                }
-                else if (currentUser.type == (int?)UserRole.TeamLeader)
-                {
-                    WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedByTeamLeader;
-                }
-                else if (currentUser.type == (int?)UserRole.Supervisor)
-                {
-                    WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedBySupervisor;
-                }
-                else if(currentUser.type == (int?)UserRole.Employee)
-                {
-                    WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
-                } else
-                {
-                    WorkPermissionRequest.status = (int?)ApprovementStatus.Rejected;
-                }
-                WorkPermissionRequest.date = DateTime.Now.Date;
-                WorkPermissionRequest.from_time = (TimeSpan)(workPermissionRequestViewModel.from_time);
-                WorkPermissionRequest.year = DateTime.Now.Year;
-                WorkPermissionRequest.month = DateTime.Now.Month;
-                WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
-                WorkPermissionRequest.created_at = DateTime.Now.AddHours(-3);
-                WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
+                    WorkPermissionRequest.user_id = currentUser.id;
+                    WorkPermissionRequest.minutes = workPermissionRequestViewModel.minutes;
+                    if (currentUser.type == (int?)UserRole.BranchAdmin)
+                    {
+                        WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedByBranchAdmin;
+                    }
+                    else if (currentUser.type == (int?)UserRole.TeamLeader)
+                    {
+                        WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedByTeamLeader;
+                    }
+                    else if (currentUser.type == (int?)UserRole.Supervisor)
+                    {
+                        WorkPermissionRequest.status = (int?)ApprovementStatus.ApprovedBySupervisor;
+                    }
+                    else if (currentUser.type == (int?)UserRole.Employee)
+                    {
+                        WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
+                    }
+                    else
+                    {
+                        WorkPermissionRequest.status = (int?)ApprovementStatus.Rejected;
+                    }
+                    WorkPermissionRequest.date = DateTime.Now.Date;
+                    WorkPermissionRequest.from_time = (TimeSpan)(workPermissionRequestViewModel.from_time);
+                    WorkPermissionRequest.year = DateTime.Now.Year;
+                    WorkPermissionRequest.month = DateTime.Now.Month;
+                    WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
+                    WorkPermissionRequest.created_at = DateTime.Now.AddHours(-3);
+                    WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
 
-                if (db.WorkPermissionRequests.Where(w => w.year == WorkPermissionRequest.year && w.month == WorkPermissionRequest.month && w.user_id == currentUser.id).Count() >= 2)
-                {
-                        return Json(new { message = "faild" }, JsonRequestBehavior.AllowGet);
+                    if (db.WorkPermissionRequests.Where(w => w.year == WorkPermissionRequest.year && w.month == WorkPermissionRequest.month && w.user_id == currentUser.id).Count() >= 2)
+                    {
+                        return Json(new { message = "faild", flag = true }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        db.WorkPermissionRequests.Add(WorkPermissionRequest);
+                        db.SaveChanges();
+                    }
+
                 }
                 else
                 {
-                    db.WorkPermissionRequests.Add(WorkPermissionRequest);
+
+                    WorkPermissionRequest WorkPermissionRequest = db.WorkPermissionRequests.Find(workPermissionRequestViewModel.id);
+
+                    WorkPermissionRequest.user_id = currentUser.id;
+                    WorkPermissionRequest.reason = workPermissionRequestViewModel.reason;
+                    WorkPermissionRequest.minutes = workPermissionRequestViewModel.minutes;
+                    //WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
+                    WorkPermissionRequest.date = DateTime.Now.Date;
+                    WorkPermissionRequest.from_time = (TimeSpan)(workPermissionRequestViewModel.from_time);
+                    WorkPermissionRequest.year = DateTime.Now.Year;
+                    WorkPermissionRequest.month = DateTime.Now.Month;
+                    //WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
+                    WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
+                    WorkPermissionRequest.updated_at = DateTime.Now.AddHours(-3);
+
                     db.SaveChanges();
                 }
-              
-            }
-            else
-            {
 
-                WorkPermissionRequest WorkPermissionRequest = db.WorkPermissionRequests.Find(workPermissionRequestViewModel.id);
+                return Json(new { message = "done", flag = true }, JsonRequestBehavior.AllowGet);
 
-                WorkPermissionRequest.user_id = currentUser.id;
-                WorkPermissionRequest.reason = workPermissionRequestViewModel.reason;
-                WorkPermissionRequest.minutes = workPermissionRequestViewModel.minutes;
-                //WorkPermissionRequest.status = (int?)ApprovementStatus.PendingApprove;
-                WorkPermissionRequest.date = DateTime.Now.Date;
-                WorkPermissionRequest.from_time = (TimeSpan)(workPermissionRequestViewModel.from_time);
-                WorkPermissionRequest.year = DateTime.Now.Year;
-                WorkPermissionRequest.month = DateTime.Now.Month;
-                //WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
-                WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
-                WorkPermissionRequest.updated_at = DateTime.Now.AddHours(-3);
-
-                db.SaveChanges();
             }
 
-            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = "Not Allowed After 9:30AM", flag = false }, JsonRequestBehavior.AllowGet);
 
         }
 

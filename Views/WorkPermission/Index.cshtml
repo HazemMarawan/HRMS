@@ -300,6 +300,14 @@
                         
                     }else
                         datatable.draw();
+                    if (response.flag == false) {
+                        Swal.fire(
+                            'Sorry! Time Out.',
+                            response.message,
+                            'error'
+                        );
+
+                    }
 
                 }, function (response) {
 

@@ -2,6 +2,49 @@
     ViewBag.Title = "Vacation Approvals";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="modal fade" id="export_vacation_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="@Url.Action("VacationSheet", "VacationRequest")" id="export_sheet" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_title">Export Vaction</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="id" id="id" value="0" />
+                            <div class="form-group col-md-12">
+                                <label>Month</label>
+                                <select name="month" id="month" class="form-control">
+                                    <option @(((int)DateTime.Now.Month) == 1 ? "selected" : "") value="1">Jan</option>
+                                    <option @(((int)DateTime.Now.Month) == 2 ? "selected" : "") value="2">Feb</option>
+                                    <option @(((int)DateTime.Now.Month) == 3 ? "selected" : "") value="3">March</option>
+                                    <option @(((int)DateTime.Now.Month) == 4 ? "selected" : "") value="4">April</option>
+                                    <option @(((int)DateTime.Now.Month) == 5 ? "selected" : "") value="5">May</option>
+                                    <option @(((int)DateTime.Now.Month) == 6 ? "selected" : "") value="6">Jun</option>
+                                    <option @(((int)DateTime.Now.Month) == 7 ? "selected" : "") value="7">July</option>
+                                    <option @(((int)DateTime.Now.Month) == 8 ? "selected" : "") value="8">Aug</option>
+                                    <option @(((int)DateTime.Now.Month) == 9 ? "selected" : "") value="9">Sep</option>
+                                    <option @(((int)DateTime.Now.Month) == 10 ? "selected" : "") value="10">Oct</option>
+                                    <option @(((int)DateTime.Now.Month) == 11 ? "selected" : "") value="11">Nov</option>
+                                    <option @(((int)DateTime.Now.Month) == 12 ? "selected" : "") value="12">Dec</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 
 <div class="page-header">
     <nav class="breadcrumb-one" aria-label="breadcrumb">
@@ -36,6 +79,11 @@
 <div class="card">
     <div class="card-header">
         @ViewBag.branchName <span>Vacations</span>
+        @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
+        {
+            <span style="float:right;font-weight:bold;text-decoration:underline;"><a href="javascript:void(0);" class="export" id=""><i class="far fa-file-excel"></i> Generate Report</a></span>
+
+        }
     </div>
     <div class="card-body">
 
@@ -191,7 +239,8 @@
                                 var isEmployee = '@HRMS.Auth.isA.Employee()';
                                 var isSupervisor = '@HRMS.Auth.isA.Supervisor()';
 
-                                if ((isSuperAdmin == "True" && oData.status == 3) || (isBranchAdmin == "True" && oData.status == 6) || (isTeamLeader == "True" && oData.status == 1) || (isSupervisor == "True" && oData.status == 2)) {
+                                if (((isSuperAdmin == "True" && oData.status == 3) || (isBranchAdmin == "True" && oData.status == 6) || (isTeamLeader == "True" && oData.status == 1) || (isSupervisor == "True" && oData.status == 2)) && (oData.status != 4 || oData.status != 5)) {
+
                                     html += "<a class='accept' href='javascript:void(0)' title='Accept'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fa fa-times'></i></a>";
                                 }
@@ -256,7 +305,16 @@
                     });
                 });
             });
+           $(".export").click(function () {
 
+               var modal = $('#export_vacation_modal').modal("show");
+
+           });
+
+           $("#export_sheet").submit(function () {
+
+               $('#export_vacation_modal').modal("hide");
+           });
 
         });
 

@@ -169,7 +169,7 @@ namespace HRMS.Controllers
         public ActionResult AreasDetails(int ?id)
         {
             User user = Session["user"] as User;
-            if (!isA.SuperAdmin())
+            if (isA.Employee())
                 return RedirectToAction("Index", "Dashboard");
 
             if (Request.IsAjaxRequest())

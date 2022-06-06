@@ -41,6 +41,7 @@
                                 <select class="form-control" name="productivity_type">
                                     <option value="1">Normal</option>
                                     <option value="2">OverTime</option>
+                                    <option value="3">Compensation</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
@@ -273,8 +274,10 @@
                                     html += "<b>Productivity Type: </b>";
                                     if (oData.productivity_type == 1)
                                         html += "Normal";
-                                    else
+                                    else if (oData.productivity_type == 2)
                                         html += "Over Time";
+                                    else
+                                        html += "Compensation";
                                     html += "<br>";
                                 }
 

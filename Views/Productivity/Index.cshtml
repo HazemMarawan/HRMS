@@ -396,8 +396,10 @@
                                     html += "<b>Productivity Type: </b>";
                                     if (oData.productivity_type == 1)
                                         html += "Normal";
-                                    else
+                                    else if (oData.productivity_type == 2)
                                         html += "Over Time";
+                                    else
+                                        html += "Compensation";
                                     html += "<br>";
                                 }
 

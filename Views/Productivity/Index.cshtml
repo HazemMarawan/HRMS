@@ -156,12 +156,12 @@
     <style>
         .counter {
             background-color: #FFFFFF;
-            padding: 20px 0;
+            padding: 8px 0;
             border-radius: 5px;
         }
 
         .count-title {
-            font-size: 40px;
+            font-size: 10px;
             font-weight: normal;
             margin-top: 10px;
             margin-bottom: 0;
@@ -169,7 +169,7 @@
         }
 
         .count-text {
-            font-size: 13px;
+            font-size: 7px;
             font-weight: normal;
             margin-top: 10px;
             margin-bottom: 0;
@@ -182,23 +182,26 @@
             display: table;
             color: #4ad1e5;
         }
+        .h3, h3 {
+            font-size: 1rem;
+        }
     </style>
 }
 
 <div class="row text-center mb-2">
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="hours_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Hours</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="projects_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Projects</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="employees_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Employees</p>
@@ -206,81 +209,81 @@
     </div>
     @if (HRMS.Auth.isA.SuperAdmin() || HRMS.Auth.isA.BranchAdmin())
     {
-        <div class="col-2" style="border-radius: 25px;">
+        <div class="col-1" style="border-radius: 25px;">
             <div class="counter">
                 <h3 id="cost_counter">0</h3>
                 <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Cost</p>
             </div>
         </div>
     }
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="mvoh_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> MVOH</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="lvoh_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> LVOH</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="mvug_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> MVUG</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="lvug_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> LVUG</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="equipment_quantity_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Equipment Quantity</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="substation_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Sub Station</p>
         </div>
     </div>
     @*new*@
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="transformer_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Transformer</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="pole_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Pole</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="meter_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Meter</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="distributionBox_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Distribution Box</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="rmu_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> RMU</p>
         </div>
     </div>
-    <div class="col-2" style="border-radius: 25px;">
+    <div class="col-1" style="border-radius: 25px;">
         <div class="counter">
             <h3 id="switchh_counter">0</h3>
             <p style="font-weight:bold;font-size:12px;"><i class="fa fa-plus"></i> Switch</p>

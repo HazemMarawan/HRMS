@@ -84,6 +84,8 @@
                 <option value="">Select Type</option>
                 <option value="1">Normal</option>
                 <option value="2">OverTime</option>
+                <option value="3">Compensation</option>
+
             </select>
         </div>
         <div class="form-group col-md-4">
@@ -522,7 +524,7 @@
                                 var html = "";
                                 var isSupervisor = '@HRMS.Auth.isA.Supervisor()';
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
-                                if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
+                                if ((oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') || oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)')) && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
                                     html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
                                 }

@@ -807,10 +807,10 @@ namespace HRMS.Controllers
             System.Drawing.Color redColor = System.Drawing.ColorTranslator.FromHtml("#FF0000");
             System.Drawing.Color warningColor = System.Drawing.ColorTranslator.FromHtml("#FFA000");
             System.Drawing.Color greenColor = System.Drawing.ColorTranslator.FromHtml("#00FF00");
-            Sheet.Cells["A1:T1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
-            Sheet.Cells["A1:T1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
+            Sheet.Cells["A1:U1"].Style.Fill.PatternType = ExcelFillStyle.Solid;
+            Sheet.Cells["A1:U1"].Style.Fill.BackgroundColor.SetColor(colFromHex);
             System.Drawing.Color text = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
-            Sheet.Cells["A1:T1"].Style.Font.Color.SetColor(text);
+            Sheet.Cells["A1:U1"].Style.Font.Color.SetColor(text);
 
             Sheet.Cells["A1"].Value = "Employee Name";
             Sheet.Cells["B1"].Value = "Working Date";
@@ -832,8 +832,9 @@ namespace HRMS.Controllers
             Sheet.Cells["Q1"].Value = "Distribution Box";
             Sheet.Cells["R1"].Value = "RMU";
             Sheet.Cells["S1"].Value = "Switch";
+            Sheet.Cells["T1"].Value = "Task";
 
-            Sheet.Cells["T1"].Value = "Status";
+            Sheet.Cells["U1"].Value = "Status";
 
             var productivityData = (from user in db.Users
                                     join userProject in db.UserProjects on user.id equals userProject.user_id
@@ -841,8 +842,14 @@ namespace HRMS.Controllers
                                     from project in pr.DefaultIfEmpty()
                                     join are in db.Areas on userProject.area_id equals are.id into ar
                                     from area in ar.DefaultIfEmpty()
+                                    join ret in db.Users on userProject.returned_by equals ret.id into r
+                                    from returned in r.DefaultIfEmpty()
                                     join par in db.Parts on userProject.part_id_fk equals par.id into pa
                                     from part in pa.DefaultIfEmpty()
+                                    join tas in db.Tasks on userProject.task_id equals tas.id into ts
+                                    from task in ts.DefaultIfEmpty()
+                                    join us in db.Users on user.team_leader_id equals us.id into u
+                                    from leader in u.DefaultIfEmpty()
                                     select new UserProjectViewModel
                                     {
                                         id = userProject.id,
@@ -850,15 +857,17 @@ namespace HRMS.Controllers
                                         user_id = userProject.user_id,
                                         project_name = project.name,
                                         user_name = user.full_name,
+                                        full_name = user.full_name,
+                                        type = user.type,
                                         working_date = userProject.working_date,
                                         no_of_numbers = userProject.no_of_numbers,
                                         branch_id = user.branch_id,
+                                        department_id = user.department_id,
                                         productivity_type = userProject.productivity_type,
                                         productivity_work_place = userProject.productivity_work_place,
                                         part_id = userProject.part_id,
                                         part_id_fk = userProject.part_id_fk,
                                         part_name = part.part,
-                                        substation =userProject.substation,
                                         equipment_quantity = userProject.equipment_quantity,
                                         mvoh = userProject.mvoh,
                                         lvoh = userProject.lvoh,
@@ -874,16 +883,23 @@ namespace HRMS.Controllers
                                         lvoh_target = userProject.lvoh_target,
                                         mvug_target = userProject.mvug_target,
                                         lvug_target = userProject.lvug_target,
+                                        substation = userProject.substation,
                                         note = userProject.note,
                                         status = userProject.status,
                                         cost = userProject.cost,
                                         team_leader_id = user.team_leader_id,
                                         area_id = userProject.area_id,
                                         area_name = area.name,
-                                        type = user.type
+                                        task_id = task.id,
+                                        task_name = task.name,
+                                        returned_by_name = returned.full_name,
+                                        returned_at = userProject.returned_at,
+                                        rejected_by_note = userProject.returned_by_note,
+                                        leader_name = (user.type == (int)UserRole.Employee) ? leader.full_name :
+                                        (user.type == (int)UserRole.TeamLeader) ? (db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.Supervisor).Select(u => new UserViewModel { id = u.id, full_name = u.full_name }).FirstOrDefault().full_name) :
+                                        (user.type == (int)UserRole.Supervisor) ?
+                                        (db.Users.Where(u => u.branch_id == currentUser.branch_id && u.type == (int)UserRole.BranchAdmin).Select(u => new UserViewModel { id = u.id, full_name = u.full_name }).FirstOrDefault().full_name) : "",
                                     });
-
-
 
             if (HRMS.Auth.isA.TeamLeader())
             {
@@ -1080,10 +1096,11 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("O{0}", row)].Value = item.pole;
                 Sheet.Cells[string.Format("P{0}", row)].Value = item.meter;
                 Sheet.Cells[string.Format("Q{0}", row)].Value = item.distribution_box;
-                Sheet.Cells[string.Format("P{0}", row)].Value = item.rmu;
-                Sheet.Cells[string.Format("Q{0}", row)].Value = item.switchh;
+                Sheet.Cells[string.Format("R{0}", row)].Value = item.rmu;
+                Sheet.Cells[string.Format("S{0}", row)].Value = item.switchh;
+                Sheet.Cells[string.Format("T{0}", row)].Value = item.task_name;
 
-                Sheet.Cells[string.Format("T{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
+                Sheet.Cells[string.Format("U{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
                 
 
                 row++;

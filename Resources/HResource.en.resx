@@ -132,7 +132,7 @@
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="Confirm New Password" xml:space="preserve">
+  <data name="ConfirmNewPassword" xml:space="preserve">
     <value>Confirm New Password</value>
   </data>
   <data name="CopyRights" xml:space="preserve">
@@ -211,6 +211,9 @@
     <value>Nationality</value>
   </data>
   <data name="New Password" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="NewPassword" xml:space="preserve">
     <value>New Password</value>
   </data>
   <data name="OldPassword" xml:space="preserve">

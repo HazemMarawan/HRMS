@@ -71,7 +71,7 @@ namespace HRMS.Controllers
             {
                 IDType idType = AutoMapper.Mapper.Map<IDTypeViewModel, IDType>(iDTypeViewModel);
 
-                idType.created_at = DateTime.Now.AddHours(-3);;
+                idType.created_at = DateTime.Now;;
                 idType.created_by = Session["id"].ToString().ToInt();
 
                 db.IDTypes.Add(idType);
@@ -85,7 +85,7 @@ namespace HRMS.Controllers
                 oldIDType.name = iDTypeViewModel.name;
                 oldIDType.active = iDTypeViewModel.active;
                 oldIDType.updated_by = Session["id"].ToString().ToInt();
-                oldIDType.updated_at = DateTime.Now.AddHours(-3);;
+                oldIDType.updated_at = DateTime.Now;;
 
                 db.SaveChanges();
             }
@@ -100,7 +100,7 @@ namespace HRMS.Controllers
             IDType deleteIDType = db.IDTypes.Find(id);
             deleteIDType.active = (int)RowStatus.INACTIVE;
             deleteIDType.deleted_by = Session["id"].ToString().ToInt();
-            deleteIDType.deleted_at = DateTime.Now.AddHours(-3);;
+            deleteIDType.deleted_at = DateTime.Now;;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

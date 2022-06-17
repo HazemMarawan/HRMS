@@ -44,6 +44,7 @@ namespace HRMS.Models
         public Job Job { get; set; }
         public int? gender { get; set; }
         public DateTime? hiring_date { get; set; }
+        public DateTime? start_vacation_date { get; set; }
         public int? vacations_balance { get; set; }
         public string image { get; set; }
         public string notes { get; set; }

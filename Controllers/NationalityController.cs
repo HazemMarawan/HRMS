@@ -74,7 +74,7 @@ namespace HRMS.Controllers
             {
                 Nationality nationality = AutoMapper.Mapper.Map<NationalityViewModel, Nationality>(nationalityViewModel);
 
-                nationality.created_at = DateTime.Now.AddHours(-3);;
+                nationality.created_at = DateTime.Now;;
                 nationality.created_by = Session["id"].ToString().ToInt();
 
                 db.Nationalities.Add(nationality);
@@ -88,7 +88,7 @@ namespace HRMS.Controllers
                 oldNationality.name = nationalityViewModel.name;
                 oldNationality.active = nationalityViewModel.active;
                 oldNationality.updated_by = Session["id"].ToString().ToInt();
-                oldNationality.updated_at = DateTime.Now.AddHours(-3);;
+                oldNationality.updated_at = DateTime.Now;;
 
                 db.SaveChanges();
             }
@@ -102,7 +102,7 @@ namespace HRMS.Controllers
         {
             Nationality deleteNationality = db.Nationalities.Find(id);
             deleteNationality.active = (int)RowStatus.INACTIVE;
-            deleteNationality.deleted_at = DateTime.Now.AddHours(-3);;
+            deleteNationality.deleted_at = DateTime.Now;;
             deleteNationality.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

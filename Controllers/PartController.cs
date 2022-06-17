@@ -18,6 +18,7 @@ namespace HRMS.Controllers
         // GET: Department
         public ActionResult Index()
         {
+            User currentUser = Session["user"] as User;
             if (!isA.TeamLeader())
                 return RedirectToAction("Index", "Dashboard");
             if (Request.IsAjaxRequest())
@@ -32,15 +33,17 @@ namespace HRMS.Controllers
                 // Getting all data    
                 var partData = (from part in db.Parts
                                 join area in db.Areas on part.area_id equals area.id
-                                      select new PartViewModel
+                                join user in db.Users on part.created_by equals user.id
+                                select new PartViewModel
                                       {
                                           id = part.id,
                                           part = part.part,
                                           area_id = part.area_id,
                                           area_name = area.name,
                                           active = part.active,
+                                          branch_id = user.branch_id,
                                           created_at = part.created_at
-                                      }).Where(n => n.active == (int)RowStatus.ACTIVE);
+                                      }).Where(n => n.active == (int)RowStatus.ACTIVE && n.branch_id == currentUser.branch_id);
 
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
@@ -74,7 +77,7 @@ namespace HRMS.Controllers
             {
                 Part part = AutoMapper.Mapper.Map<PartViewModel, Part>(partViewModel);
 
-                part.created_at = DateTime.Now.AddHours(-3).AddHours(-3);
+                part.created_at = DateTime.Now.AddHours(-3);
                 part.created_by = Session["id"].ToString().ToInt();
 
                 db.Parts.Add(part);
@@ -89,7 +92,7 @@ namespace HRMS.Controllers
                 oldpart.area_id = partViewModel.area_id;
                 oldpart.active = partViewModel.active;
                 oldpart.updated_by = Session["id"].ToString().ToInt();
-                oldpart.updated_at = DateTime.Now.AddHours(-3);
+                oldpart.updated_at = DateTime.Now;
 
                 db.SaveChanges();
             }
@@ -104,7 +107,7 @@ namespace HRMS.Controllers
             Part deletePart = db.Parts.Find(id);
             deletePart.active = (int)RowStatus.INACTIVE;
             deletePart.deleted_by = Session["id"].ToString().ToInt();
-            deletePart.deleted_at = DateTime.Now.AddHours(-3);
+            deletePart.deleted_at = DateTime.Now;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

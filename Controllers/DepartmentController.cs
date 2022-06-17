@@ -75,7 +75,7 @@ namespace HRMS.Controllers
             {
                 Department department = AutoMapper.Mapper.Map<DepartmentViewModel, Department>(departmentViewModel);
 
-                department.created_at = DateTime.Now.AddHours(-3);;
+                department.created_at = DateTime.Now;;
                 department.created_by = Session["id"].ToString().ToInt();
 
                 db.Departments.Add(department);
@@ -89,7 +89,7 @@ namespace HRMS.Controllers
                 oldDepartment.name = departmentViewModel.name;
                 oldDepartment.active = departmentViewModel.active;
                 oldDepartment.updated_by = Session["id"].ToString().ToInt();
-                oldDepartment.updated_at = DateTime.Now.AddHours(-3);;
+                oldDepartment.updated_at = DateTime.Now;;
 
                 db.SaveChanges();
             }
@@ -104,7 +104,7 @@ namespace HRMS.Controllers
             Department deleteDepartment = db.Departments.Find(id);
             deleteDepartment.active = (int)RowStatus.INACTIVE;
             deleteDepartment.deleted_by = Session["id"].ToString().ToInt();
-            deleteDepartment.deleted_at = DateTime.Now.AddHours(-3);;
+            deleteDepartment.deleted_at = DateTime.Now;;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

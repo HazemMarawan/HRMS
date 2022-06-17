@@ -83,7 +83,7 @@ namespace HRMS.Controllers
             {
                 Area area = AutoMapper.Mapper.Map<AreaViewModel, Area>(areaViewModel);
 
-                area.created_at = DateTime.Now.AddHours(-3);
+                area.created_at = DateTime.Now;
                 area.created_by = user.id;
 
                 db.Areas.Add(area);
@@ -97,7 +97,7 @@ namespace HRMS.Controllers
                 area.lvoh = areaViewModel.lvoh;
                 area.lvug = areaViewModel.lvug;
                 area.mvug = areaViewModel.mvug;
-                area.updated_at = DateTime.Now.AddHours(-3);
+                area.updated_at = DateTime.Now;
                 area.updated_by = user.id;
 
             }
@@ -111,7 +111,7 @@ namespace HRMS.Controllers
         {
             Area deleteArea = db.Areas.Find(id);
             deleteArea.active = (int)RowStatus.INACTIVE;
-            deleteArea.deleted_at = DateTime.Now.AddHours(-3);
+            deleteArea.deleted_at = DateTime.Now;
             deleteArea.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

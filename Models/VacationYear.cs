@@ -10,7 +10,9 @@ namespace HRMS.Models
     {
         [Key]
         public int id { get; set; }
-        public int? year { get; set; }
+        public DateTime? start_year { get; set; }
+        public DateTime? end_year { get; set; }
+        public int? year { get; set; } //not_used
         public int? user_id { get; set; }
         public int? vacation_balance { get; set; }
         public int? remaining { get; set; }
@@ -27,5 +29,7 @@ namespace HRMS.Models
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
+        public virtual ICollection<VacationRequest> VacationRequests { get; set; }
+
     }
 }

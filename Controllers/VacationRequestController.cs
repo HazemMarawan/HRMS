@@ -32,46 +32,81 @@ namespace HRMS.Controllers
             {
                 User updatedUser = db.Users.Find(currentUser.id);
                 updatedUser.vacations_balance = 21;
-                db.SaveChanges();
-            }
-            if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentUser.id).Any())
-            {
-                VacationYear vacationYear = new VacationYear();
-                vacationYear.year = DateTime.Now.Year;
-                vacationYear.user_id = currentUser.id;
-                vacationYear.vacation_balance = currentUser.vacations_balance;
-                vacationYear.remaining = vacationYear.vacation_balance;
-                vacationYear.a3tyady_vacation_counter = 0;
-                vacationYear.arda_vacation_counter = 0;
-                vacationYear.medical_vacation_counter = 0;
-                vacationYear.married_vacation_counter = 0;
-                vacationYear.work_from_home_vacation_counter = 0;
-                vacationYear.death_vacation_counter = 0;
-                vacationYear.active = 1;
-                vacationYear.created_by = Session["id"].ToString().ToInt();
-                vacationYear.created_at = DateTime.Now.AddHours(-3);
+                Session["user"] = updatedUser;
 
-                db.VacationYears.Add(vacationYear);
+                currentUser = Session["user"] as User;
                 db.SaveChanges();
+
+            }
+
+            if (!db.VacationYears.Where(vy => vy.user_id == currentUser.id).Any())
+            {
+                if (currentUser.start_vacation_date != null)
+                {
+                    VacationYear vacationYear = new VacationYear();
+                    vacationYear.year = DateTime.Now.Year;
+                    vacationYear.start_year = currentUser.start_vacation_date;
+                    vacationYear.end_year = ((DateTime)currentUser.start_vacation_date).AddYears(1);
+                    vacationYear.user_id = currentUser.id;
+                    vacationYear.vacation_balance = currentUser.vacations_balance;
+                    vacationYear.remaining = vacationYear.vacation_balance;
+                    vacationYear.a3tyady_vacation_counter = 0;
+                    vacationYear.arda_vacation_counter = 0;
+                    vacationYear.medical_vacation_counter = 0;
+                    vacationYear.married_vacation_counter = 0;
+                    vacationYear.work_from_home_vacation_counter = 0;
+                    vacationYear.death_vacation_counter = 0;
+                    vacationYear.active = 1;
+                    vacationYear.created_by = Session["id"].ToString().ToInt();
+                    vacationYear.created_at = DateTime.Now;
+
+                    db.VacationYears.Add(vacationYear);
+                    db.SaveChanges();
+                }
             }
             else
             {
-                VacationYear vacationYear = db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentUser.id).FirstOrDefault();
-                vacationYear.vacation_balance = db.Users.Find(currentUser.id).vacations_balance;
-                db.SaveChanges();
-            }
-        
-            //DateTime myDate = DateTime.ParseExact(currentUser.hiring_date, "dd/MM/yyyy",
-            //                               System.Globalization.CultureInfo.InvariantCulture);
-            ViewBag.canRequest = 0;//hiring date is null
-            if (currentUser.hiring_date != null)
-            {
-                ViewBag.canRequest = 1;//in 6 month training
-                if (Convert.ToDateTime(((DateTime)currentUser.hiring_date).AddMonths(6).ToShortDateString()) < Convert.ToDateTime(DateTime.Now.ToShortDateString()))
+                DateTime currentDateWithoutTime = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                VacationYear vacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && currentDateWithoutTime >= vy.start_year && currentDateWithoutTime <= vy.end_year).FirstOrDefault();
+                if(vacationYear != null)
                 {
-                    ViewBag.canRequest = 2;//can apply on vacation
+                    vacationYear.vacation_balance = db.Users.Find(currentUser.id).vacations_balance;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    DateTime lastYearDate = (DateTime)db.VacationYears.Where(vy => vy.user_id == currentUser.id).Select(vy => vy.end_year).Max();
+
+                    VacationYear newVacationYear = new VacationYear();
+                    newVacationYear.year = DateTime.Now.Year;
+                    newVacationYear.start_year = lastYearDate;
+                    newVacationYear.end_year = ((DateTime)lastYearDate).AddYears(1);
+                    newVacationYear.user_id = currentUser.id;
+                    newVacationYear.vacation_balance = currentUser.vacations_balance;
+                    newVacationYear.remaining = currentUser.vacations_balance;
+                    newVacationYear.a3tyady_vacation_counter = 0;
+                    newVacationYear.arda_vacation_counter = 0;
+                    newVacationYear.medical_vacation_counter = 0;
+                    newVacationYear.married_vacation_counter = 0;
+                    newVacationYear.work_from_home_vacation_counter = 0;
+                    newVacationYear.death_vacation_counter = 0;
+                    newVacationYear.active = 1;
+                    newVacationYear.created_by = Session["id"].ToString().ToInt();
+                    newVacationYear.created_at = DateTime.Now;
+
+                    db.VacationYears.Add(newVacationYear);
+                    db.SaveChanges();
+
                 }
             }
+
+            ViewBag.canRequest = 0;
+            if (currentUser.start_vacation_date != null)
+            {
+                if (Convert.ToDateTime(DateTime.Now.ToShortDateString()) >= Convert.ToDateTime(((DateTime)currentUser.start_vacation_date).ToShortDateString()))
+                    ViewBag.canRequest = 2;
+            }
+            
 
             if (Request.IsAjaxRequest())
             {
@@ -90,6 +125,8 @@ namespace HRMS.Controllers
                                          {
                                              id = vacationYear.id,
                                              year = vacationYear.year,
+                                             start_year = vacationYear.start_year,
+                                             end_year = vacationYear.end_year,
                                              user_id = vacationYear.user_id,
                                              vacation_balance = vacationYear.vacation_balance,
                                              remaining = vacationYear.remaining,
@@ -99,70 +136,76 @@ namespace HRMS.Controllers
                                                                  {
                                                                      value = vacationType.value,
                                                                      active = vacationRequest.active,
+                                                                     vacation_year_id = vacationRequest.vacation_year_id,
                                                                      status = vacationRequest.status,
                                                                      year = vacationRequest.year,
                                                                      user_id = vacationRequest.user_id,
                                                                      days = vacationRequest.days
                                                                  }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && (vr.value == 1 || vr.value ==2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt=>vt.days) != null?vacationYear.vacation_balance -
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == vacationYear.id && vr.status != (int)ApprovementStatus.Rejected && (vr.value == 1 || vr.value ==2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt=>vt.days) != null?vacationYear.vacation_balance -
                                                                  (from vacationType in db.VacationTypes
                                                                   join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
                                                                   select new VacationRequestViewModel
                                                                   {
                                                                       value = vacationType.value,
                                                                       active = vacationRequest.active,
+                                                                      vacation_year_id = vacationRequest.vacation_year_id,
                                                                       status = vacationRequest.status,
                                                                       year = vacationRequest.year,
                                                                       user_id = vacationRequest.user_id,
                                                                       days = vacationRequest.days
                                                                   }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days):vacationYear.vacation_balance,
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == vacationYear.id && vr.status != (int)ApprovementStatus.Rejected && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days):vacationYear.vacation_balance,
                                              pending = (from vacationType in db.VacationTypes
                                                         join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
                                                         select new VacationRequestViewModel
                                                         {
                                                             value = vacationType.value,
                                                             active = vacationRequest.active,
+                                                            vacation_year_id = vacationRequest.vacation_year_id,
                                                             status = vacationRequest.status,
                                                             year = vacationRequest.year,
                                                             user_id = vacationRequest.user_id,
                                                             days = vacationRequest.days
                                                         }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) != null ? (from vacationType in db.VacationTypes
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == vacationYear.id && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) != null ? (from vacationType in db.VacationTypes
                                                                                                                                                                                                                                                                                                      join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
                                                                                                                                                                                                                                                                                                                                                                  select new VacationRequestViewModel
                                                                                                                                                                                                                                                                                                                                                                  {
                                                                                                                                                                                                                                                                                                                                                                      value = vacationType.value,
                                                                                                                                                                                                                                                                                                                                                                      active = vacationRequest.active,
+                                                                                                                                                                                                                                                                                                                                                                     vacation_year_id = vacationRequest.vacation_year_id,
                                                                                                                                                                                                                                                                                                                                                                      status = vacationRequest.status,
                                                                                                                                                                                                                                                                                                                                                                      year = vacationRequest.year,
                                                                                                                                                                                                                                                                                                                                                                      user_id = vacationRequest.user_id,
                                                                                                                                                                                                                                                                                                                                                                      days = vacationRequest.days
                                                                                                                                                                                                                                                                                                                                                                  }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days): 0,
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == vacationYear.id && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && (vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days): 0,
                                              pending_not_affect = (from vacationType in db.VacationTypes
                                                         join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
-                                                        select new
+                                                        select new 
                                                         {
                                                             vacationType.value,
                                                             vacationRequest.active,
+                                                            vacation_year_id = vacationRequest.vacation_year_id,
                                                             vacationRequest.status,
                                                             vacationRequest.year,
                                                             vacationRequest.user_id,
                                                             vacationRequest.days
                                                         }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && !(vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) != null ? (from vacationType in db.VacationTypes
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == vacationYear.id && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && !(vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) != null ? (from vacationType in db.VacationTypes
                                                                                                                                                                                                                                                                                                                                                                  join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
                                                                                                                                                                                                                                                                                                                                                                   select new VacationRequestViewModel
                                                                                                                                                                                                                                                                                                                                                                   {
                                                                                                                                                                                                                                                                                                                                                                       value = vacationType.value,
                                                                                                                                                                                                                                                                                                                                                                       active = vacationRequest.active,
+                                                                                                                                                                                                                                                                                                                                                                      vacation_year_id = vacationRequest.vacation_year_id,
                                                                                                                                                                                                                                                                                                                                                                       status = vacationRequest.status,
                                                                                                                                                                                                                                                                                                                                                                       year = vacationRequest.year,
                                                                                                                                                                                                                                                                                                                                                                       user_id = vacationRequest.user_id,
                                                                                                                                                                                                                                                                                                                                                                       days = vacationRequest.days
                                                                                                                                                                                                                                                                                                                                                                   }
-                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.year == vacationYear.year && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && !(vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) : 0,
+                                                                 ).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == vacationYear.id && vr.status != (int)ApprovementStatus.Rejected && vr.status != (int)ApprovementStatus.ApprovedBySuperAdmin && !(vr.value == 1 || vr.value == 2) && vr.active == (int)RowStatus.ACTIVE).Sum(vt => vt.days) : 0,
                                              a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter,
                                              arda_vacation_counter = vacationYear.arda_vacation_counter,
                                              medical_vacation_counter = vacationYear.medical_vacation_counter,
@@ -322,7 +365,7 @@ namespace HRMS.Controllers
                         if (selectedVacation.closed_at_specific_time == 1)
                         {
 
-                            DateTime currentDateTime = DateTime.Now.AddHours(-3);
+                            DateTime currentDateTime = DateTime.Now;
                             TimeSpan currentTime = new TimeSpan(currentDateTime.Hour, currentDateTime.Minute, currentDateTime.Second);
                             if (currentTime > selectedVacation.closed_at)
                             {
@@ -333,17 +376,22 @@ namespace HRMS.Controllers
                         }
                         if (requestStatus == true)
                         {
+                            DateTime currentDateWithoutTime = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                            VacationYear vacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && currentDateWithoutTime >= vy.start_year && currentDateWithoutTime <= vy.end_year).FirstOrDefault();
+
                             VacationRequest vacationRequest = AutoMapper.Mapper.Map<VacationRequestViewModel, VacationRequest>(vacationRequestViewModel);
                             vacationRequest.user_id = Session["id"].ToString().ToInt();
                             vacationRequest.days = (int?)currentVacationDays;
                             vacationRequest.year = ((DateTime)vacationRequestViewModel.vacation_from).Year;
-                            vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                            vacationRequest.created_at = DateTime.Now;
                             vacationRequest.created_by = Session["id"].ToString().ToInt();
+                            vacationRequest.vacation_year_id = vacationYear.id;
+
                             int vacationType = (int)db.VacationTypes.Find(vacationRequest.vacation_type_id).value;
                             if(vacationType == 2)
                             {
-                                vacationRequest.vacation_from = DateTime.Now.AddHours(-3);
-                                vacationRequest.vacation_to = DateTime.Now.AddHours(-3);
+                                vacationRequest.vacation_from = DateTime.Now;
+                                vacationRequest.vacation_to = DateTime.Now;
 
                             }
                             if (selectedVacation.need_approve == 1)
@@ -443,7 +491,7 @@ namespace HRMS.Controllers
                         if (selectedVacation.closed_at_specific_time == 1)
                         {
 
-                            DateTime currentDateTime = DateTime.Now.AddHours(-3);
+                            DateTime currentDateTime = DateTime.Now;
                             TimeSpan currentTime = new TimeSpan(currentDateTime.Hour, currentDateTime.Minute, currentDateTime.Second);
                             if (currentTime > selectedVacation.closed_at)
                             {
@@ -461,7 +509,7 @@ namespace HRMS.Controllers
                             oldVacationRequest.vacation_to = vacationRequestViewModel.vacation_to;
                             oldVacationRequest.days = (int?)currentVacationDays;
                             oldVacationRequest.updated_by = Session["id"].ToString().ToInt();
-                            oldVacationRequest.updated_at = DateTime.Now.AddHours(-3);
+                            oldVacationRequest.updated_at = DateTime.Now;
                             if (selectedVacation.need_approve == 1)
                             {
                                 if (isA.Employee())
@@ -503,13 +551,13 @@ namespace HRMS.Controllers
             VacationRequest deleteVacationRequest = db.VacationRequests.Find(id);
             deleteVacationRequest.active = (int)RowStatus.INACTIVE;
             deleteVacationRequest.deleted_by = Session["id"].ToString().ToInt();
-            deleteVacationRequest.deleted_at = DateTime.Now.AddHours(-3);
+            deleteVacationRequest.deleted_at = DateTime.Now;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult History(int year)
+        public ActionResult History(int id)
         {
             if (!(isA.Employee() || isA.TeamLeader() || isA.BranchAdmin() || isA.Supervisor()))
                 return RedirectToAction("Index", "Dashboard");
@@ -531,6 +579,7 @@ namespace HRMS.Controllers
                                          {
                                              id = vacationRequest.id,
                                              user_id = vacationRequest.user_id,
+                                             vacation_year_id = vacationRequest.vacation_year_id,
                                              year = vacationRequest.year,
                                              vacation_type_id = vacationRequest.vacation_type_id,
                                              vacation_name = vacationType.name,
@@ -539,7 +588,7 @@ namespace HRMS.Controllers
                                              days = vacationRequest.days,
                                              status = vacationRequest.status,
                                              active = vacationRequest.active
-                                         }).Where(n => n.active == (int)RowStatus.ACTIVE && n.user_id == currentUser.id && n.year == year);
+                                         }).Where(n => n.active == (int)RowStatus.ACTIVE && n.user_id == currentUser.id && n.vacation_year_id == id);
 
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
@@ -562,7 +611,12 @@ namespace HRMS.Controllers
                 }, JsonRequestBehavior.AllowGet);
 
             }
-            ViewBag.year = year;
+            VacationYearViewModel vacationYearViewModel = db.VacationYears.Where(vy => vy.id == id).Select(vy => new VacationYearViewModel {
+                start_year = vy.start_year,
+                end_year = vy.end_year
+            }).FirstOrDefault();
+            ViewBag.id = id;
+            ViewBag.year = "From: "+ ((DateTime)vacationYearViewModel.start_year).ToShortDateString() + " To: "+ ((DateTime)vacationYearViewModel.end_year).ToShortDateString();
             ViewBag.currentYear = DateTime.Now.Year;
             ViewBag.VacationTypes = db.VacationTypes.Select(v => new { v.id, v.name }).ToList();
             return View();
@@ -701,28 +755,28 @@ namespace HRMS.Controllers
             if (isA.SuperAdmin())
             {
                 vacationRequest.approved_by_super_admin = Session["id"].ToString().ToInt();
-                vacationRequest.approved_by_super_admin_at = DateTime.Now.AddHours(-3);
+                vacationRequest.approved_by_super_admin_at = DateTime.Now;
                 vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
             }
 
             if (isA.BranchAdmin())
             {
                 vacationRequest.approved_by_branch_admin = Session["id"].ToString().ToInt();
-                vacationRequest.approved_by_branch_admin_at = DateTime.Now.AddHours(-3);
+                vacationRequest.approved_by_branch_admin_at = DateTime.Now;
                 vacationRequest.status = (int)ApprovementStatus.ApprovedByBranchAdmin;
             }
 
             if (isA.TeamLeader())
             {
                 vacationRequest.approved_by_team_leader = Session["id"].ToString().ToInt();
-                vacationRequest.approved_by_team_leader_at = DateTime.Now.AddHours(-3);
+                vacationRequest.approved_by_team_leader_at = DateTime.Now;
                 vacationRequest.status = (int)ApprovementStatus.ApprovedByTeamLeader;
             }
 
             if (isA.Supervisor())
             {
-                vacationRequest.approved_by_team_leader = Session["id"].ToString().ToInt();
-                vacationRequest.approved_by_team_leader_at = DateTime.Now.AddHours(-3);
+                vacationRequest.approved_by_supervisor = Session["id"].ToString().ToInt();
+                vacationRequest.approved_by_supervisor_at = DateTime.Now;
                 vacationRequest.status = (int)ApprovementStatus.ApprovedBySupervisor;
             }
 
@@ -733,26 +787,32 @@ namespace HRMS.Controllers
                 {
                     value = vt.value
                 }).FirstOrDefault();
-                VacationYear vacationYear = db.VacationYears.Where(vy => vy.year == vacationRequest.year && vy.user_id == vacationRequest.user_id).FirstOrDefault();
-                if (vacationTypeView.value == 1)
-                    vacationYear.a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter != null ? vacationYear.a3tyady_vacation_counter + vacationRequest.days : vacationRequest.days;
 
-                else if (vacationTypeView.value == 2)
-                    vacationYear.arda_vacation_counter = vacationYear.arda_vacation_counter != null ? vacationYear.arda_vacation_counter + vacationRequest.days : vacationRequest.days;
+                DateTime currentDateWithoutTime = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                VacationYear vacationYear = db.VacationYears.Where(vy => vy.user_id == vacationRequest.user_id && currentDateWithoutTime >= vy.start_year && currentDateWithoutTime <= vy.end_year).FirstOrDefault();
 
-                else if (vacationTypeView.value == 3)
-                    vacationYear.medical_vacation_counter = vacationYear.medical_vacation_counter != null ? vacationYear.medical_vacation_counter + vacationRequest.days : vacationRequest.days;
+                if (vacationYear != null)
+                {
+                    if (vacationTypeView.value == 1)
+                        vacationYear.a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter != null ? vacationYear.a3tyady_vacation_counter + vacationRequest.days : vacationRequest.days;
 
-                else if (vacationTypeView.value == 4)
-                    vacationYear.married_vacation_counter = vacationYear.married_vacation_counter != null ? vacationYear.married_vacation_counter + vacationRequest.days : vacationRequest.days;
+                    else if (vacationTypeView.value == 2)
+                        vacationYear.arda_vacation_counter = vacationYear.arda_vacation_counter != null ? vacationYear.arda_vacation_counter + vacationRequest.days : vacationRequest.days;
 
-                else if (vacationTypeView.value == 5)
-                    vacationYear.work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter != null ? vacationYear.work_from_home_vacation_counter + vacationRequest.days : vacationRequest.days;
+                    else if (vacationTypeView.value == 3)
+                        vacationYear.medical_vacation_counter = vacationYear.medical_vacation_counter != null ? vacationYear.medical_vacation_counter + vacationRequest.days : vacationRequest.days;
 
-                else if (vacationTypeView.value == 6)
-                    vacationYear.death_vacation_counter = vacationYear.death_vacation_counter != null ? vacationYear.death_vacation_counter + vacationRequest.days : vacationRequest.days;
+                    else if (vacationTypeView.value == 4)
+                        vacationYear.married_vacation_counter = vacationYear.married_vacation_counter != null ? vacationYear.married_vacation_counter + vacationRequest.days : vacationRequest.days;
 
-                db.SaveChanges();
+                    else if (vacationTypeView.value == 5)
+                        vacationYear.work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter != null ? vacationYear.work_from_home_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                    else if (vacationTypeView.value == 6)
+                        vacationYear.death_vacation_counter = vacationYear.death_vacation_counter != null ? vacationYear.death_vacation_counter + vacationRequest.days : vacationRequest.days;
+
+                    db.SaveChanges();
+                }
             }
             return Json(new { msg = "done" }, JsonRequestBehavior.AllowGet);
         }
@@ -761,7 +821,7 @@ namespace HRMS.Controllers
         {
             VacationRequest vacationRequest = db.VacationRequests.Find(id);
             vacationRequest.rejected_by = Session["id"].ToString().ToInt();
-            vacationRequest.rejected_by_at = DateTime.Now.AddHours(-3);
+            vacationRequest.rejected_by_at = DateTime.Now;
             vacationRequest.status = (int)ApprovementStatus.Rejected;
             db.SaveChanges();
 
@@ -956,7 +1016,7 @@ namespace HRMS.Controllers
                         vacationYear.death_vacation_counter = 0;
                         vacationYear.active = 1;
                         vacationYear.created_by = currentUser.id;
-                        vacationYear.created_at = DateTime.Now.AddHours(-3);
+                        vacationYear.created_at = DateTime.Now;
 
                         db.VacationYears.Add(vacationYear);
                         db.SaveChanges();
@@ -979,7 +1039,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                        vacationRequest.created_at = DateTime.Now;
 
                         vacationYear.a3tyady_vacation_counter = vacationYear.a3tyady_vacation_counter != null ? vacationYear.a3tyady_vacation_counter + dt.Rows[i][2].ToString().ToInt() : dt.Rows[i][2].ToString().ToInt();
                         db.SaveChanges();
@@ -999,7 +1059,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                        vacationRequest.created_at = DateTime.Now;
 
                         vacationYear.arda_vacation_counter = vacationYear.arda_vacation_counter != null ? vacationYear.arda_vacation_counter + dt.Rows[i][3].ToString().ToInt() : dt.Rows[i][3].ToString().ToInt();
                         db.SaveChanges();
@@ -1019,7 +1079,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                        vacationRequest.created_at = DateTime.Now;
 
                         vacationYear.medical_vacation_counter = vacationYear.medical_vacation_counter != null ? vacationYear.medical_vacation_counter + dt.Rows[i][4].ToString().ToInt() : dt.Rows[i][4].ToString().ToInt();
                         db.SaveChanges();
@@ -1040,7 +1100,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                        vacationRequest.created_at = DateTime.Now;
 
                         vacationYear.married_vacation_counter = vacationYear.married_vacation_counter != null ? vacationYear.married_vacation_counter + dt.Rows[i][5].ToString().ToInt() : dt.Rows[i][5].ToString().ToInt();
                         db.SaveChanges();
@@ -1059,7 +1119,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                        vacationRequest.created_at = DateTime.Now;
 
                         vacationYear.work_from_home_vacation_counter = vacationYear.work_from_home_vacation_counter != null ? vacationYear.work_from_home_vacation_counter + dt.Rows[i][6].ToString().ToInt() : dt.Rows[i][6].ToString().ToInt();
                         db.SaveChanges();
@@ -1078,7 +1138,7 @@ namespace HRMS.Controllers
                         vacationRequest.status = (int)ApprovementStatus.ApprovedBySuperAdmin;
                         vacationRequest.active = (int)RowStatus.ACTIVE;
                         vacationRequest.created_by = currentUser.id;
-                        vacationRequest.created_at = DateTime.Now.AddHours(-3);
+                        vacationRequest.created_at = DateTime.Now;
 
                         vacationYear.death_vacation_counter = vacationYear.death_vacation_counter != null ? vacationYear.death_vacation_counter + dt.Rows[i][7].ToString().ToInt() : dt.Rows[i][7].ToString().ToInt();
                         db.SaveChanges();

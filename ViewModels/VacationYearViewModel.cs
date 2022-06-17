@@ -8,6 +8,8 @@ namespace HRMS.ViewModels
     public class VacationYearViewModel
     {
         public int id { get; set; }
+        public DateTime? start_year { get; set; }
+        public DateTime? end_year { get; set; }
         public int? year { get; set; }
         public int? user_id { get; set; }
         public int? vacation_balance { get; set; }

@@ -438,6 +438,18 @@
     <Compile Include="Migrations\202205312106544_vacation_req_sup.Designer.cs">
       <DependentUpon>202205312106544_vacation_req_sup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202206171424411_addStartVacationDate.cs" />
+    <Compile Include="Migrations\202206171424411_addStartVacationDate.Designer.cs">
+      <DependentUpon>202206171424411_addStartVacationDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206171618537_addStartVacationYearUpdate.cs" />
+    <Compile Include="Migrations\202206171618537_addStartVacationYearUpdate.Designer.cs">
+      <DependentUpon>202206171618537_addStartVacationYearUpdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202206171659275_updateVacationRequestsYearID.cs" />
+    <Compile Include="Migrations\202206171659275_updateVacationRequestsYearID.Designer.cs">
+      <DependentUpon>202206171659275_updateVacationRequestsYearID.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -4399,6 +4411,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202205312106544_vacation_req_sup.resx">
       <DependentUpon>202205312106544_vacation_req_sup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206171424411_addStartVacationDate.resx">
+      <DependentUpon>202206171424411_addStartVacationDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206171618537_addStartVacationYearUpdate.resx">
+      <DependentUpon>202206171618537_addStartVacationYearUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202206171659275_updateVacationRequestsYearID.resx">
+      <DependentUpon>202206171659275_updateVacationRequestsYearID.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

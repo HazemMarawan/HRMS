@@ -83,8 +83,8 @@ namespace HRMS.Controllers
 
             email.from_user = currentUser.id;
 
-            email.updated_at = DateTime.Now.AddHours(-3);
-            email.created_at = DateTime.Now.AddHours(-3);
+            email.updated_at = DateTime.Now;
+            email.created_at = DateTime.Now;
 
             db.Emails.Add(email);
             db.SaveChanges();
@@ -108,8 +108,8 @@ namespace HRMS.Controllers
                     emailUser.email_id = email.id;
                     emailUser.user_id = userId;
                     emailUser.is_recieved = 0;
-                    emailUser.created_at = DateTime.Now.AddHours(-3);
-                    emailUser.updated_at = DateTime.Now.AddHours(-3);
+                    emailUser.created_at = DateTime.Now;
+                    emailUser.updated_at = DateTime.Now;
                     db.EmailUsers.Add(emailUser);
                     db.SaveChanges();
 

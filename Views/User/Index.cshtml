@@ -92,6 +92,10 @@
                                 <input name="hiring_date" id="hiring_date" type="date" class="form-control radius-30" />
                             </div>
                             <div class="form-group col-md-4">
+                                <label>Start Vacation Date</label>
+                                <input name="start_vacation_date" id="start_vacation_date" type="date" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label>Role</label>
                                 <select name="type" id="type" class="form-control radius-30" required>
                                     <option value="">Select Role</option>
@@ -681,6 +685,10 @@
 
                         if (data.hiring_date != null) {
                             dialog.find('#hiring_date').val(fixDate(data.hiring_date));
+                        }
+
+                        if (data.start_vacation_date != null) {
+                            dialog.find('#start_vacation_date').val(fixDate(data.start_vacation_date));
                         }
                         dialog.find('#type option[value=' + data.type + ']').attr('selected', 'selected');
                         dialog.find('#notes').val(data.notes);

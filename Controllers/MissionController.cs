@@ -146,7 +146,7 @@ namespace HRMS.Controllers
                 MissionRequest.year = ((DateTime)(MissionRequestViewModel.date)).Year;
                 MissionRequest.month = ((DateTime)(MissionRequestViewModel.date)).Month;
                 MissionRequest.active = (int?)RowStatus.ACTIVE;
-                MissionRequest.created_at = DateTime.Now.AddHours(-3);;
+                MissionRequest.created_at = DateTime.Now;;
                 MissionRequest.created_by = Session["id"].ToString().ToInt();
 
                 db.MissionRequests.Add(MissionRequest);
@@ -179,7 +179,7 @@ namespace HRMS.Controllers
                 MissionRequest.month = ((DateTime)(MissionRequestViewModel.date)).Month;
                 //MissionRequest.active = (int?)RowStatus.ACTIVE;
                 MissionRequest.updated_by = Session["id"].ToString().ToInt();
-                MissionRequest.updated_at = DateTime.Now.AddHours(-3);;
+                MissionRequest.updated_at = DateTime.Now;;
 
                 db.SaveChanges();
             }
@@ -193,7 +193,7 @@ namespace HRMS.Controllers
         {
             MissionRequest deleteMissionRequest = db.MissionRequests.Find(id);
             deleteMissionRequest.active = (int)RowStatus.INACTIVE;
-            deleteMissionRequest.deleted_at = DateTime.Now.AddHours(-3);;
+            deleteMissionRequest.deleted_at = DateTime.Now;;
             deleteMissionRequest.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

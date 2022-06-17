@@ -80,7 +80,7 @@ namespace HRMS.Controllers
             {
                 Target target = AutoMapper.Mapper.Map<TargetViewModel, Target>(targetViewModel);
 
-                target.created_at = DateTime.Now.AddHours(-3);
+                target.created_at = DateTime.Now;
                 target.created_by = Session["id"].ToString().ToInt();
 
                 db.Targets.Add(target);
@@ -97,7 +97,7 @@ namespace HRMS.Controllers
                 oldTarget.lvug = targetViewModel.lvug;
                 oldTarget.active = targetViewModel.active;
                 oldTarget.updated_by = Session["id"].ToString().ToInt();
-                oldTarget.updated_at = DateTime.Now.AddHours(-3);
+                oldTarget.updated_at = DateTime.Now;
 
                 db.SaveChanges();
             }
@@ -112,7 +112,7 @@ namespace HRMS.Controllers
             Target deleteTarget = db.Targets.Find(id);
             deleteTarget.active = (int)RowStatus.INACTIVE;
             deleteTarget.deleted_by = Session["id"].ToString().ToInt();
-            deleteTarget.deleted_at = DateTime.Now.AddHours(-3);
+            deleteTarget.deleted_at = DateTime.Now;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

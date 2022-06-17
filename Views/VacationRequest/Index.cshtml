@@ -62,10 +62,6 @@
             <a href="javascript:void(0)" id="add_vacation_request"><i class="fa fa-plus"></i> Vacation Request</a>
 
         }
-        else if (ViewBag.canRequest == 1)
-        {
-            <p> You Can Not Apply on Vacation Before 6 Months</p>
-        }
         else
         {
             <p> Please Ask HR to Complete Your Informations</p>
@@ -146,8 +142,18 @@
                     },
                     "columns": [
                         {
-                            "data": "year",
-                            "searchable": true
+                            "data": "start_year", "searchable": true,
+                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
+                                var html = "";
+
+                                if (oData.start_year)
+                                    html += "<b>From: </b>" + fixDate(oData.start_year) + "<br>";
+
+                                if (oData.end_year)
+                                    html += "<b>To: </b>" + fixDate(oData.end_year) + "<br>";
+                             
+                                $(nTd).html("<span class='action-column'>" + html + "</span>");
+                            }
                         },
                         {
                             "data": "a3tyady_vacation_counter",
@@ -216,7 +222,7 @@
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 var html = "";
 
-                                html += "<a href='/VacationRequest/History?year=" + oData.year +"' title='History'><i class='fas fa-eye'></i></a>";
+                                html += "<a href='/VacationRequest/History?id=" + oData.id +"' title='History'><i class='fas fa-eye'></i></a>";
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },

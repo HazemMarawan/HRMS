@@ -86,7 +86,7 @@ namespace HRMS.Controllers
             {
                 Branch branch = AutoMapper.Mapper.Map<BranchViewModel, Branch>(branchViewModel);
 
-                branch.created_at = DateTime.Now.AddHours(-3);;
+                branch.created_at = DateTime.Now;;
                 branch.created_by = Session["id"].ToString().ToInt();
 
                 db.Branches.Add(branch);
@@ -100,7 +100,7 @@ namespace HRMS.Controllers
                 oldBranch.name = branchViewModel.name;
                 oldBranch.active = branchViewModel.active;
                 oldBranch.updated_by = Session["id"].ToString().ToInt();
-                oldBranch.updated_at = DateTime.Now.AddHours(-3);;
+                oldBranch.updated_at = DateTime.Now;;
 
                 db.SaveChanges();
             }
@@ -114,7 +114,7 @@ namespace HRMS.Controllers
         {
             Branch deleteBranch = db.Branches.Find(id);
             deleteBranch.active = (int)RowStatus.INACTIVE;
-            deleteBranch.deleted_at = DateTime.Now.AddHours(-3);;
+            deleteBranch.deleted_at = DateTime.Now;;
             deleteBranch.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();
@@ -127,7 +127,7 @@ namespace HRMS.Controllers
         {
             BranchProject branchProject = AutoMapper.Mapper.Map<BranchProjectViewModel, BranchProject>(branchProjectViewModel);
             branchProject.created_by = Session["id"].ToString().ToInt();
-            branchProject.created_at = DateTime.Now.AddHours(-3);;
+            branchProject.created_at = DateTime.Now;;
 
             db.BranchProjects.Add(branchProject);
             db.SaveChanges();

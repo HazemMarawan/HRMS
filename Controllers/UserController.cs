@@ -79,6 +79,7 @@ namespace HRMS.Controllers
                                     job_name = job.name,
                                     gender = user.gender,
                                     hiring_date = user.hiring_date,
+                                    start_vacation_date = user.start_vacation_date,
                                     vacations_balance = user.vacations_balance,
                                     imagePath = user.image,
                                     notes = user.notes,
@@ -222,7 +223,7 @@ namespace HRMS.Controllers
 
                 if (isA.TeamLeader() || isA.Supervisor())
                     user.required_productivity = 1;
-                user.created_at = DateTime.Now.AddHours(-3);
+                user.created_at = DateTime.Now;
                 user.created_by = Session["id"].ToString().ToInt();
 
                 if (userVM.image != null)
@@ -249,7 +250,7 @@ namespace HRMS.Controllers
                 vacationYear.death_vacation_counter = 0;
                 vacationYear.active = 1;
                 vacationYear.created_by = Session["id"].ToString().ToInt();
-                vacationYear.created_at = DateTime.Now.AddHours(-3);
+                vacationYear.created_at = DateTime.Now;
 
                 db.VacationYears.Add(vacationYear);
                 db.SaveChanges();
@@ -277,6 +278,7 @@ namespace HRMS.Controllers
                 oldUser.job_id = userVM.job_id;
                 oldUser.gender = userVM.gender;
                 oldUser.hiring_date = userVM.hiring_date;
+                oldUser.start_vacation_date = userVM.start_vacation_date;
                 oldUser.notes = userVM.notes;
                 oldUser.type = userVM.type;
                 oldUser.last_over_time_price = userVM.last_over_time_price;
@@ -310,7 +312,7 @@ namespace HRMS.Controllers
                     oldUser.image = "/Uploads/Profile/" + guid.ToString() + "_Profile" + Path.GetExtension(userVM.image.FileName);
                 }
 
-                oldUser.updated_at = DateTime.Now.AddHours(-3);
+                oldUser.updated_at = DateTime.Now;
                 oldUser.updated_by = Session["id"].ToString().ToInt();
                 db.SaveChanges();
 
@@ -351,7 +353,7 @@ namespace HRMS.Controllers
             User deleteUser = db.Users.Find(id);
             deleteUser.active = (int)RowStatus.INACTIVE;
             deleteUser.deleted_by = Session["id"].ToString().ToInt();
-            deleteUser.deleted_at = DateTime.Now.AddHours(-3);
+            deleteUser.deleted_at = DateTime.Now;
 
             db.SaveChanges();
 

@@ -10,6 +10,7 @@ using HRMS.Helpers;
 using HRMS.Enums;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System.Text.RegularExpressions;
 
 namespace HRMS.Controllers
 {
@@ -72,6 +73,7 @@ namespace HRMS.Controllers
                                             user_id = userProject.user_id,
                                             project_name = project.name,
                                             user_name = user.full_name,
+                                            full_name = user.full_name,
                                             type = user.type,
                                             working_date = userProject.working_date,
                                             no_of_numbers = userProject.no_of_numbers,
@@ -143,10 +145,12 @@ namespace HRMS.Controllers
                 //Search    
                 if (!string.IsNullOrEmpty(searchValue))
                 {
+                    string searchName = Regex.Replace(searchValue, @"\s+", " ");
+
                     productivityData = productivityData.Where(
                        m => m.project_name.ToLower().Contains(searchValue.ToLower())
                     || m.id.ToString().ToLower().Contains(searchValue.ToLower())
-                    || m.user_name.ToString().Contains(searchValue)
+                    || m.full_name.Contains(searchName)
                     );
                 }
 
@@ -721,7 +725,7 @@ namespace HRMS.Controllers
                 oldUserProject.part_id_fk = userProjectViewModel.part_id_fk;
                 oldUserProject.status = (int)ProductivityStatus.PendingApprove;
                 oldUserProject.updated_by = Session["id"].ToString().ToInt();
-                oldUserProject.updated_at = DateTime.Now.AddHours(-3);
+                oldUserProject.updated_at = DateTime.Now;
 
                 db.SaveChanges();
             }
@@ -752,7 +756,7 @@ namespace HRMS.Controllers
             }).FirstOrDefault();
 
             approveUserProject.status = (int)ProductivityStatus.Approved;
-            approveUserProject.approved_at = DateTime.Now.AddHours(-3);
+            approveUserProject.approved_at = DateTime.Now;
             approveUserProject.approved_by = Session["id"].ToString().ToInt();
             if(approveUserProject.productivity_type == 1)
                 approveUserProject.cost = currentUser.last_hour_price * approveUserProject.no_of_numbers;
@@ -769,7 +773,7 @@ namespace HRMS.Controllers
         {
             UserProject approveUserProject = db.UserProjects.Find(id);
             approveUserProject.status = (int)ProductivityStatus.Rejected;
-            approveUserProject.rejected_at = DateTime.Now.AddHours(-3);
+            approveUserProject.rejected_at = DateTime.Now;
             approveUserProject.rejected_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();
@@ -782,7 +786,7 @@ namespace HRMS.Controllers
             UserProject approveUserProject = db.UserProjects.Find(id);
             approveUserProject.status = (int)ProductivityStatus.Returned;
             approveUserProject.returned_by_note = note;
-            approveUserProject.returned_at = DateTime.Now.AddHours(-3);
+            approveUserProject.returned_at = DateTime.Now;
             approveUserProject.returned_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

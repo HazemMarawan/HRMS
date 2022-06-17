@@ -112,7 +112,7 @@ namespace HRMS.Controllers
         public JsonResult saveWorkPermission(WorkPermissionRequestViewModel workPermissionRequestViewModel)
         {
             User currentUser = Session["user"] as User;
-            DateTime currentDateTime = DateTime.Now.AddHours(-3);
+            DateTime currentDateTime = DateTime.Now;
             TimeSpan currentTime = new TimeSpan(currentDateTime.Hour, currentDateTime.Minute, currentDateTime.Second);
             TimeSpan currentTimeMetric = new TimeSpan(9, 30, 0);
             if (currentTime <= currentTimeMetric)
@@ -149,7 +149,7 @@ namespace HRMS.Controllers
                     WorkPermissionRequest.year = DateTime.Now.Year;
                     WorkPermissionRequest.month = DateTime.Now.Month;
                     WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
-                    WorkPermissionRequest.created_at = DateTime.Now.AddHours(-3);
+                    WorkPermissionRequest.created_at = DateTime.Now;
                     WorkPermissionRequest.created_by = Session["id"].ToString().ToInt();
 
                     if (db.WorkPermissionRequests.Where(w => w.year == WorkPermissionRequest.year && w.month == WorkPermissionRequest.month && w.user_id == currentUser.id).Count() >= 2)
@@ -178,7 +178,7 @@ namespace HRMS.Controllers
                     WorkPermissionRequest.month = DateTime.Now.Month;
                     //WorkPermissionRequest.active = (int?)RowStatus.ACTIVE;
                     WorkPermissionRequest.updated_by = Session["id"].ToString().ToInt();
-                    WorkPermissionRequest.updated_at = DateTime.Now.AddHours(-3);
+                    WorkPermissionRequest.updated_at = DateTime.Now;
 
                     db.SaveChanges();
                 }
@@ -196,7 +196,7 @@ namespace HRMS.Controllers
         {
             WorkPermissionRequest deleteWorkPermissionRequest = db.WorkPermissionRequests.Find(id);
             deleteWorkPermissionRequest.active = (int)RowStatus.INACTIVE;
-            deleteWorkPermissionRequest.deleted_at = DateTime.Now.AddHours(-3);
+            deleteWorkPermissionRequest.deleted_at = DateTime.Now;
             deleteWorkPermissionRequest.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

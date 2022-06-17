@@ -9,6 +9,7 @@ namespace HRMS.ViewModels
     {
         public int id { get; set; }
         public int? user_id { get; set; }
+        public int? vacation_year_id { get; set; }
         public int? user_type { get; set; }
         public int? team_leader_id { get; set; }
         public int? branch_id { get; set; }

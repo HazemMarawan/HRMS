@@ -18,7 +18,7 @@ namespace HRMS.Controllers
 
 
             //Redirect or return a view, but not both.
-            filterContext.Result = Redirect("/");
+            filterContext.Result = RedirectToAction("Index","Dashboard");
 
         }
 

@@ -92,7 +92,7 @@ namespace HRMS.Controllers
                     vacationType.closed_at = null;
                 }
 
-                vacationType.created_at = DateTime.Now.AddHours(-3);
+                vacationType.created_at = DateTime.Now;
                 vacationType.created_by = Session["id"].ToString().ToInt();
 
                 db.VacationTypes.Add(vacationType);
@@ -136,7 +136,7 @@ namespace HRMS.Controllers
                 oldVacationType.include_official_vacation = vacationTypeViewModel.include_official_vacation;
                 oldVacationType.active = vacationTypeViewModel.active;
                 oldVacationType.updated_by = Session["id"].ToString().ToInt();
-                oldVacationType.updated_at = DateTime.Now.AddHours(-3);
+                oldVacationType.updated_at = DateTime.Now;
 
                 db.SaveChanges();
             }
@@ -151,7 +151,7 @@ namespace HRMS.Controllers
             VacationType deleteVacationType = db.VacationTypes.Find(id);
             deleteVacationType.active = (int)RowStatus.INACTIVE;
             deleteVacationType.deleted_by = Session["id"].ToString().ToInt();
-            deleteVacationType.deleted_at = DateTime.Now.AddHours(-3);
+            deleteVacationType.deleted_at = DateTime.Now;
             db.SaveChanges();
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);

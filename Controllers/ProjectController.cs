@@ -110,7 +110,7 @@ namespace HRMS.Controllers
             {
                 Project project = AutoMapper.Mapper.Map<ProjectViewModel, Project>(projectViewModel);
 
-                project.created_at = DateTime.Now.AddHours(-3);
+                project.created_at = DateTime.Now;
                 project.created_by = Session["id"].ToString().ToInt();
 
                 db.Projects.Add(project);
@@ -132,7 +132,7 @@ namespace HRMS.Controllers
                 oldProject.equipment_quantity = projectViewModel.equipment_quantity;
                 oldProject.active = projectViewModel.active;
                 oldProject.updated_by = Session["id"].ToString().ToInt();
-                oldProject.updated_at = DateTime.Now.AddHours(-3);
+                oldProject.updated_at = DateTime.Now;
 
                 db.SaveChanges();
             }
@@ -146,7 +146,7 @@ namespace HRMS.Controllers
         {
             Project deleteProject = db.Projects.Find(id);
             deleteProject.active = (int)RowStatus.INACTIVE;
-            deleteProject.deleted_at = DateTime.Now.AddHours(-3);
+            deleteProject.deleted_at = DateTime.Now;
             deleteProject.deleted_by = Session["id"].ToString().ToInt();
 
             db.SaveChanges();

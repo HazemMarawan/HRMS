@@ -767,25 +767,35 @@ namespace HRMS.Controllers
 
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
+        public JsonResult rejectTask(UserProjectViewModel userProjectViewModel)
+        {
+            UserProject approveUserProject = db.UserProjects.Find(userProjectViewModel.id);
+            approveUserProject.status = (int)ProductivityStatus.Rejected;
+            approveUserProject.returned_by_note = userProjectViewModel.note;
+            approveUserProject.returned_at = DateTime.Now;
+            approveUserProject.returned_by = Session["id"].ToString().ToInt();
+
+            db.SaveChanges();
+            return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
-        public JsonResult rejectTask(int id)
+        public JsonResult pendingTask(int id)
         {
             UserProject approveUserProject = db.UserProjects.Find(id);
-            approveUserProject.status = (int)ProductivityStatus.Rejected;
-            approveUserProject.rejected_at = DateTime.Now;
-            approveUserProject.rejected_by = Session["id"].ToString().ToInt();
+            approveUserProject.status = (int)ProductivityStatus.PendingApprove;
 
             db.SaveChanges();
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         } 
         
         [HttpPost]
-        public JsonResult returnTask(int id, string note)
+        public JsonResult returnTask(UserProjectViewModel userProjectViewModel)
         {
-            UserProject approveUserProject = db.UserProjects.Find(id);
+            UserProject approveUserProject = db.UserProjects.Find(userProjectViewModel.id);
             approveUserProject.status = (int)ProductivityStatus.Returned;
-            approveUserProject.returned_by_note = note;
+            approveUserProject.returned_by_note = userProjectViewModel.note;
             approveUserProject.returned_at = DateTime.Now;
             approveUserProject.returned_by = Session["id"].ToString().ToInt();
 

@@ -3,7 +3,7 @@
     ViewBag.Title = HResource.Productivity;
 }
 
-<div class="modal fade" id="manage_return_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="manage_return_reject_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -487,6 +487,10 @@
                                     html += "<span class='badge badge-success'><b>Switch: </b>" + oData.switchh + "</span><br>";
                                 }
 
+                                if (oData.note) {
+                                    html += "<span style='background-color:#d6c8c7;'><b>Note: </b>" + oData.note + "</span><br>";
+                                }
+
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -529,13 +533,15 @@
                                 var isTeamLeader = '@HRMS.Auth.isA.TeamLeader()';
                                 if ((oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.PendingApprove)') || oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)')) && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)')))) {
                                     html += "<a class='approve' href='javascript:void(0)' title='Approve'><i class='fa fa-check'></i></a>&nbsp;";
-                                    html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp; | ";
+                                    html += "<a class='reject' href='javascript:void(0)' title='Reject'><i class='fas fa-times'></i></a>&nbsp;";
                                 }
 
-                                if (oData.status != parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)'))))
-                                    html += "<a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp; | ";
+                                 if (oData.status == parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)'))
+                                     html += " | <a class='pending' href='javascript:void(0)' title='Pending'><i class='far fa-arrow-alt-circle-left'></i></a>&nbsp;";
 
-                                html += "<a class='info' href='javascript:void(0)' title='Information'><i class='fas fa-info-circle'></i></a>";
+
+                                if (oData.status != parseInt('@((int)HRMS.Enums.ProductivityStatus.Returned)') && ((isTeamLeader == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.Employee)')) || (isSupervisor == 'True' && oData.type == parseInt('@((int)HRMS.Enums.UserRole.TeamLeader)'))))
+                                    html += " | <a class='return' href='javascript:void(0)' title='Return'><i class='fa fa-undo-alt'></i></a>&nbsp;";
 
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
@@ -663,12 +669,12 @@
                 });
             });
 
-            $(document).on("click", ".reject", function () {
+            $(document).on("click", ".pending", function () {
                 var data = datatable.row($(this).closest('tr')).data();
-                warningBox("Are you sure you want to Reject this task?", function () {
+                warningBox("Are you sure you want to make this task pending?", function () {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("rejectTask", "Productivity")',
+                        url: '@Url.Action("pendingTask", "Productivity")',
                         contentType: "application/json; charset=utf-8",
                         data: { "id": data.id },
                         datatype: "json",
@@ -684,10 +690,31 @@
 
             $(document).on("click", ".return", function () {
                 var data = datatable.row($(this).closest('tr')).data();
-                var modal = $('#manage_return_modal').clone();
+                var modal = $('#manage_return_reject_modal').clone();
                 var action = '@Url.Action("returnTask", "Productivity")';
                 modal.find('form').attr('action', action);
-                modal.find('#modal_title').text('Are you sure you want to Return this task?');
+                modal.find('#modal_title').text('Return Task');
+                modal.execModal({
+                    progressBar: 'progress_bar',
+                    progressText: 'progress_text',
+                }, function (response) {
+
+                        datatable.row(this).remove().draw(false);
+
+                }, function (response) {
+
+                }, function (dialog) {
+                    dialog.find('#id').val(data.id)
+
+                });
+            });
+
+            $(document).on("click", ".reject", function () {
+                var data = datatable.row($(this).closest('tr')).data();
+                var modal = $('#manage_return_reject_modal').clone();
+                var action = '@Url.Action("rejectTask", "Productivity")';
+                modal.find('form').attr('action', action);
+                modal.find('#modal_title').text('Reject Task');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',

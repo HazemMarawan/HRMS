@@ -72,6 +72,43 @@
     </form>
 </div>
 
+<div class="modal fade" id="manage_project_report_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="@Url.Action("GenerateProjectReport","Project")" id="project_report_form_id" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="project_report_modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="project_id" id="project_modal_id" value="0" />
+                            <div class="form-group col-md-6">
+                                <label>From Date</label>
+                                <input name="from_date" id="from_date" type="date" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>To Date</label>
+                                <input name="to_date" id="to_date" type="date" class="form-control radius-30" />
+                            </div>
+                            
+                           
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <div class="page-header">
     <nav class="breadcrumb-one" aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -257,6 +294,7 @@
                                     html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
                                     html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;";
                                 }
+                                html += "<a class='generate_report' href='javascript:void(0)' title='Generate Report'><i class='fa fa-file'></i></a>&nbsp;";
 
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
@@ -301,7 +339,15 @@
                 });
             });
 
-            $(document).on("click", ".edit", function () {
+           $(document).on("click", ".generate_report", function () {
+               var data = datatable.row($(this).closest('tr')).data();
+               $("#project_modal_id").val(data.id);
+               $("#project_report_modal_title").text(data.name + " Report");
+               $("#manage_project_report_modal").modal('show');
+                
+
+            });
+           $(document).on("click", ".edit", function () {
                 var data = datatable.row($(this).closest('tr')).data();
                 console.log(data);
                 var modal = $('#manage_project_modal').clone();
@@ -352,6 +398,10 @@
                     });
                 });
             });
+
+           $("#project_report_form_id").submit(function () {
+               $("#manage_project_report_modal").modal('hide');
+           });
 
         });
 

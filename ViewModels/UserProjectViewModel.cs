@@ -58,6 +58,10 @@ namespace HRMS.ViewModels
         public double? switchh_target { get; set; }
         public double? cost { get; set; }
         public string note { get; set; }
+        public int? normal { get; set; }
+        public int? overtime { get; set; }
+        public int? compensation { get; set; }
+        public int? employees { get; set; }
         public int? active { get; set; }
         public int? status { get; set; }
         public int? approved_by { get; set; }

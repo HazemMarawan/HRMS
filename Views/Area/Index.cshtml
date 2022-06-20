@@ -59,6 +59,44 @@
         </div>
     </form>
 </div>
+
+<div class="modal fade" id="manage_area_report_modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form action="@Url.Action("GenerateAreaReport","Area")" id="area_form_id" method="post" enctype='multipart/form-data'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="area_report_modal_title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-body">
+                        <div class="form-row">
+                            <input type="hidden" name="area_id" id="area_modal_id" value="0" />
+                            <div class="form-group col-md-6">
+                                <label>From Date</label>
+                                <input name="from_date" id="from_date" type="date" class="form-control radius-30" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>To Date</label>
+                                <input name="to_date" id="to_date" type="date" class="form-control radius-30" />
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <div class="row">
     <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
@@ -193,7 +231,10 @@
                                 var html = "";
 
                                 html += "<a class='edit' href='javascript:void(0)' title='Edit'><i class='far fa-edit'></i></a>&nbsp;";
-                                html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>";
+                                html += "<a class='delete' href='javascript:void(0)' title='Delete'><i class='fas fa-trash'></i></a>&nbsp;|&nbsp;";
+
+                                html += "<a class='generate_report' href='javascript:void(0)' title='Generate Report'><i class='fa fa-file'></i></a>&nbsp;";
+
                                 $(nTd).html("<span class='action-column'>" + html + "</span>");
                             }
                         },
@@ -289,6 +330,19 @@
                     });
                 });
             });
+
+           $(document).on("click", ".generate_report", function () {
+               var data = datatable.row($(this).closest('tr')).data();
+               $("#area_modal_id").val(data.id);
+               $("#area_report_modal_title").text(data.name + " Report");
+               $("#manage_area_report_modal").modal('show');
+
+
+           });
+
+           $("#area_form_id").submit(function () {
+               $("#manage_area_report_modal").modal('hide');
+           });
 
         });
 

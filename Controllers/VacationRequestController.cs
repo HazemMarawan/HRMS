@@ -1002,9 +1002,11 @@ namespace HRMS.Controllers
                     }
 
                     VacationYear vacationYear = new VacationYear();
-                    if (!db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentImportedUserId).Any())
+                    if (!db.VacationYears.Where(vy => vy.user_id == currentImportedUserId).Any())
                     {
                         vacationYear.year = DateTime.Now.Year;
+                        vacationYear.start_year = currentImportedUser.start_vacation_date;
+                        vacationYear.end_year = ((DateTime)currentImportedUser.start_vacation_date).AddYears(1);
                         vacationYear.user_id = currentImportedUserId;
                         vacationYear.vacation_balance = currentImportedUser.vacations_balance;
                         vacationYear.remaining = vacationYear.vacation_balance;
@@ -1020,18 +1022,54 @@ namespace HRMS.Controllers
 
                         db.VacationYears.Add(vacationYear);
                         db.SaveChanges();
-                    }
+                    } 
                     else
                     {
-                        vacationYear = db.VacationYears.Where(vy => vy.year == DateTime.Now.Year && vy.user_id == currentImportedUserId).FirstOrDefault();
-                        vacationYear.vacation_balance = db.Users.Find(currentUser.id).vacations_balance;
-                        db.SaveChanges();
+                      
+
+                        DateTime currentDateWithoutTime = Convert.ToDateTime(DateTime.Now.ToShortDateString());
+                        vacationYear = db.VacationYears.Where(vy => vy.user_id == currentImportedUserId && currentDateWithoutTime >= vy.start_year && currentDateWithoutTime <= vy.end_year).FirstOrDefault();
+                        if (vacationYear != null)
+                        {
+                            vacationYear.vacation_balance = db.Users.Find(currentUser.id).vacations_balance;
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+                            DateTime lastYearDate = (DateTime)db.VacationYears.Where(vy => vy.user_id == currentImportedUser.id).Select(vy => vy.end_year).Max();
+
+                            VacationYear newVacationYear = new VacationYear();
+                            newVacationYear.year = DateTime.Now.Year;
+                            newVacationYear.start_year = lastYearDate;
+                            newVacationYear.end_year = ((DateTime)lastYearDate).AddYears(1);
+                            newVacationYear.user_id = currentImportedUser.id;
+                            newVacationYear.vacation_balance = currentImportedUser.vacations_balance;
+                            newVacationYear.remaining = currentImportedUser.vacations_balance;
+                            newVacationYear.a3tyady_vacation_counter = 0;
+                            newVacationYear.arda_vacation_counter = 0;
+                            newVacationYear.medical_vacation_counter = 0;
+                            newVacationYear.married_vacation_counter = 0;
+                            newVacationYear.work_from_home_vacation_counter = 0;
+                            newVacationYear.death_vacation_counter = 0;
+                            newVacationYear.active = 1;
+                            newVacationYear.created_by = Session["id"].ToString().ToInt();
+                            newVacationYear.created_at = DateTime.Now;
+
+                            db.VacationYears.Add(newVacationYear);
+                            db.SaveChanges();
+
+                            vacationYear = new VacationYear();
+                            vacationYear = newVacationYear;
+
+                        }
+
                     }
 
                     if (dt.Rows[i][2].ToString().ToInt() != 0)
                     {
                         VacationRequest vacationRequest = new VacationRequest();
                         vacationRequest.id = 0;
+                        vacationRequest.vacation_year_id = vacationYear.id;
                         vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
                         vacationRequest.vacation_type_id = 3;
                         vacationRequest.year = DateTime.Now.Year;
@@ -1052,6 +1090,7 @@ namespace HRMS.Controllers
                     {
                         VacationRequest vacationRequest = new VacationRequest();
                         vacationRequest.id = 0;
+                        vacationRequest.vacation_year_id = vacationYear.id;
                         vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
                         vacationRequest.vacation_type_id = 4;
                         vacationRequest.year = DateTime.Now.Year;
@@ -1072,6 +1111,7 @@ namespace HRMS.Controllers
                     {
                         VacationRequest vacationRequest = new VacationRequest();
                         vacationRequest.id = 0;
+                        vacationRequest.vacation_year_id = vacationYear.id;
                         vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
                         vacationRequest.vacation_type_id = 5;
                         vacationRequest.year = DateTime.Now.Year;
@@ -1093,6 +1133,7 @@ namespace HRMS.Controllers
                     {
                         VacationRequest vacationRequest = new VacationRequest();
                         vacationRequest.id = 0;
+                        vacationRequest.vacation_year_id = vacationYear.id;
                         vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
                         vacationRequest.vacation_type_id = 6;
                         vacationRequest.year = DateTime.Now.Year;
@@ -1112,6 +1153,7 @@ namespace HRMS.Controllers
                     {
                         VacationRequest vacationRequest = new VacationRequest();
                         vacationRequest.id = 0;
+                        vacationRequest.vacation_year_id = vacationYear.id;
                         vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
                         vacationRequest.vacation_type_id = 7;
                         vacationRequest.year = DateTime.Now.Year;
@@ -1131,6 +1173,7 @@ namespace HRMS.Controllers
                     {
                         VacationRequest vacationRequest = new VacationRequest();
                         vacationRequest.id = 0;
+                        vacationRequest.vacation_year_id = vacationYear.id;
                         vacationRequest.user_id = dt.Rows[i][0].ToString().ToInt();
                         vacationRequest.vacation_type_id = 8;
                         vacationRequest.year = DateTime.Now.Year;

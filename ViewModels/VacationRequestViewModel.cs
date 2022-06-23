@@ -33,6 +33,7 @@ namespace HRMS.ViewModels
         public int? approved_by_supervisor { get; set; }
         public string approved_by_supervisor_name { get; set; }
         public DateTime? approved_by_supervisor_at { get; set; }
+        public string rejected_by_name { get; set; }
         public int? rejected_by { get; set; }
         public DateTime? rejected_by_at { get; set; }
         public int? active { get; set; }

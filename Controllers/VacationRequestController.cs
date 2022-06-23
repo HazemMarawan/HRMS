@@ -654,7 +654,9 @@ namespace HRMS.Controllers
                                          from teamLeader in tl.DefaultIfEmpty()
                                          join super in db.Users on vacationRequest.approved_by_supervisor equals super.id into tm
                                          from supervisor in tm.DefaultIfEmpty()
-                                         select new VacationRequestViewModel
+                                         join rejected in db.Users on vacationRequest.rejected_by equals rejected.id into rj
+                                         from rejectPerson in rj.DefaultIfEmpty()
+                                             select new VacationRequestViewModel
                                          {
                                              id = vacationRequest.id,
                                              user_id = vacationRequest.user_id,
@@ -675,10 +677,12 @@ namespace HRMS.Controllers
                                              approved_by_branch_admin_name = branchAdmin.full_name,
                                              approved_by_team_leader_name = teamLeader.full_name,
                                              approved_by_supervisor_name = supervisor.full_name,
+                                             rejected_by_name = rejectPerson.first_name,
                                              approved_by_super_admin_at = vacationRequest.approved_by_super_admin_at,
                                              approved_by_branch_admin_at = vacationRequest.approved_by_branch_admin_at,
                                              approved_by_team_leader_at = vacationRequest.approved_by_team_leader_at,
                                              approved_by_supervisor_at = vacationRequest.approved_by_supervisor_at,
+                                             rejected_by_at = vacationRequest.rejected_by_at,
                                          }).Where(n => n.active == (int)RowStatus.ACTIVE);
 
                 //Search    

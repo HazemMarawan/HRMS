@@ -457,29 +457,37 @@
                        var serverTodayMonth = serverToday.split(' ')[0].split('/')[1];
                        var serverTodayDay = serverToday.split(' ')[0].split('/')[0];
 
-                       var todayDate = new Date(serverTodayYear, serverTodayMonth, serverTodayDay);
+                        var todayDay = serverTodayDay;
+                        var todayMonth = serverTodayMonth;
+                        var todayYear = serverTodayYear;
+
+                        var today = todayYear + "-" + todayMonth + "-" + todayDay;
+
+                        
+                       //var todayDate = new Date(serverTodayYear, serverTodayMonth, serverTodayDay);
 
                        var serverYesterdayYear = serverYesterday.split(' ')[0].split('/')[2];
                        var serverYesterdayMonth = serverYesterday.split(' ')[0].split('/')[1];
                        var serverYesterdayDay = serverYesterday.split(' ')[0].split('/')[0];
 
-                       var yesterdayDate = new Date(serverYesterdayYear, serverYesterdayMonth, serverYesterdayDay);
+                        var yesterdayDay = serverYesterdayDay;
+                        var yesterdayMonth = serverYesterdayMonth;
+                        var yesterdayYear = serverYesterdayYear;
+
+                        var yesterday = yesterdayYear + "-" + yesterdayMonth + "-" + yesterdayDay;
+
+                        console.log(yesterday);
+                       //var yesterdayDate = new Date(serverYesterdayYear, serverYesterdayMonth, serverYesterdayDay);
 
                         //var todayDate = new Date();
-                        var todayDay = todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate();
-                        var todayMonth = (todayDate.getMonth() + 1) < 10 ? "0" + (todayDate.getMonth() + 1) : (todayDate.getMonth() + 1);
-                        var todayYear = todayDate.getFullYear();
+                      
 
-                        var today = todayYear + "-" + todayMonth + "-" + todayDay;
+                        
 
                         //var yesterdayDate = new Date(new Date())
                         //yesterdayDate.setDate(yesterdayDate.getDate() - 1);
 
-                        var yesterdayDay = yesterdayDate.getDate() < 10 ? "0" + yesterdayDate.getDate() : yesterdayDate.getDate();
-                        var yesterdayMonth = (yesterdayDate.getMonth() + 1) < 10 ? "0" + (yesterdayDate.getMonth() + 1) : (yesterdayDate.getMonth() + 1);
-                        var yesterdayYear = yesterdayDate.getFullYear();
-
-                        var yesterday = yesterdayYear + "-" + yesterdayMonth + "-" + yesterdayDay;
+                       
 
                         dialog.find("#working_date").attr('min', yesterday);
                         dialog.find("#working_date").attr('max', today);

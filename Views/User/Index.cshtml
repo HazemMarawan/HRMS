@@ -131,7 +131,10 @@
                                     @Html.DropDownList("team_leader_id", new SelectList(ViewBag.TeamLeaders, "id", "full_name"), "Select Team Leader", new { @class = "form-control", @name = "team_leader_id", @style = "width:100%", @id = "team_leader_id" })
                                 </div>
                             }
-
+                            <div class="form-group col-md-12" id="first_six_months_div" style="display:none;">
+                                <label>First 6 Month</label>
+                                <input name="first_six_months" id="first_six_months" type="checkbox" value="1" class="radius-30" />
+                            </div>
                             <div class="form-group col-md-4" style="display:none;" id="vacations_balance_div">
                                 <label>Vacation Balance</label>
                                 <input name="vacations_balance" id="vacations_balance" type="number" class="form-control radius-30" />
@@ -473,6 +476,36 @@
                 }, function (response) {
 
                 }, function (dialog) {
+
+                        $(document).on('click', '#first_six_months', function (event) {
+
+                            if ($(this).is(":checked"))
+                                dialog.find("#vacations_balance").val(15);
+                            else
+                                dialog.find("#vacations_balance").val(21);
+
+                        });
+
+                        $(document).on('change', '#hiring_date', function (event) {
+
+                            var currentDate = $(this).val();
+                            var d = new Date(currentDate.split('-')[0], currentDate.split('-')[1], currentDate.split('-')[2]);
+                            d.setMonth(d.getMonth() + 6);
+
+                            var startVacationDate = d;
+
+                            console.log(startVacationDate);
+
+                            var Day = startVacationDate.getDate() < 10 ? "0" + startVacationDate.getDate() : startVacationDate.getDate();
+                            var Month = (startVacationDate.getMonth() + 1) < 10 ? "0" + (startVacationDate.getMonth() + 1) : (startVacationDate.getMonth() + 1);
+                            var Year = startVacationDate.getFullYear();
+
+                            var finalStartVacationDate = Year + "-" + Month + "-" + Day;
+
+                            dialog.find("#start_vacation_date").val(finalStartVacationDate);
+
+                        });
+
                         $(document).on('change', '#image', function (event) {
 
                             var reader = new FileReader();
@@ -548,6 +581,9 @@
                                 dialog.find("#team_leader_id").prop('required', false);
                                 dialog.find("#team_leader_div").hide();
 
+                                dialog.find('#first_six_months').prop("checked", false);
+                                dialog.find('#first_six_months_div').hide();
+
                             }
                             else if (currentRole == 2) {
                                 dialog.find('#branch_id').prop("required", true);
@@ -566,6 +602,9 @@
                                 dialog.find("#team_leader_id").val("");
                                 dialog.find("#team_leader_id").prop('required', false);
                                 dialog.find("#team_leader_div").hide();
+
+                                dialog.find('#first_six_months').prop("checked", false);
+                                dialog.find('#first_six_months_div').show();
                             }
 
                             else if (currentRole == 3) {
@@ -578,11 +617,14 @@
                                 dialog.find('#vacations_balance_div').show();
                                 dialog.find("#vacations_balance").val(21);
 
-                                dialog.find('#required_productivity').prop("required", true);
+                                dialog.find('#required_productivity').prop("required", false);
                                 dialog.find('#required_productivity').prop("checked", false);
                                 dialog.find('#required_productivity').prop("disabled", false);
 
                                 dialog.find('#required_productivity_div').show();
+
+                                dialog.find('#first_six_months').prop("checked", false);
+                                dialog.find('#first_six_months_div').show();
                             }
 
                             else if (currentRole == 4) {
@@ -599,6 +641,9 @@
                                 dialog.find('#required_productivity').prop("disabled", true);
 
                                 dialog.find('#required_productivity_div').show();
+
+                                dialog.find('#first_six_months').prop("checked", false);
+                                dialog.find('#first_six_months_div').show();
                             }
                             else if (currentRole == 5) {
                                 dialog.find("#team_leader_id").val("");
@@ -613,6 +658,9 @@
                                 dialog.find('#required_productivity').prop("checked", true);
                                 dialog.find('#required_productivity').prop("disabled", true);
                                 dialog.find('#required_productivity_div').show();
+
+                                dialog.find('#first_six_months').prop("checked", false);
+                                dialog.find('#first_six_months_div').show();
                             }
                             else {
                                 dialog.find('#branch_id').prop("required", false);
@@ -631,6 +679,9 @@
                                 dialog.find("#team_leader_id").val("");
                                 dialog.find("#team_leader_id").prop('required', false);
                                 dialog.find("#team_leader_div").hide();
+
+                                dialog.find('#first_six_months').prop("checked", false);
+                                dialog.find('#first_six_months_div').show();
                             }
 
                         });

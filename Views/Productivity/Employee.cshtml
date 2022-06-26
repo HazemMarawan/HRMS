@@ -207,6 +207,9 @@
     <script>
        $(document).ready(function () {
 
+
+
+
            var datatable = $('#productivityTable')
                .DataTable({/* we added this from the other system to have same search and same pagination*/
                    "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
@@ -445,15 +448,32 @@
                 }, function (response) {
 
                 }, function (dialog) {
-                        var todayDate = new Date();
+
+
+                       var serverToday = '@ViewBag.todayDate';
+                       var serverYesterday = '@ViewBag.yesterdayDate';
+
+                       var serverTodayYear = serverToday.split(' ')[0].split('/')[2];
+                       var serverTodayMonth = serverToday.split(' ')[0].split('/')[1];
+                       var serverTodayDay = serverToday.split(' ')[0].split('/')[0];
+
+                       var todayDate = new Date(serverTodayYear, serverTodayMonth, serverTodayDay);
+
+                       var serverYesterdayYear = serverYesterday.split(' ')[0].split('/')[2];
+                       var serverYesterdayMonth = serverYesterday.split(' ')[0].split('/')[1];
+                       var serverYesterdayDay = serverYesterday.split(' ')[0].split('/')[0];
+
+                       var yesterdayDate = new Date(serverYesterdayYear, serverYesterdayMonth, serverYesterdayDay);
+
+                        //var todayDate = new Date();
                         var todayDay = todayDate.getDate() < 10 ? "0" + todayDate.getDate() : todayDate.getDate();
                         var todayMonth = (todayDate.getMonth() + 1) < 10 ? "0" + (todayDate.getMonth() + 1) : (todayDate.getMonth() + 1);
                         var todayYear = todayDate.getFullYear();
 
                         var today = todayYear + "-" + todayMonth + "-" + todayDay;
 
-                        var yesterdayDate = new Date(new Date())
-                        yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                        //var yesterdayDate = new Date(new Date())
+                        //yesterdayDate.setDate(yesterdayDate.getDate() - 1);
 
                         var yesterdayDay = yesterdayDate.getDate() < 10 ? "0" + yesterdayDate.getDate() : yesterdayDate.getDate();
                         var yesterdayMonth = (yesterdayDate.getMonth() + 1) < 10 ? "0" + (yesterdayDate.getMonth() + 1) : (yesterdayDate.getMonth() + 1);

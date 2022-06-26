@@ -629,6 +629,11 @@ namespace HRMS.Controllers
             ViewBag.Parts = db.Parts.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.part }).ToList();
             ViewBag.Tasks = db.Tasks.Where(p => p.active == (int)RowStatus.ACTIVE).Select(p => new { p.id, p.name }).ToList();
 
+            ViewBag.todayDate = DateTime.Now;
+            ViewBag.yesterdayDate = DateTime.Now.AddDays(-1);
+
+
+
             return View();
         }
 

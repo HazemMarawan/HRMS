@@ -28,9 +28,15 @@
                                     <option value="">Select Area</option>
                                 </select>
                             </div>
+                            <div class="form-group col-md-4" id="working_date_div" style="display:none;">
+                             
+                            </div>
                             <div class="form-group col-md-4">
                                 <label>Working Date</label>
-                                <input required name="working_date" id="working_date" type="date" class="form-control radius-30" />
+                                <select class="form-control" name="working_date_choice">
+                                    <option value="1">Today</option>
+                                    <option value="2">Yesterday</option>
+                                </select>
                             </div>
                             <div class="form-group col-md-4">
                                 <label>Number Of Hours</label>
@@ -52,9 +58,9 @@
                                 </select>
                             </div>
                             @*<div class="form-group col-md-4">
-                                    <label>Part ID</label>
-                                    <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
-                                </div>*@
+            <label>Part ID</label>
+            <input name="part_id" id="part_id" type="text" class="form-control radius-30" />
+        </div>*@
                             <div class="form-group col-md-4">
                                 <label>Part ID</label>
                                 <select class="form-control" id="part_id_fk" name="part_id_fk" required>
@@ -450,7 +456,7 @@
                 }, function (dialog) {
 
 
-                       var serverToday = '@ViewBag.todayDate';
+                       @*var serverToday = '@ViewBag.todayDate';
                        var serverYesterday = '@ViewBag.yesterdayDate';
 
                        var serverTodayYear = serverToday.split(' ')[0].split('/')[2];
@@ -476,7 +482,7 @@
 
                         var yesterday = yesterdayYear + "-" + yesterdayMonth + "-" + yesterdayDay;
 
-                        console.log(yesterday);
+                        console.log(yesterday);*@
                        //var yesterdayDate = new Date(serverYesterdayYear, serverYesterdayMonth, serverYesterdayDay);
 
                         //var todayDate = new Date();
@@ -489,8 +495,8 @@
 
                        
 
-                        dialog.find("#working_date").attr('min', yesterday);
-                        dialog.find("#working_date").attr('max', today);
+                        //dialog.find("#working_date").attr('min', yesterday);
+                        //dialog.find("#working_date").attr('max', today);
 
 
                         $(document).on("change", "#project_id", function () {
@@ -568,7 +574,12 @@
 
                         dialog.find('#id').val(data.id);
                         dialog.find('#no_of_numbers').val(data.no_of_numbers);
-                        dialog.find('#working_date').val(fixDate(data.working_date));
+
+                        dialog.find("#working_date_div").show();
+                        dialog.find("#working_date_div").append(`<label>Working Date</label>
+                                <input readonly name="working_date" id="working_date" value="${fixDate(data.working_date)}" type="date" class="form-control radius-30" />`);
+
+                        //dialog.find('#working_date').val(fixDate(data.working_date));
                         dialog.find('#project_id option[value=' + data.project_id + ']').attr('selected', 'selected');
                         dialog.find('#productivity_type option[value=' + data.productivity_type + ']').attr('selected', 'selected');
                         dialog.find('#productivity_work_place option[value=' + data.productivity_work_place + ']').attr('selected', 'selected');
@@ -590,7 +601,7 @@
                         dialog.find('#switchh').val(data.switchh);
                         dialog.find('#note').text(data.note);
 
-                        dialog.find('#working_date').attr('readonly', true);
+                        //dialog.find('#working_date').attr('readonly', true);
 
                         var area_id = data.area_id;
                             var project_id = data.project_id;

@@ -25,6 +25,7 @@ namespace HRMS.ViewModels
         public int? task_id { get; set; }
         public string task_name { get; set; }
         public DateTime? working_date { get; set; }
+        public int? working_date_choice { get; set; }
         public double? no_of_numbers { get; set; }
         public int? productivity_type { get; set; }
         public int? productivity_work_place { get; set; }

@@ -687,6 +687,12 @@ namespace HRMS.Controllers
                     userProject.rmu_target = 0;
                     userProject.switchh_target = 0;
                 }
+
+                if (userProjectViewModel.working_date_choice == 1)
+                    userProject.working_date = DateTime.Now;
+                else if (userProjectViewModel.working_date_choice == 2)
+                    userProject.working_date = DateTime.Now.AddDays(-1);
+
                 userProject.part_id_fk = userProjectViewModel.part_id_fk;
                 userProject.user_id = currentUser.id;
                 userProject.created_at = DateTime.Now;
@@ -706,7 +712,7 @@ namespace HRMS.Controllers
 
                 oldUserProject.project_id = userProjectViewModel.project_id;
                 oldUserProject.area_id = userProjectViewModel.area_id;
-                oldUserProject.working_date = userProjectViewModel.working_date;
+                //oldUserProject.working_date = userProjectViewModel.working_date;
                 oldUserProject.no_of_numbers = userProjectViewModel.no_of_numbers;
                 oldUserProject.productivity_type = userProjectViewModel.productivity_type;
                 oldUserProject.productivity_work_place = userProjectViewModel.productivity_work_place;

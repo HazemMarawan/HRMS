@@ -577,7 +577,7 @@
 
                         dialog.find("#working_date_div").show();
                         dialog.find("#working_date_div").append(`<label>Working Date</label>
-                                <input readonly name="working_date" id="working_date" value="${fixDate(data.working_date)}" type="date" class="form-control radius-30" />`);
+                            <p><b><center>${fixDate(data.working_date)}</center></b><p/>`);
 
                         //dialog.find('#working_date').val(fixDate(data.working_date));
                         dialog.find('#project_id option[value=' + data.project_id + ']').attr('selected', 'selected');

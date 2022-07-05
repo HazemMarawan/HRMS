@@ -398,18 +398,18 @@ namespace HRMS.Controllers
 
                 Sheet.Cells[string.Format("A{0}", row)].Value = item.id;
                 Sheet.Cells[string.Format("B{0}", row)].Value = item.full_name;
-                Sheet.Cells[string.Format("C{0}", row)].Value = "";
-                Sheet.Cells[string.Format("D{0}", row)].Value = "";
-                Sheet.Cells[string.Format("E{0}", row)].Value = "";
-                Sheet.Cells[string.Format("F{0}", row)].Value = "";
-                Sheet.Cells[string.Format("G{0}", row)].Value = "";
-                Sheet.Cells[string.Format("H{0}", row)].Value = "";
-                Sheet.Cells[string.Format("I{0}", row)].Value = "";
-                Sheet.Cells[string.Format("J{0}", row)].Value = "";
-                Sheet.Cells[string.Format("K{0}", row)].Value = "";
-                Sheet.Cells[string.Format("L{0}", row)].Value = "";
-                Sheet.Cells[string.Format("M{0}", row)].Value = "";
-                Sheet.Cells[string.Format("N{0}", row)].Value = "";
+                Sheet.Cells[string.Format("C{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("D{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("E{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("F{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("G{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("H{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("I{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("J{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("K{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("L{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("M{0}", row)].Value = "0";
+                Sheet.Cells[string.Format("N{0}", row)].Value = "0";
                 Sheet.Cells[string.Format("O{0}", row)].Value = month;
                 Sheet.Cells[string.Format("P{0}", row)].Value = "";
 

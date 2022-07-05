@@ -1121,7 +1121,7 @@ namespace HRMS.Controllers
                 Sheet.Cells[string.Format("S{0}", row)].Value = item.switchh;
                 Sheet.Cells[string.Format("T{0}", row)].Value = item.task_name;
 
-                Sheet.Cells[string.Format("U{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": "Rejected";
+                Sheet.Cells[string.Format("U{0}", row)].Value = item.status == 1?"Pending":item.status==2? "Approved": item.status == 3 ?"Rejected": "Returned";
                 
 
                 row++;

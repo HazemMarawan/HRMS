@@ -240,6 +240,7 @@ namespace HRMS.Controllers
 
             }
             ViewBag.VacationTypes = db.VacationTypes.Select(v => new { v.id, v.name }).ToList();
+            ViewBag.hiringDate = currentUser.start_vacation_date == null? "" : currentUser.start_vacation_date.ToString();
             return View();
         }
         [HttpPost]

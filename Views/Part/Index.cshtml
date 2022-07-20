@@ -5,7 +5,7 @@
 
 <div class="modal fade" id="manage_part_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal_title"></h5>
@@ -21,9 +21,15 @@
                                 <label>Part</label>
                                 <input required name="part" id="part" type="text" class="form-control radius-30" />
                             </div>
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
+                                <label>Project</label>
+                                @Html.DropDownList("project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "project_id", @style = "width:100%", @id = "project_id", @required = "@required" })
+                            </div>
+                            <div class="form-group col-md-6">
                                 <label>Area</label>
-                                @Html.DropDownList("area_id", new SelectList(ViewBag.Areas, "id", "name"), "Select Area", new { @class = "form-control", @name = "area_id", @style = "width:100%", @id = "area_id", @required = "@required" })
+                                <select id="area_id" name="area_id" class="form-control" required>
+                                    <option value="">Select Area</option>
+                                </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>MVOH</label>
@@ -245,6 +251,32 @@
 
                 }, function (dialog) {
 
+                        $(document).on("change", "#project_id", function () {
+                            var projectId = $(this).val();
+
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreasByProjectId", "Area")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": projectId },
+                            datatype: "json",
+                            success: function (data) {
+                                dialog.find("#area_id").empty();
+                                var html = "<option value=''>Select Area</option>"
+                                if (data.areas.length != 0) {
+                                    data.areas.forEach(function (value) {
+                                        html += `<option value='${value.id}'>${value.name}</option>`;
+                                    });
+                                }
+
+                            dialog.find("#area_id").append(html);
+                                },
+                                error: function () {
+                                    alert("Dynamic content load failed.");
+                                }
+                            });
+
+                        });
 
                 });
             });
@@ -268,13 +300,70 @@
 
                         dialog.find('#id').val(data.id);
                         dialog.find('#part').val(data.part);
-                        dialog.find('#area_id option[value=' + data.area_id + ']').attr('selected', 'selected');
+                        dialog.find('#project_id option[value=' + data.project_id + ']').attr('selected', 'selected');
                         dialog.find('#lvoh').val(data.lvoh);
                         dialog.find('#mvoh').val(data.mvoh);
                         dialog.find('#lvug').val(data.lvug);
                         dialog.find('#mvug').val(data.mvug);
                         dialog.find('#equipment_quantity').val(data.equipment_quantity);
                         dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
+
+                        var areaId = data.area_id;
+                        $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreasByProjectId", "Area")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": data.project_id },
+                            datatype: "json",
+                            success: function (data) {
+                                dialog.find("#area_id").empty();
+                                var html = "<option value=''>Select Area</option>"
+                                if (data.areas.length != 0) {
+                                    data.areas.forEach(function (value) {
+                                        if (areaId == value.id)
+                                            html += `<option selected value='${value.id}'>${value.name}</option>`;
+                                        else
+                                            html += `<option value='${value.id}'>${value.name}</option>`;
+                                    });
+                                }
+
+                                dialog.find("#area_id").append(html);
+
+                                },
+                                error: function () {
+                                    alert("Dynamic content load failed.");
+                                }
+                            });
+
+                        dialog.find('#area_id option[value=' + data.area_id + ']').attr('selected', 'selected');
+
+
+                        $(document).on("change", "#project_id", function () {
+                            var projectId = $(this).val();
+
+                            $.ajax({
+                            type: "GET",
+                            url: '@Url.Action("getAreasByProjectId", "Area")',
+                            contentType: "application/json; charset=utf-8",
+                            data: { "id": projectId },
+                            datatype: "json",
+                            success: function (data) {
+                                dialog.find("#area_id").empty();
+                                var html = "<option value=''>Select Area</option>"
+                                if (data.areas.length != 0) {
+                                    data.areas.forEach(function (value) {
+                                        html += `<option value='${value.id}'>${value.name}</option>`;
+                                    });
+                                }
+
+                            dialog.find("#area_id").append(html);
+                                },
+                                error: function () {
+                                    alert("Dynamic content load failed.");
+                                }
+                            });
+
+                        });
 
                 });
 

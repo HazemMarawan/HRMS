@@ -35,12 +35,14 @@ namespace HRMS.Controllers
                 // Getting all data    
                 var partData = (from part in db.Parts
                                 join area in db.Areas on part.area_id equals area.id
+                                join project in db.Projects on area.project_id equals project.id
                                 join user in db.Users on part.created_by equals user.id
                                 select new PartViewModel
                                       {
                                           id = part.id,
                                           part = part.part,
                                           area_id = part.area_id,
+                                          project_id = area.project_id,
                                           area_name = area.name,
                                           mvoh = part.mvoh,
                                           lvoh= part.lvoh,

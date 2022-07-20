@@ -10,6 +10,7 @@ namespace HRMS.ViewModels
         public int id { get; set; }
         public string part { get; set; }
         public int? area_id { get; set; }
+        public int? project_id { get; set; }
         public double? mvoh { get; set; }
         public double? lvoh { get; set; }
         public double? mvug { get; set; }

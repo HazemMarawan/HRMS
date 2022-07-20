@@ -70,6 +70,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to المهام الموكلة.
+        /// </summary>
+        public static string AssignedTasks {
+            get {
+                return ResourceManager.GetString("AssignedTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to الفروع.
         /// </summary>
         public static string Branches {
@@ -322,6 +331,15 @@ namespace HRMS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to مهامى.
+        /// </summary>
+        public static string MyTasks {
+            get {
+                return ResourceManager.GetString("MyTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to الأجازات الخاصة بي.
         /// </summary>
         public static string MyVacations {
@@ -498,6 +516,24 @@ namespace HRMS.Resources {
         public static string Target {
             get {
                 return ResourceManager.GetString("Target", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to تصنيف المهام.
+        /// </summary>
+        public static string TaskClassification {
+            get {
+                return ResourceManager.GetString("TaskClassification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to إدارة المهام.
+        /// </summary>
+        public static string TaskManagement {
+            get {
+                return ResourceManager.GetString("TaskManagement", resourceCulture);
             }
         }
         

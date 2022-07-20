@@ -246,6 +246,7 @@ namespace HRMS.Controllers
         [HttpPost]
         public JsonResult saveVacationRequest(VacationRequestViewModel vacationRequestViewModel)
         {
+            DateTime currentDateWithoutTime = Convert.ToDateTime(DateTime.Now.ToShortDateString());
             User currentUser = Session["user"] as User;
             bool requestStatus = true;
             string errorReport = String.Empty;
@@ -271,9 +272,10 @@ namespace HRMS.Controllers
             if (Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_to).ToShortDateString()) >= Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()))
             {
                 double? currentVacationDays = (int?)Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_to).ToShortDateString()).Date.Subtract(Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString())).TotalDays + 1;
-
-                VacationYearViewModel userVacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && vy.year == DateTime.Now.Year).Select(vy => new VacationYearViewModel { vacation_balance = vy.vacation_balance, remaining = vy.remaining }).FirstOrDefault();
-
+                
+                
+                VacationYearViewModel userVacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && currentDateWithoutTime >= vy.start_year && currentDateWithoutTime <= vy.end_year).Select(vy => new VacationYearViewModel { id = vy.id, vacation_balance = vy.vacation_balance, remaining = vy.remaining }).FirstOrDefault();
+                
                 int? totalVacations = (from vacationType in db.VacationTypes
                                        join vacationRequest in db.VacationRequests on vacationType.id equals vacationRequest.vacation_type_id
                                        select new VacationRequestViewModel
@@ -281,10 +283,11 @@ namespace HRMS.Controllers
                                            value = vacationType.value,
                                            active = vacationRequest.active,
                                            status = vacationRequest.status,
+                                           vacation_year_id = vacationRequest.vacation_year_id,
                                            year = vacationRequest.year,
                                            user_id = vacationRequest.user_id,
                                            days = vacationRequest.days
-                                       }).Where(vr => vr.user_id == currentUser.id && vr.year == DateTime.Now.Year && (vr.value == 1 || vr.value == 2) && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
+                                       }).Where(vr => vr.user_id == currentUser.id && vr.vacation_year_id == userVacationYear.id && (vr.value == 1 || vr.value == 2) && vr.status != (int)ApprovementStatus.Rejected && vr.active == (int)RowStatus.ACTIVE).Select(vr => vr.days).Sum();
                 totalVacations = totalVacations == null ? 0 : totalVacations;
 
                 int? actualRemaining = userVacationYear.vacation_balance - totalVacations;
@@ -299,7 +302,7 @@ namespace HRMS.Controllers
                         {
                             if (currentVacationDays <= selectedVacation.inform_before_duration_min_range)
                             {
-                                if (selectedVacation.inform_before_duration_measurement == 1)
+                                if (selectedVacation.inform_before_duration_measurement == 1 || selectedVacation.inform_before_duration_measurement == null)
                                 {
                                     double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
 
@@ -377,7 +380,6 @@ namespace HRMS.Controllers
                         }
                         if (requestStatus == true)
                         {
-                            DateTime currentDateWithoutTime = Convert.ToDateTime(DateTime.Now.ToShortDateString());
                             VacationYear vacationYear = db.VacationYears.Where(vy => vy.user_id == currentUser.id && currentDateWithoutTime >= vy.start_year && currentDateWithoutTime <= vy.end_year).FirstOrDefault();
 
                             VacationRequest vacationRequest = AutoMapper.Mapper.Map<VacationRequestViewModel, VacationRequest>(vacationRequestViewModel);
@@ -424,7 +426,7 @@ namespace HRMS.Controllers
                         {
                             if (currentVacationDays <= selectedVacation.inform_before_duration_min_range)
                             {
-                                if (selectedVacation.inform_before_duration_measurement == 1)
+                                if (selectedVacation.inform_before_duration_measurement == 1 || selectedVacation.inform_before_duration_measurement == null)
                                 {
                                     double Days = Convert.ToDateTime(((DateTime)vacationRequestViewModel.vacation_from).ToShortDateString()).Date.Subtract(Convert.ToDateTime(DateTime.Now.ToShortDateString())).TotalDays;
 

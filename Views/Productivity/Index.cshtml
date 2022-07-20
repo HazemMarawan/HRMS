@@ -113,6 +113,10 @@
         <div class="form-group col-md-4">
             @Html.DropDownList("search_departments", new SelectList(ViewBag.Departments, "id", "name"), "Select Department", new { @class = "form-control", @name = "search_departments", @style = "width:100%", @id = "search_departments" })
         </div>
+
+        <div class="form-group col-4">
+            @Html.DropDownList("search_user_id", new SelectList(ViewBag.Users, "id", "full_name"), "Select User", new { @class = "selectize", @name = "search_user_id", @style = "width:100%", @id = "search_user_id", @required = "@required" })
+        </div>
         <div class="form-group col-4">
             <input class="form-control" type="text" id="text_search" name="text_search" placeholder="@HResource.Search">
         </div>
@@ -322,6 +326,9 @@
 {
     <script>
         $(document).ready(function () {
+            $('#search_user_id').selectize({
+                plugins: ['remove_button'],
+            });
 
             var datatable = $('#productivityTable')
                 .DataTable({/* we added this from the other system to have same search and same pagination*/
@@ -624,6 +631,7 @@
                 datatable.columns(8).search($("#branch_id").val());
                 datatable.columns(9).search($("#search_status").val());
                 datatable.columns(10).search($("#search_departments").val());
+                datatable.columns(11).search($("#search_user_id").val());
                 datatable.draw();
             });
 
@@ -643,6 +651,11 @@
                 $("#search_task_id").val("");
                 $("#search_status").val("");
                 $("#search_departments").val("");
+
+                var $select = $('#search_user_id').selectize();
+                var control = $select[0].selectize;
+                control.clear();
+
                 $('#search').trigger('click');
 
             });

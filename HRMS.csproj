@@ -172,7 +172,9 @@
     <Compile Include="Controllers\ProjectTypeController.cs" />
     <Compile Include="Controllers\SalaryBatchController.cs" />
     <Compile Include="Controllers\TargetController.cs" />
+    <Compile Include="Controllers\TaskClassificationController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\TaskManagementController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VacationRequestController.cs" />
     <Compile Include="Controllers\MissionController.cs" />
@@ -450,6 +452,30 @@
     <Compile Include="Migrations\202206171659275_updateVacationRequestsYearID.Designer.cs">
       <DependentUpon>202206171659275_updateVacationRequestsYearID.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202207061449150_updateAreas.cs" />
+    <Compile Include="Migrations\202207061449150_updateAreas.Designer.cs">
+      <DependentUpon>202207061449150_updateAreas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207191332462_addTasks.cs" />
+    <Compile Include="Migrations\202207191332462_addTasks.Designer.cs">
+      <DependentUpon>202207191332462_addTasks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207191334306_addTasksData.cs" />
+    <Compile Include="Migrations\202207191334306_addTasksData.Designer.cs">
+      <DependentUpon>202207191334306_addTasksData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207191546414_addDescToNote.cs" />
+    <Compile Include="Migrations\202207191546414_addDescToNote.Designer.cs">
+      <DependentUpon>202207191546414_addDescToNote.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207191617225_updateUserTask.cs" />
+    <Compile Include="Migrations\202207191617225_updateUserTask.Designer.cs">
+      <DependentUpon>202207191617225_updateUserTask.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202207200003366_addDetailsToParts.cs" />
+    <Compile Include="Migrations\202207200003366_addDetailsToParts.Designer.cs">
+      <DependentUpon>202207200003366_addDetailsToParts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Asset.cs" />
@@ -466,6 +492,8 @@
     <Compile Include="Models\SalaryBatchDetail.cs" />
     <Compile Include="Models\Target.cs" />
     <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\TaskClassification.cs" />
+    <Compile Include="Models\UserTask.cs" />
     <Compile Include="Models\VacationRequest.cs" />
     <Compile Include="Models\VacationType.cs" />
     <Compile Include="Models\VacationYear.cs" />
@@ -510,8 +538,11 @@
     <Compile Include="ViewModels\SalaryBatchDetailViewModel.cs" />
     <Compile Include="ViewModels\SalaryBatchViewModel.cs" />
     <Compile Include="ViewModels\TargetViewModel.cs" />
+    <Compile Include="ViewModels\TaskClassificationViewModel.cs" />
+    <Compile Include="ViewModels\TaskManagementViewModel.cs" />
     <Compile Include="ViewModels\TaskViewModel.cs" />
     <Compile Include="ViewModels\UserProjectViewModel.cs" />
+    <Compile Include="ViewModels\UserTaskViewModel.cs" />
     <Compile Include="ViewModels\UserViewModel.cs" />
     <Compile Include="ViewModels\MissionMonthYearViewModel.cs" />
     <Compile Include="ViewModels\WorkPermissionMonthYearViewModel.cs" />
@@ -4200,6 +4231,8 @@
     <Content Include="Views\Area\Index.cshtml" />
     <Content Include="Views\Project\AreasDetails.cshtml" />
     <Content Include="Views\VacationRequest\InitialBalance.cshtml" />
+    <Content Include="Views\TaskClassification\Index.cshtml" />
+    <Content Include="Views\TaskManagement\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4420,6 +4453,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202206171659275_updateVacationRequestsYearID.resx">
       <DependentUpon>202206171659275_updateVacationRequestsYearID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207061449150_updateAreas.resx">
+      <DependentUpon>202207061449150_updateAreas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207191332462_addTasks.resx">
+      <DependentUpon>202207191332462_addTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207191334306_addTasksData.resx">
+      <DependentUpon>202207191334306_addTasksData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207191546414_addDescToNote.resx">
+      <DependentUpon>202207191546414_addDescToNote.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207191617225_updateUserTask.resx">
+      <DependentUpon>202207191617225_updateUserTask.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202207200003366_addDetailsToParts.resx">
+      <DependentUpon>202207200003366_addDetailsToParts.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\HResource.en.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

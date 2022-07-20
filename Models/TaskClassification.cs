@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace HRMS.ViewModels
+namespace HRMS.Models
 {
-    public class PartViewModel
+    public class TaskClassification
     {
+        [Key]
         public int id { get; set; }
-        public string part { get; set; }
-        public int? area_id { get; set; }
-        public double? mvoh { get; set; }
-        public double? lvoh { get; set; }
-        public double? mvug { get; set; }
-        public double? lvug { get; set; }
-        public double? equipment_quantity { get; set; }
-        public int? branch_id { get; set; }
-        public string area_name { get; set; }
+        public string name { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }
@@ -24,5 +18,7 @@ namespace HRMS.ViewModels
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
+        public virtual ICollection<UserTask> UserTasks { get; set; }
+
     }
 }

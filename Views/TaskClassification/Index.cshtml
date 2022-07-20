@@ -1,9 +1,9 @@
 ﻿@{
-    ViewBag.Title = "Parts";
+    ViewBag.Title = "Task Classification";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="modal fade" id="manage_part_modal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="manage_task_classification_modal" tabindex="-1" role="dialog" aria-hidden="true">
     <form action="" method="post" enctype='multipart/form-data'>
         <div class="modal-dialog">
             <div class="modal-content">
@@ -18,32 +18,8 @@
                         <div class="form-row">
                             <input type="hidden" name="id" id="id" value="0" />
                             <div class="form-group col-md-12">
-                                <label>Part</label>
-                                <input required name="part" id="part" type="text" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label>Area</label>
-                                @Html.DropDownList("area_id", new SelectList(ViewBag.Areas, "id", "name"), "Select Area", new { @class = "form-control", @name = "area_id", @style = "width:100%", @id = "area_id", @required = "@required" })
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>MVOH</label>
-                                <input name="mvoh" id="mvoh" type="number" step=".01" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>LVOH</label>
-                                <input name="lvoh" id="lvoh" type="number" step=".01" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>MVUG</label>
-                                <input name="mvug" id="mvug" type="number" step=".01" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>LVUG</label>
-                                <input name="lvug" id="lvug" type="number" step=".01" class="form-control radius-30" />
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label>Equipment Quantity</label>
-                                <input name="equipment_quantity" id="equipment_quantity" type="number" step=".01" class="form-control radius-30" />
+                                <label>Name</label>
+                                <input required name="name" id="name" type="text" class="form-control radius-30" />
                             </div>
                         </div>
                     </div>
@@ -59,15 +35,7 @@
 
 
 <div class="row">
-    <div class="form-group col-3">
-        @Html.DropDownList("search_project_id", new SelectList(ViewBag.Projects, "id", "name"), "Select Project", new { @class = "form-control", @name = "search_project_id", @style = "width:100%", @id = "search_project_id", @required = "@required" })
-    </div>
-    <div class="form-group col-3">
-        <select id="search_area_id" name="search_area_id" class="form-control">
-            <option value="">Select Area</option>
-        </select>
-    </div>
-    <div class="form-group col-2">
+    <div class="form-group col-4">
         <input class="form-control" type="text" id="text_search" name="text_search" placeholder="Search">
     </div>
     <div class="form-group col-2">
@@ -81,18 +49,16 @@
 
 <div class="card">
     <div class="card-header">
-        <a href="javascript:void(0)" id="add_part"><i class="fa fa-plus"></i> Add Part</a>
+        <a href="javascript:void(0)" id="add_department"><i class="fa fa-plus"></i> Add Task Classification</a>
     </div>
     <div class="card-body">
 
         <div class="table-responsive">
-            <table id="partTable" class="table table-striped table-bordered" style="width:100%">
+            <table id="taskClassificationTable" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Part</th>
-                        <th>Area</th>
-                        <th>Info</th>
+                        <th>Name</th>
                         <th>Active</th>
                         <th>Date</th>
                         <th></th>
@@ -109,7 +75,7 @@
     <script>
        $(document).ready(function () {
 
-           var datatable = $('#partTable')
+           var datatable = $('#taskClassificationTable')
                .DataTable({/* we added this from the other system to have same search and same pagination*/
                    "dom": "<'dt--top-section '<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                        "<'table-responsive  'tr>" +
@@ -140,7 +106,7 @@
                     "pageLength":10,
                     "rowId": 'id',
                     "ajax": {
-                        "url": "@Url.Action("Index", "Part")",
+                        "url": "@Url.Action("Index", "TaskClassification")",
                         "type": "POST",
                         "datatype": "json",
                         "dataSrc": "data"
@@ -151,33 +117,8 @@
                             "searchable": true
                         },
                         {
-                            "data": "part",
+                            "data": "name",
                             "searchable": true
-                        },
-                        {
-                            "data": "area_name",
-                            "searchable": true
-                        },
-                        {
-                            "data": "mvoh", "searchable": true,
-                            fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
-                                var html = "";
-                                if (oData.mvoh || oData.lvoh || oData.mvug || oData.lvug) {
-                                    if (oData.mvoh)
-                                        html += "<b>MVOH: </b>" + oData.mvoh + "<br>";
-                                    if (oData.lvoh)
-                                        html += "<b>LVOH: </b>" + oData.lvoh + "<br>";
-                                    if (oData.mvug)
-                                        html += "<b>MVUG: </b>" + oData.mvug + "<br>";
-                                    if (oData.lvug)
-                                        html += "<b>LVUG: </b>" + oData.lvug + "<br>";
-                                    if (oData.equipment_quantity)
-                                        html += "<b>Equipment Quantity: </b>" + oData.equipment_quantity + "<br>";
-                                }
-                                else
-                                    html += "-";
-                                $(nTd).html("<span class='action-column'>" + html + "</span>");
-                            }
                         },
                         {
                             "data": "active", "searchable": true,
@@ -191,7 +132,7 @@
                             }
                         },
                         {
-                            "data": "created_at", "searchable": true,
+                            "data": "active", "searchable": true,
                             fnCreatedCell: function (nTd, sData, oData, iRow, iCol) {
                                 $(nTd).html("<span class='action-column'>" + fixDate(oData.created_at) + "</span>");
                             }
@@ -211,8 +152,6 @@
 
             $('#search').on('click', function () {
                 datatable.search($("#text_search").val());
-                datatable.columns(0).search($("#search_project_id").val());
-                datatable.columns(1).search($("#search_area_id").val());
                 datatable.draw();
             });
 
@@ -223,17 +162,16 @@
 
             $('#reset').on('click', function () {
                 $("#text_search").val("");
-                $("#search_project_id").val("");
-                $("#search_area_id").val("");
+
                 $('#search').trigger('click');
 
             });
 
-           $("#add_part").click(function () {
-               var modal = $('#manage_part_modal').clone();
-                var action = '@Url.Action("savePart", "Part")';
+           $("#add_department").click(function () {
+               var modal = $('#manage_task_classification_modal').clone();
+                var action = '@Url.Action("saveTaskClassification", "TaskClassification")';
                 modal.find('form').attr('action', action);
-               modal.find('#modal_title').text('Add Part');
+               modal.find('#modal_title').text('Add Task Classification');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -252,10 +190,10 @@
             $(document).on("click", ".edit", function () {
                 var data = datatable.row($(this).closest('tr')).data();
                 console.log(data);
-                var modal = $('#manage_part_modal').clone();
-                var action = '@Url.Action("savePart", "Part")';
+                var modal = $('#manage_task_classification_modal').clone();
+                var action = '@Url.Action("saveTaskClassification", "TaskClassification")';
                 modal.find('form').attr('action', action);
-                modal.find('#modal_title').text('Edit Part');
+                modal.find('#modal_title').text('Edit Task Classification');
                 modal.execModal({
                     progressBar: 'progress_bar',
                     progressText: 'progress_text',
@@ -267,14 +205,7 @@
                 }, function (dialog) {
 
                         dialog.find('#id').val(data.id);
-                        dialog.find('#part').val(data.part);
-                        dialog.find('#area_id option[value=' + data.area_id + ']').attr('selected', 'selected');
-                        dialog.find('#lvoh').val(data.lvoh);
-                        dialog.find('#mvoh').val(data.mvoh);
-                        dialog.find('#lvug').val(data.lvug);
-                        dialog.find('#mvug').val(data.mvug);
-                        dialog.find('#equipment_quantity').val(data.equipment_quantity);
-                        dialog.find('#active option[value=' + data.active + ']').attr('selected', 'selected');
+                        dialog.find('#name').val(data.name);
 
                 });
 
@@ -282,10 +213,10 @@
 
             $(document).on("click", ".delete", function () {
                 var data = datatable.row($(this).closest('tr')).data();
-                warningBox("Are you sure you want to delete this Part (<b>" + data.part +"</b>) ?", function () {
+                warningBox("Are you sure you want to delete this Task Classification (<b>" + data.name +"</b>) ?", function () {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("deletePart", "Part")',
+                        url: '@Url.Action("deleteTaskClassification", "TaskClassification")',
                         contentType: "application/json; charset=utf-8",
                         data: { "id": data.id },
                         datatype: "json",
@@ -296,31 +227,6 @@
                             alert("Dynamic content load failed.");
                         }
                     });
-                });
-            });
-
-           $(document).on("change", "#search_project_id", function () {
-               var projectId = $(this).val();
-                $.ajax({
-                    type: "GET",
-                    url: '@Url.Action("getAreasByProjectId", "Area")',
-                    contentType: "application/json; charset=utf-8",
-                    data: { "id": projectId },
-                    datatype: "json",
-                    success: function (data) {
-                        $("#search_area_id").empty();
-                        var html = "<option value=''>Select Area</option>"
-                        if (data.areas.length != 0) {
-                            data.areas.forEach(function (value) {
-                                html += `<option value='${value.id}'>${value.name}</option>`;
-                            });
-                        }
-
-                        $("#search_area_id").append(html);
-                    },
-                    error: function () {
-                        alert("Dynamic content load failed.");
-                    }
                 });
             });
 

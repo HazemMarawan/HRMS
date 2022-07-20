@@ -14,7 +14,8 @@ namespace HRMS.ViewModels
         public double? mvoh { get; set; }
         public double? lvoh { get; set; }
         public double? mvug { get; set; }
-        public double? lvug { get; set; }     
+        public double? lvug { get; set; }
+        public double? equipment_quantity { get; set; }
         public double? mvoh_sum { get; set; }
         public double? lvoh_sum { get; set; }
         public double? mvug_sum { get; set; }

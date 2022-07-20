@@ -27,6 +27,8 @@ namespace HRMS.Controllers
                 var start = Request.Form.GetValues("start").FirstOrDefault();
                 var length = Request.Form.GetValues("length").FirstOrDefault();
                 var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                var search_project_id = Request.Form.GetValues("columns[0][search][value]")[0];
+                var search_area_id = Request.Form.GetValues("columns[1][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
 
@@ -40,6 +42,11 @@ namespace HRMS.Controllers
                                           part = part.part,
                                           area_id = part.area_id,
                                           area_name = area.name,
+                                          mvoh = part.mvoh,
+                                          lvoh= part.lvoh,
+                                          mvug = part.mvug,
+                                          lvug = part.lvug,
+                                          equipment_quantity = part.equipment_quantity,
                                           active = part.active,
                                           branch_id = user.branch_id,
                                           created_at = part.created_at
@@ -50,7 +57,14 @@ namespace HRMS.Controllers
                 {
                     partData = partData.Where(m => m.part.ToLower().Contains(searchValue.ToLower()) || m.id.ToString().ToLower().Contains(searchValue.ToLower()));
                 }
-             
+                
+                if(!String.IsNullOrEmpty(search_area_id))
+                {
+                    int search_area_id_int = int.Parse(search_area_id);
+                    partData = partData.Where(m =>m.area_id == search_area_id_int);
+
+                }
+
                 //total number of rows count     
                 var displayResult = partData.OrderByDescending(u => u.id).Skip(skip)
                      .Take(pageSize).ToList();
@@ -67,6 +81,9 @@ namespace HRMS.Controllers
 
             }
             ViewBag.Areas = db.Areas.Where(a => a.active == (int)RowStatus.ACTIVE).Select(a => new { a.id, a.name }).ToList();
+
+            List<int?> branchProjectIds = db.BranchProjects.Where(br => br.branch_id == currentUser.branch_id).Select(br => br.project_id).ToList();
+            ViewBag.Projects = db.Projects.Where(a => a.active == (int)RowStatus.ACTIVE && branchProjectIds.Contains(a.id)).Select(a => new { a.id, a.name }).ToList();
             return View();
         }
         [HttpPost]
@@ -77,7 +94,8 @@ namespace HRMS.Controllers
             {
                 Part part = AutoMapper.Mapper.Map<PartViewModel, Part>(partViewModel);
 
-                part.created_at = DateTime.Now.AddHours(-3);
+                part.active = (int)RowStatus.ACTIVE;
+                part.created_at = DateTime.Now;
                 part.created_by = Session["id"].ToString().ToInt();
 
                 db.Parts.Add(part);
@@ -90,7 +108,11 @@ namespace HRMS.Controllers
 
                 oldpart.part = partViewModel.part;
                 oldpart.area_id = partViewModel.area_id;
-                oldpart.active = partViewModel.active;
+                oldpart.lvoh = partViewModel.lvoh;
+                oldpart.mvoh = partViewModel.mvoh;
+                oldpart.lvug = partViewModel.lvug;
+                oldpart.mvug = partViewModel.mvug;
+                oldpart.equipment_quantity = partViewModel.equipment_quantity;
                 oldpart.updated_by = Session["id"].ToString().ToInt();
                 oldpart.updated_at = DateTime.Now;
 

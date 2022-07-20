@@ -47,6 +47,8 @@ namespace HRMS.Models
          public virtual DbSet<SalaryBatchDetail> SalaryBatchDetails { get; set; }
          public virtual DbSet<Part> Parts { get; set; }
          public virtual DbSet<Task> Tasks { get; set; }
+         public virtual DbSet<TaskClassification> TaskClassifications { get; set; }
+         public virtual DbSet<UserTask> UserTasks { get; set; }
     }
 
     //public class MyEntity

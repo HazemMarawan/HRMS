@@ -46,6 +46,7 @@ namespace HRMS.Controllers
                 var search_branch_id = Request.Form.GetValues("columns[8][search][value]")[0];
                 var status = Request.Form.GetValues("columns[9][search][value]")[0];
                 var department = Request.Form.GetValues("columns[10][search][value]")[0];
+                var searchUserId = Request.Form.GetValues("columns[11][search][value]")[0];
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 var sortColumn = Request.Form.GetValues("columns[" + Request.Form.GetValues("order[0][column]").FirstOrDefault() + "][name]").FirstOrDefault();
@@ -225,6 +226,12 @@ namespace HRMS.Controllers
                     int department_int = int.Parse(department);
                     productivityData = productivityData.Where(s => s.department_id == department_int);
                 }
+                
+                if (!string.IsNullOrEmpty(searchUserId))
+                {
+                    int searchUserId_int = int.Parse(searchUserId);
+                    productivityData = productivityData.Where(s => s.user_id == searchUserId_int);
+                }
 
                 //var clonedProductivityData = productivityData.ToList();
                 double? Hours = 0;
@@ -296,7 +303,14 @@ namespace HRMS.Controllers
             if (isA.BranchAdmin() || isA.TeamLeader() || isA.Supervisor())
             {
                 branch_id = currentUser.branch_id;
+                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE && s.branch_id == currentUser.branch_id).Select(s => new { s.id, s.full_name }).ToList();
             }
+            
+            if(isA.SuperAdmin())
+                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE).Select(s => new { s.id, s.full_name }).ToList();
+            else
+                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE && s.branch_id == currentUser.branch_id).Select(s => new { s.id, s.full_name }).ToList();
+
             ViewBag.branchId = branch_id;
             if (branch_id != null)
             {

@@ -41,6 +41,8 @@ namespace HRMS
             Mapper.CreateMap<TargetViewModel, Target>();
             Mapper.CreateMap<PartViewModel, Part>();
             Mapper.CreateMap<TaskViewModel, Task>();
+            Mapper.CreateMap<TaskClassificationViewModel, TaskClassification>();
+            Mapper.CreateMap<UserTaskViewModel, UserTask>();
 
 
         }

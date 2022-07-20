@@ -120,6 +120,9 @@
   <data name="Areas" xml:space="preserve">
     <value>المناطق</value>
   </data>
+  <data name="AssignedTasks" xml:space="preserve">
+    <value>المهام الموكلة</value>
+  </data>
   <data name="Branches" xml:space="preserve">
     <value>الفروع</value>
   </data>
@@ -204,6 +207,9 @@
   <data name="MySalary" xml:space="preserve">
     <value>الراتب الخاص بي</value>
   </data>
+  <data name="MyTasks" xml:space="preserve">
+    <value>مهامى</value>
+  </data>
   <data name="MyVacations" xml:space="preserve">
     <value>الأجازات الخاصة بي</value>
   </data>
@@ -263,6 +269,12 @@
   </data>
   <data name="Target" xml:space="preserve">
     <value>الأهداف</value>
+  </data>
+  <data name="TaskClassification" xml:space="preserve">
+    <value>تصنيف المهام</value>
+  </data>
+  <data name="TaskManagement" xml:space="preserve">
+    <value>إدارة المهام</value>
   </data>
   <data name="Tasks" xml:space="preserve">
     <value>المهام</value>

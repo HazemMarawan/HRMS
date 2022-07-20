@@ -7,10 +7,14 @@ $(document).ready(function() {
     }
 
     function favNote() {
-        $(".fav-note").off('click').on('click', function(event) {
+        
+        $(".fav-note").off('click').on('click', function (event) {
           event.stopPropagation();
-          $(this).parents('.note-item').toggleClass('note-fav');
+            $(this).parents('.note-item').toggleClass('note-fav');
+          
         })
+
+      
     }
 
     function addLabelGroups() {

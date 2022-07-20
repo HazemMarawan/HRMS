@@ -123,6 +123,20 @@ namespace HRMS.Controllers
             return Json(new { message = "done" }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        public JsonResult getAreasByProjectId(int id)
+        {
+            List<AreaViewModel> areas = db.Areas.Where(a => a.active == (int)RowStatus.ACTIVE && a.project_id == id).Select(a => new AreaViewModel
+            {
+                id = a.id,
+                name = a.name
+            }).ToList();
+
+            db.SaveChanges();
+
+            return Json(new { message = "done"  , areas  = areas }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public void GenerateAreaReport(UserProjectViewModel userProjectViewModel)
         {

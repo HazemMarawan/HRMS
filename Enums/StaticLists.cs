@@ -50,4 +50,11 @@ namespace HRMS.Enums
         Rejected = 5,
         ApprovedBySupervisor = 6,
     }
+    public enum TaskManagementStatus
+    {
+        New = 1,
+        InProgress = 2,
+        Done = 3,
+        Canceled = 4
+    }
 }

@@ -5,18 +5,10 @@ using System.Web;
 
 namespace HRMS.ViewModels
 {
-    public class PartViewModel
+    public class TaskClassificationViewModel
     {
         public int id { get; set; }
-        public string part { get; set; }
-        public int? area_id { get; set; }
-        public double? mvoh { get; set; }
-        public double? lvoh { get; set; }
-        public double? mvug { get; set; }
-        public double? lvug { get; set; }
-        public double? equipment_quantity { get; set; }
-        public int? branch_id { get; set; }
-        public string area_name { get; set; }
+        public string name { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }

@@ -7,19 +7,20 @@ using System.Web;
 
 namespace HRMS.Models
 {
-    public class Area
+    public class UserTask
     {
         [Key]
         public int id { get; set; }
         public string name { get; set; }
-        [ForeignKey("Project")]
-        public int? project_id { get; set; }
-        public Project Project { get; set; }
-        public double? mvoh { get; set; }
-        public double? lvoh { get; set; }
-        public double? mvug { get; set; }
-        public double? lvug { get; set; }
-        public double? equipment_quantity { get; set; }
+        public string description { get; set; }
+
+       [ForeignKey("TaskClassification")]
+        public int? task_classification_id { get; set; }
+        public TaskClassification TaskClassification { get; set; }
+        public int? user_id { get; set; }
+        public int? is_favourite_by_owner { get; set; }
+        public int? is_favourite_by_assignee { get; set; }
+        public int? status { get; set; }
         public int? active { get; set; }
         public int? created_by { get; set; }
         public int? updated_by { get; set; }
@@ -27,8 +28,5 @@ namespace HRMS.Models
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
-        public virtual ICollection<UserProject> UserProjects { get; set; }
-        public virtual ICollection<Part> Parts { get; set; }
-
     }
 }

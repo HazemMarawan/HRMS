@@ -126,10 +126,10 @@ namespace HRMS.Controllers
             UserTask addToFavoritesTask = db.UserTasks.Find(id);
             
             if(addToFavoritesTask.created_by == CurrentUser.id)
-                addToFavoritesTask.is_favourite_by_owner = 1;
+                addToFavoritesTask.is_favourite_by_owner = addToFavoritesTask.is_favourite_by_owner == 1? 0 : 1;
 
             else
-                addToFavoritesTask.is_favourite_by_assignee = 1;
+                addToFavoritesTask.is_favourite_by_assignee = addToFavoritesTask.is_favourite_by_assignee ==1 ? 0 : 1;
 
             db.SaveChanges();
 

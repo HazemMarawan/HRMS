@@ -275,7 +275,7 @@
             $(document).on("click", ".add_to_fav", function () {
                 var taskName = $(this).data('name');
                 var taskId = $(this).data('id');
-                warningBox("Are you sure you want to add this Task to favorites (<b>" + taskName +"</b>) ?", function () {
+                warningBox("Are you sure you want to change favorite status to (<b>" + taskName +"</b>) ?", function () {
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("addToFavorites", "TaskManagement")',

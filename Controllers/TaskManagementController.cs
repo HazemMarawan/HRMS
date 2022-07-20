@@ -18,6 +18,9 @@ namespace HRMS.Controllers
         // GET: ProjectType
         public ActionResult Index(int? branch_id)
         {
+            if(isA.SuperAdmin())
+                return RedirectToAction("Index", "Dashboard");
+
             User currentUser = Session["user"] as User;
 
             TaskManagementViewModel taskManagementViewModel = new TaskManagementViewModel();
@@ -62,7 +65,7 @@ namespace HRMS.Controllers
             //                                             created_at = userTask.created_at
             //                                         }).Where(s => s.user_id == currentUser.id && s.active == (int)RowStatus.ACTIVE).ToList();
             ViewBag.TaskClassifications = db.TaskClassifications.Where(s => s.active == (int)RowStatus.ACTIVE).Select(s => new { s.id, s.name }).ToList();
-            ViewBag.Users = db.Users.Where(u => u.active == (int)RowStatus.ACTIVE && u.branch_id == currentUser.branch_id).Select(u => new
+            ViewBag.Users = db.Users.Where(u => u.active == (int)RowStatus.ACTIVE && u.branch_id == currentUser.branch_id && u.id != currentUser.id).Select(u => new
             {
                 u.id,
                 u.full_name

@@ -153,5 +153,63 @@ namespace HRMS.Controllers
    
             return Json(new { parts = parts }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult PartsByArea(int? id)
+        {
+            User user = Session["user"] as User;
+            if (isA.Employee())
+                return RedirectToAction("Index", "Dashboard");
+
+            if (Request.IsAjaxRequest())
+            {
+                var draw = Request.Form.GetValues("draw").FirstOrDefault();
+                var start = Request.Form.GetValues("start").FirstOrDefault();
+                var length = Request.Form.GetValues("length").FirstOrDefault();
+                var searchValue = Request.Form.GetValues("search[value]").FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 0;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+
+                // Getting all data    
+                var areaData = (from part in db.Parts
+                                select new PartViewModel
+                                {
+                                    id = part.id,
+                                    part = part.part,
+                                    area_id = part.area_id,
+                                    mvoh = part.mvoh,
+                                    lvoh = part.lvoh,
+                                    mvug = part.mvug,
+                                    lvug = part.lvug,
+                                    mvoh_sum = db.UserProjects.Where(up => up.part_id_fk == part.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.mvoh).Sum(),
+                                    lvoh_sum = db.UserProjects.Where(up => up.part_id_fk == part.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.lvoh).Sum(),
+                                    mvug_sum = db.UserProjects.Where(up => up.part_id_fk == part.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.mvug).Sum(),
+                                    lvug_sum = db.UserProjects.Where(up => up.part_id_fk == part.id && up.status == (int)ProductivityStatus.Approved).Select(up => up.lvug).Sum(),
+                                    created_at = part.created_at,
+                                    active = part.active,
+                                }).Where(n => n.active == (int)RowStatus.ACTIVE && n.area_id == id);
+
+
+
+
+                //total number of rows count     
+                var displayResult = areaData.OrderByDescending(u => u.id).Skip(skip)
+                     .Take(pageSize).ToList();
+                var totalRecords = areaData.Count();
+
+                return Json(new
+                {
+                    draw = draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = totalRecords,
+                    data = displayResult
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+            ViewBag.AreaId = id;
+            if (id != null)
+                ViewBag.AreaName = db.Areas.Find(id).name;
+            return View();
+        }
     }
 }

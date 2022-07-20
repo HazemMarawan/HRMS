@@ -4233,6 +4233,7 @@
     <Content Include="Views\VacationRequest\InitialBalance.cshtml" />
     <Content Include="Views\TaskClassification\Index.cshtml" />
     <Content Include="Views\TaskManagement\Index.cshtml" />
+    <Content Include="Views\Part\PartsByArea.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -149,9 +149,7 @@ namespace HRMS.Controllers
                     string searchName = Regex.Replace(searchValue, @"\s+", " ");
 
                     productivityData = productivityData.Where(
-                       m => m.project_name.ToLower().Contains(searchValue.ToLower())
-                    || m.id.ToString().ToLower().Contains(searchValue.ToLower())
-                    || m.full_name.Contains(searchName)
+                       m => m.note.ToLower().Contains(searchValue.ToLower())
                     );
                 }
 
@@ -307,9 +305,9 @@ namespace HRMS.Controllers
             }
             
             if(isA.SuperAdmin())
-                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE).Select(s => new { s.id, s.full_name }).ToList();
+                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE && s.required_productivity == 1).Select(s => new { s.id, s.full_name }).ToList();
             else
-                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE && s.branch_id == currentUser.branch_id).Select(s => new { s.id, s.full_name }).ToList();
+                ViewBag.Users = db.Users.Where(s => s.active == (int)RowStatus.ACTIVE && s.required_productivity == 1 && s.branch_id == currentUser.branch_id).Select(s => new { s.id, s.full_name }).ToList();
 
             ViewBag.branchId = branch_id;
             if (branch_id != null)
